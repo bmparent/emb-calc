@@ -1,4 +1,4 @@
-import { ApparelType } from './types';
+import { ApparelType, CalibrationProfile } from './types';
 
 // Job-level operations (seconds)
 export const LOAD_DST_TIME = 120;
@@ -19,6 +19,34 @@ export const COLOR_CHANGE_TIME = 5;
 export const MACHINE_EFFICIENCY = 0.85; // 85% effective RPM
 export const THREAD_BREAK_TIME = 15; // seconds lost per 1,000 stitches
 export const OTHER_ISSUES_BUFFER = 0.33; // +33% contingency
+
+/**
+ * Shop-tested Data Graphics defaults. Newly researched fields are neutral or
+ * opt-in so they do not silently change the verified baseline calculation.
+ */
+export const DEFAULT_CALIBRATION_PROFILE: CalibrationProfile = {
+  id: 'data-graphics-verified',
+  name: 'Data Graphics Verified',
+  mode: 'verified',
+  loadDstSeconds: LOAD_DST_TIME,
+  inputSettingsSeconds: INPUT_DST_TIME,
+  markSecondsPerPlacement: MARK_SHIRT_TIME,
+  hoopShirtSecondsPerPlacement: HOOP_SHIRT_TIME,
+  hoopHatSecondsPerPlacement: HOOP_HAT_TIME,
+  removeHoopSecondsPerPlacement: REMOVE_HOOP_TIME,
+  foldSteamSecondsPerGarment: FOLD_STEAM_TIME,
+  packSecondsPerGarment: PACK_TIME,
+  colorChangeSeconds: COLOR_CHANGE_TIME,
+  trimSeconds: 4,
+  manualStopSeconds: 0,
+  machineEfficiency: MACHINE_EFFICIENCY,
+  downtimeSecondsPer1000Stitches: THREAD_BREAK_TIME,
+  bobbinChangeSeconds: 0,
+  bobbinCapacityStitches: 0,
+  contingencyPercent: OTHER_ISSUES_BUFFER,
+  operatorCount: 1,
+  operatorOverlapPercent: 0,
+};
 
 // Garments requiring marking
 export const GARMENT_TYPES_REQUIRING_MARK = new Set([
