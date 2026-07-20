@@ -12,6 +12,7 @@ import {
   CalibrationProfile
 } from './types';
 import { calculateActualMinutes, calculateRuntime, parseDateTime, RuntimeValidationError } from './services/embroideryService';
+import { createCalculationInputKey, formatLocalDate, mergeImportedLocations } from './services/calculatorState';
 import { HistoryModal } from './components/HistoryModal';
 import { HowToModal } from './components/HowToModal';
 import { CalibrationModal } from './components/CalibrationModal';
@@ -69,7 +70,7 @@ function App() {
   const [jobDetails, setJobDetails] = useState<JobDetails>({
     userName: '',
     jobNumber: '',
-    jobDate: new Date().toISOString().split('T')[0],
+    jobDate: formatLocalDate(),
     startTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
     quantity: 1,
   });
@@ -86,6 +87,8 @@ function App() {
   ]);
 
   const [calculation, setCalculation] = useState<CalculationResult | null>(null);
+  const [calculatedInputKey, setCalculatedInputKey] = useState<string | null>(null);
+  const [estimateNotice, setEstimateNotice] = useState('');
   const [isPaused, setIsPaused] = useState(false);
   const [pauseStartTime, setPauseStartTime] = useState<Date | null>(null);
   const [totalPauseSeconds, setTotalPauseSeconds] = useState(0);
@@ -102,6 +105,13 @@ function App() {
   } | null>(null);
   const [formError, setFormError] = useState('');
 
+  const calculationInputKey = createCalculationInputKey({
+    jobQuantity: jobDetails.quantity,
+    machineDetails,
+    locations,
+    calibration,
+  });
+
   useEffect(() => {
     try {
       const savedCalibration = localStorage.getItem(CALIBRATION_KEY);
@@ -116,6 +126,21 @@ function App() {
       console.error('Unable to restore local calculator data.', error);
     }
   }, []);
+
+  useEffect(() => {
+    if (!calculation || !calculatedInputKey || calculatedInputKey === calculationInputKey) return;
+
+    setCalculation(null);
+    setCalculatedInputKey(null);
+    setIsPaused(false);
+    setPauseStartTime(null);
+    setTotalPauseSeconds(0);
+    setAdjustedEndTime('');
+    setActiveCalculationLogId(null);
+    setActualEndTimeInput('');
+    setActualComparison(null);
+    setEstimateNotice('Production inputs changed. Calculate again to refresh the estimate.');
+  }, [calculation, calculatedInputKey, calculationInputKey]);
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
@@ -138,7 +163,6 @@ function App() {
   const updateCalibration = (profile: CalibrationProfile) => {
     setCalibration(profile);
     localStorage.setItem(CALIBRATION_KEY, JSON.stringify(profile));
-    setCalculation(null);
   };
 
   const loadTemplate = (template: JobTemplate) => {
@@ -147,7 +171,6 @@ function App() {
       ...normalizeLocation(location),
       id: createId(),
     })));
-    setCalculation(null);
   };
 
   const addLocation = () => {
@@ -160,7 +183,6 @@ function App() {
     setLocations((current) => current.map((location) => (
       location.quantity === previousQuantity ? { ...location, quantity } : location
     )));
-    setCalculation(null);
   };
 
   const removeLocation = (id: string) => {
@@ -188,6 +210,8 @@ function App() {
         calibration,
       });
       setCalculation(result);
+      setCalculatedInputKey(calculationInputKey);
+      setEstimateNotice('');
       setFormError('');
       setTotalPauseSeconds(0);
       setPauseStartTime(null);
@@ -224,7 +248,17 @@ function App() {
 
   const logEvent = (eventType: LoggedJob['eventType'], result: CalculationResult, pauseSeconds = totalPauseSeconds) => {
     const id = createId();
-    const newLog: LoggedJob = { id, timestamp: new Date().toISOString(), eventType, jobDetails, machineDetails, locations, result, totalPauseSeconds: pauseSeconds };
+    const newLog: LoggedJob = {
+      id,
+      timestamp: new Date().toISOString(),
+      eventType,
+      jobDetails,
+      machineDetails,
+      locations,
+      result,
+      calculationInputKey,
+      totalPauseSeconds: pauseSeconds,
+    };
     setHistory((current) => {
       const updatedHistory = [newLog, ...current];
       localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedHistory));
@@ -273,10 +307,17 @@ function App() {
   };
 
   const loadJob = (job: LoggedJob) => {
-    setJobDetails({ ...job.jobDetails, quantity: job.jobDetails.quantity ?? Math.max(...job.locations.map(location => location.quantity), 1) });
+    const restoredJobDetails = { ...job.jobDetails, quantity: job.jobDetails.quantity ?? Math.max(...job.locations.map(location => location.quantity), 1) };
+    const restoredLocations = job.locations.map(normalizeLocation);
+    const restoredCalculation = job.result?.mode && job.calculationInputKey ? job.result : null;
+    setJobDetails(restoredJobDetails);
     setMachineDetails(job.machineDetails);
-    setLocations(job.locations.map(normalizeLocation));
-    setCalculation(job.result?.mode ? job.result : null);
+    setLocations(restoredLocations);
+    setCalculation(restoredCalculation);
+    setCalculatedInputKey(restoredCalculation ? job.calculationInputKey ?? null : null);
+    setEstimateNotice(job.result && !job.calculationInputKey
+      ? 'This saved job predates input tracking. Calculate again to refresh the estimate.'
+      : '');
     setTotalPauseSeconds(job.totalPauseSeconds);
     setIsPaused(false);
     setPauseStartTime(null);
@@ -352,19 +393,22 @@ function App() {
       <main className="max-w-7xl mx-auto px-4 py-6 md:py-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-10">
           <div className="lg:col-span-7 space-y-6 md:space-y-10">
-            <DesignAnalyzer onAnalysisComplete={(results) => setLocations(results.map((result) => ({
-              id: result.id,
-              designNumber: result.fileName.replace(/\.dst$/i, ''),
-              stitches: result.stitches,
-              quantity: jobDetails.quantity,
-              position: result.assignedPosition,
-              colors: result.colors,
-              trims: result.trims ?? 0,
-              manualStops: 0,
-              speedFactor: 1,
-              handlingFactor: 1,
-              downtimeFactor: 1,
-            })))} />
+            <DesignAnalyzer onAnalysisComplete={(results) => {
+              const importedLocations = results.map((result) => ({
+                id: result.id,
+                designNumber: result.fileName.replace(/\.dst$/i, ''),
+                stitches: result.stitches,
+                quantity: jobDetails.quantity,
+                position: result.assignedPosition,
+                colors: result.colors,
+                trims: result.trims ?? 0,
+                manualStops: 0,
+                speedFactor: 1,
+                handlingFactor: 1,
+                downtimeFactor: 1,
+              }));
+              setLocations((current) => mergeImportedLocations(current, importedLocations, jobDetails.quantity));
+            }} />
             
             <div className="bg-white rounded-2xl md:rounded-[2.5rem] shadow-sm border border-slate-100 p-6 md:p-10">
               <div className="flex justify-between items-center mb-6">
@@ -442,6 +486,7 @@ function App() {
               </div>
             </div>
             
+            {estimateNotice && <p role="status" className="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm font-bold text-amber-900">{estimateNotice}</p>}
             {formError && <p role="alert" className="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-bold text-red-800">{formError}</p>}
             <button onClick={handleCalculate} className="min-h-14 w-full rounded-2xl bg-indigo-600 px-6 py-4 text-base font-black text-white shadow-xl transition-all hover:bg-indigo-700 active:scale-[0.99]">Calculate production time</button>
           </div>
