@@ -157,14 +157,20 @@ export const parseDstBuffer = (buffer: ArrayBuffer, fallbackName = 'Untitled.dst
   const travelDistanceMm = travelDistanceUnits / 10;
   const warnings: string[] = [];
   const payloadBytes = Math.max(buffer.byteLength - HEADER_LENGTH, 0);
+  const decodedRecordCount = decodedStitches + jumpCount;
+  const stitchHeaderMismatch = Boolean(
+    headerStitches && percentDifference(headerStitches, decodedRecordCount) > 0.05,
+  );
+  const colorHeaderMismatch = headerColorChanges !== colorChanges;
+  const hasDecodedPayload = decodedRecordCount > 0 || colorChanges > 0 || hasEndCommand;
 
   if (!hasEndCommand) warnings.push('No DST end command was found; the file may be truncated.');
   if (payloadBytes % 3 !== 0 && !hasEndCommand) warnings.push('The stitch payload ends in a partial three-byte record.');
-  if (headerStitches && percentDifference(headerStitches, decodedStitches + jumpCount) > 0.05) {
-    warnings.push(`Header reports ${headerStitches.toLocaleString()} records, but ${decodedStitches + jumpCount} stitch/jump records were decoded.`);
+  if (stitchHeaderMismatch) {
+    warnings.push(`Header reports ${headerStitches.toLocaleString()} records, but ${decodedRecordCount.toLocaleString()} stitch/jump records were decoded. The decoded count will be used for the calculation.`);
   }
-  if (headerColorChanges !== colorChanges) {
-    warnings.push(`Header reports ${headerColorChanges} color changes; the stitch data contains ${colorChanges}.`);
+  if (colorHeaderMismatch) {
+    warnings.push(`Header reports ${headerColorChanges} color changes; the stitch data contains ${colorChanges}.${hasDecodedPayload ? ' The decoded count will be used.' : ''}`);
   }
   if (headerWidthMm && widthMm && percentDifference(headerWidthMm, widthMm) > 0.05) {
     warnings.push('Decoded width differs from the DST header by more than 5%.');
@@ -180,13 +186,19 @@ export const parseDstBuffer = (buffer: ArrayBuffer, fallbackName = 'Untitled.dst
   // multipliers allow for lock stitches, take-up and the bobbin path.
   const estimatedTopThreadM = (stitchDistanceMm * 1.15) / 1000;
   const estimatedBobbinThreadM = (stitchDistanceMm * 0.45) / 1000;
+  const trustedStitchCount = stitchHeaderMismatch && decodedRecordCount > 0
+    ? decodedRecordCount
+    : headerStitches || decodedRecordCount;
+  const trustedColorChanges = colorHeaderMismatch && hasDecodedPayload
+    ? colorChanges
+    : headerColorChanges;
 
   return {
     label,
-    stitches: headerStitches || decodedStitches,
+    stitches: trustedStitchCount,
     decodedStitches,
     headerStitches,
-    colors: Math.max(colorChanges, headerColorChanges) + 1,
+    colors: trustedColorChanges + 1,
     colorChanges,
     widthMm: widthMm || headerWidthMm,
     heightMm: heightMm || headerHeightMm,
