@@ -123,6 +123,8 @@ export interface LoggedJob {
   machineDetails: MachineDetails;
   locations: LocationInfo[];
   result: CalculationResult | null;
+  /** Production-input snapshot used to prevent restoring or displaying stale estimates. */
+  calculationInputKey?: string;
   actualEndTime?: string;
   actualMinutes?: number;
   verifiedErrorMinutes?: number;
