@@ -46,6 +46,7 @@ describe('parseDstBuffer', () => {
     ], { stitches: 4 }));
 
     expect(result.jumpCount).toBe(3);
+    expect(result.stitches).toBe(4);
     expect(result.trimCount).toBe(1);
     expect(result.travelDistanceMm).toBeCloseTo(0.3);
   });
@@ -54,6 +55,25 @@ describe('parseDstBuffer', () => {
     const result = parseDstBuffer(makeDst([[0x01, 0x00, 0x03]]));
     expect(result.hasEndCommand).toBe(false);
     expect(result.warnings.some((warning) => warning.includes('end command'))).toBe(true);
+  });
+
+  it('uses decoded stitch and color counts when a DST header materially disagrees', () => {
+    const result = parseDstBuffer(makeDst([
+      [0x01, 0x00, 0x03], // stitch
+      [0x01, 0x00, 0x83], // jump
+      [0x00, 0x00, 0xc3], // color change
+      [0x00, 0x00, 0xf3], // end
+    ], { stitches: 999, colors: 9 }));
+
+    expect(result.headerStitches).toBe(999);
+    expect(result.decodedStitches).toBe(1);
+    expect(result.jumpCount).toBe(1);
+    expect(result.stitches).toBe(2);
+    expect(result.colors).toBe(2);
+    expect(result.warnings).toEqual(expect.arrayContaining([
+      expect.stringContaining('decoded count will be used for the calculation'),
+      expect.stringContaining('The decoded count will be used'),
+    ]));
   });
 
   it('rejects non-DST headers', () => {
