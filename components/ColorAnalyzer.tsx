@@ -28,6 +28,7 @@ import {
   sampleCircle,
   sampleRectangle,
 } from '../services/colorAnalysis';
+import { trackEvent } from '../src/lib/analytics';
 
 const CATALOG_STORAGE_KEY = 'embroidery_calc_color_catalog_v2';
 const MAX_IMAGE_BYTES = 15 * 1024 * 1024;
@@ -179,6 +180,11 @@ export const ColorAnalyzer: React.FC = () => {
     setSampleDetails(sample);
     setSelection(nextSelection);
     setStatus(sample.notes[0] ?? 'Color sampled. Compare the ranked thread options below.');
+    trackEvent('color_area_sampled', {
+      selection_type: nextSelection.type,
+      image_source: imageSource,
+      sample_quality: sample.quality,
+    });
   };
 
   const sampleAtPoint = (point: CanvasPoint) => {
@@ -267,6 +273,7 @@ export const ColorAnalyzer: React.FC = () => {
       setStatus(colors.length
         ? `Found ${colors.length} prominent colors. Choose one, or sample the exact area you care about.`
         : 'No visible colors could be read from this image.');
+      trackEvent('color_image_analyzed', { image_source: source, palette_size: colors.length });
       bitmap.close();
     } catch (error) {
       setStatus(error instanceof Error ? error.message : 'The image could not be analyzed.');

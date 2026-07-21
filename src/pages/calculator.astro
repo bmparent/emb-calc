@@ -1,0 +1,32 @@
+---
+import App from '../../App';
+import SiteLayout from '../layouts/SiteLayout.astro';
+
+const description = 'Free embroidery production time calculator with DST stitch-count import, shop calibration, machine and labor estimates, and actual-run comparison.';
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Embroidery Production Time Calculator',
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'Web browser',
+  isAccessibleForFree: true,
+  offers: { '@type': 'Offer', price: 0, priceCurrency: 'USD' },
+  description,
+};
+---
+
+<SiteLayout title="Free Embroidery Production Time Calculator" description={description} canonicalPath="/calculator/" schema={schema}>
+  <section class="border-b border-slate-200 bg-white">
+    <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
+      <p class="text-xs font-black uppercase tracking-[0.22em] text-indigo-600">Free production planning tool</p>
+      <h1 class="mt-3 max-w-4xl text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">Embroidery production time calculator</h1>
+      <p class="mt-5 max-w-3xl text-lg font-medium leading-relaxed text-slate-600">Estimate setup, handling, stitching, stops, likely interruptions, and contingency time. Start manually or import production details from a Tajima DST file.</p>
+      <p class="mt-4 inline-flex rounded-full bg-emerald-50 px-4 py-2 text-xs font-black text-emerald-800">No upload server: your DST files, images, job history, and calibration remain in this browser.</p>
+    </div>
+  </section>
+  <App client:only="react" embedded />
+  <section class="mx-auto grid max-w-7xl gap-8 px-4 py-14 sm:px-6 lg:grid-cols-2">
+    <div><h2 class="text-2xl font-black tracking-tight">What the estimate includes</h2><ul class="mt-4 space-y-3 text-sm font-medium leading-relaxed text-slate-600"><li>Design loading and production setup</li><li>Marking, hooping, removal, finishing, and packing</li><li>Machine runtime adjusted for RPM, heads, quantity, and design speed</li><li>Color changes, trims, manual stops, bobbin changes, and break risk</li><li>An editable contingency buffer and operator-overlap assumptions</li></ul></div>
+    <div><h2 class="text-2xl font-black tracking-tight">Before you schedule a deadline</h2><p class="mt-4 text-sm font-medium leading-relaxed text-slate-600">This is a planning estimate, not a production guarantee. Validate unfamiliar garments and dense designs with a sew-out, confirm machine limitations, and leave room for material, maintenance, staffing, and quality-control issues.</p><a class="mt-5 inline-block text-sm font-black text-indigo-700" href="/methodology/">Review formulas and assumptions →</a></div>
+  </section>
+</SiteLayout>

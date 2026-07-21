@@ -1,11 +1,13 @@
 name: CI
 
+env:
+  ASTRO_TELEMETRY_DISABLED: 1
+
 on:
   pull_request:
   push:
     branches:
       - main
-      - codex/calibration-engine-v2
 
 permissions:
   contents: read
@@ -27,7 +29,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Install dependencies

@@ -1,0 +1,21 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { SITE } from '../site';
+---
+<SiteLayout title="About" description="Why EmbroideryCalc exists, how its tools are built, and the principles behind its production estimates and editorial content." canonicalPath="/about/">
+  <section class="mx-auto max-w-4xl px-4 py-14 sm:px-6 sm:py-20">
+    <p class="text-xs font-black uppercase tracking-[0.22em] text-indigo-600">About EmbroideryCalc</p>
+    <h1 class="mt-4 text-4xl font-black tracking-tight sm:text-5xl">A practical tool built from production-floor questions</h1>
+    <div class="article-body mt-8">
+      <p>EmbroideryCalc began with a deceptively simple problem: the stitch count alone does not tell you when a job will be finished. Loading, marking, hooping, color changes, trims, interruptions, finishing, and the way work moves across multiple heads all matter.</p>
+      <h2>Measured first, editable always</h2>
+      <p>The starting calibration was measured in a working embroidery shop. It is published as a starting point—not presented as a universal industry truth. Every shop can adjust the assumptions locally and compare estimates with actual finishes.</p>
+      <h2>Useful without collecting production files</h2>
+      <p>DST inspection and image color analysis run in the browser. The project is designed to offer meaningful tools without requiring an account or copying customer artwork and production history to a server.</p>
+      <h2>Editorial standard</h2>
+      <p>Guides separate measured observations, calculated estimates, and third-party facts. News and case-study pieces link to original sources when possible. Commercial relationships will be disclosed and will not change calculation results or color rankings.</p>
+      <h2>Questions and corrections</h2>
+      <p>Embroidery changes across machines, materials, digitizing styles, and real shop constraints. Corrections and reproducible examples are welcome through the <a href={SITE.supportUrl}>public project support channel</a>.</p>
+    </div>
+  </section>
+</SiteLayout>

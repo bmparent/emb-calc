@@ -1,0 +1,29 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+---
+<SiteLayout title="Calculation Methodology" description="A transparent explanation of EmbroideryCalc production-time formulas, default shop calibration, DST inferences, color matching, and limitations." canonicalPath="/methodology/">
+  <section class="mx-auto max-w-4xl px-4 py-14 sm:px-6 sm:py-20">
+    <p class="text-xs font-black uppercase tracking-[0.22em] text-indigo-600">Transparent model</p>
+    <h1 class="mt-4 text-4xl font-black tracking-tight sm:text-5xl">How EmbroideryCalc produces an estimate</h1>
+    <p class="mt-5 max-w-3xl text-lg font-medium leading-relaxed text-slate-600">The model combines machine time, operator work, predictable stops, reliability allowances, and a contingency buffer. The defaults came from measured shop workflow and remain editable.</p>
+    <div class="article-body mt-10">
+      <h2>The two views</h2>
+      <p><strong>DG verified</strong> preserves the original, shop-tested baseline behavior. <strong>Batch-aware</strong> models how quantities are distributed across heads and how operator handling can overlap with machine operation. Both are displayed so a shop can compare the familiar baseline with the more detailed model.</p>
+      <h2>Machine time</h2>
+      <p>For each location, stitch time is based on stitches, effective RPM, quantity, and the number of machine heads. Effective RPM includes the machine-efficiency setting and the optional design-speed factor. Color changes, trims, manual stops, expected thread-break time, and estimated bobbin changes add predictable machine occupancy.</p>
+      <h2>Operator time</h2>
+      <p>Setup includes loading the design and entering machine settings. Handling includes marking, hooping, removing the hoop, finishing, and packing. Garment type and the per-location handling factor affect the result. Batch-aware mode lets a configurable share of operator work overlap with machine time.</p>
+      <h2>Default calibration</h2>
+      <p>The included profile uses measured starting values including 120 seconds to load a design, 110 seconds for settings, 15 seconds per placement to mark, 25 seconds to hoop a shirt placement, 40 seconds to hoop a hat placement, 15 seconds to remove a hoop, 22 seconds to fold or steam, and 10 seconds to pack. Machine efficiency starts at 85%, expected downtime at 15 seconds per 1,000 stitches, and contingency at 33%.</p>
+      <p>Those numbers are not standards. Machine model, operator experience, fixture choice, design quality, garment structure, thread, backing, and work-cell layout can move them substantially. Use the calibration panel to represent your process.</p>
+      <h2>Contingency</h2>
+      <p>The contingency percentage is added after the modeled production components. It is intended for ordinary variation—not major breakdowns, rush interruptions, approval delays, material shortages, or rework.</p>
+      <h2>DST parsing</h2>
+      <p>The analyzer reads Tajima stitch commands locally. Stitch count, movement, extents, jumps, and color-change commands come from the command stream. DST does not reliably carry thread names and does not provide a universal explicit trim instruction, so trims are inferred from jump patterns and labeled accordingly.</p>
+      <h2>Image and thread color matching</h2>
+      <p>Image samples are represented in sRGB, converted to Lab, and ranked against electronic-card values with the CIEDE2000 color-difference formula. Approximate PMS references use community screen values and are not official Pantone data. A physical thread card and sew-out remain the final authority.</p>
+      <h2>What the result is not</h2>
+      <p>The estimate is not a quote, warranty, service-level commitment, or substitute for operator judgment. Use actual-finish comparisons and known shop constraints before committing to a deadline.</p>
+    </div>
+  </section>
+</SiteLayout>

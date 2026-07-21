@@ -1,0 +1,33 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { SITE } from '../site';
+---
+<SiteLayout title="Terms of Use" description="Terms governing use of EmbroideryCalc estimates, DST analysis, color matching, editorial information, and third-party links." canonicalPath="/terms/">
+  <section class="mx-auto max-w-4xl px-4 py-14 sm:px-6 sm:py-20">
+    <p class="text-xs font-black uppercase tracking-[0.22em] text-indigo-600">Site terms</p>
+    <h1 class="mt-4 text-4xl font-black tracking-tight sm:text-5xl">Terms of use</h1>
+    <p class="mt-4 text-sm font-bold text-slate-500">Last updated July 21, 2026</p>
+    <div class="article-body mt-9">
+      <p>By using EmbroideryCalc, you agree to these terms. If you do not agree, do not use the website or its tools.</p>
+      <h2>Planning estimates only</h2>
+      <p>Runtime, labor, thread-use, color, trim, and other outputs are estimates. They depend on user inputs, calibration, file conventions, browser color representation, and assumptions described in the methodology. They are not quotes, production guarantees, warranties, professional engineering advice, or promises that a job will meet a deadline.</p>
+      <h2>Your responsibility</h2>
+      <p>You are responsible for confirming inputs, testing unfamiliar designs and materials, using machines safely, obtaining customer approvals, selecting licensed color standards when required, and deciding whether an output is suitable for commercial use.</p>
+      <h2>Files and rights</h2>
+      <p>Only process files and images you are authorized to use. You retain your rights in your inputs. Because the core tools process them locally, EmbroideryCalc does not claim ownership of them.</p>
+      <h2>Acceptable use</h2>
+      <p>Do not attempt to disrupt the site, bypass security controls, misuse third-party services, scrape the site at a rate that impairs availability, or use the tools in violation of law or another party’s rights.</p>
+      <h2>Third-party names, colors, and links</h2>
+      <p>Manufacturer and color-system names identify compatibility or reference material. Unless expressly stated, EmbroideryCalc is not sponsored by, endorsed by, or affiliated with Pantone, Madeira, or other named manufacturers. Third-party product availability, specifications, and prices can change.</p>
+      <h2>Availability and changes</h2>
+      <p>The site may change, pause, or remove features without notice. Saved browser data can be lost when storage is cleared, browsers change behavior, or software is updated. Keep separate records for information important to your business.</p>
+      <h2>Disclaimer</h2>
+      <p>To the maximum extent permitted by law, EmbroideryCalc is provided “as is” and “as available,” without warranties of accuracy, merchantability, fitness for a particular purpose, non-infringement, or uninterrupted availability.</p>
+      <h2>Limitation of liability</h2>
+      <p>To the maximum extent permitted by law, EmbroideryCalc and its contributors will not be liable for indirect, incidental, special, consequential, exemplary, or lost-profit damages arising from use of the site. Some jurisdictions do not allow certain exclusions, so parts of this section may not apply to you.</p>
+      <h2>Changes and questions</h2>
+      <p>Continued use after updated terms are posted means you accept the revised terms. Questions can be submitted through the <a href={SITE.supportUrl}>project support channel</a>.</p>
+    </div>
+    <p class="mt-10 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-xs font-semibold leading-relaxed text-amber-950">These terms are a practical launch draft, not a substitute for legal review. Before enabling paid placements or operating through a formal business entity, update the operator identity, contact details, governing law, and any jurisdiction-specific disclosures with qualified counsel.</p>
+  </section>
+</SiteLayout>

@@ -1,0 +1,15 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+
+export async function getStaticPaths() {
+  return (await getCollection('articles')).map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+interface Props { entry: CollectionEntry<'articles'> }
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+<ArticleLayout title={entry.data.title} description={entry.data.description} canonicalPath={`/articles/${entry.id}/`} sectionLabel="Articles" sectionPath="articles" published={entry.data.published} updated={entry.data.updated} readingMinutes={entry.data.readingMinutes} tags={entry.data.tags} sources={entry.data.sources} affiliate={entry.data.affiliate}>
+  <Content />
+</ArticleLayout>

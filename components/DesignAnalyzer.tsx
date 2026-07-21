@@ -3,6 +3,7 @@ import { AlertTriangle, ChevronRight, FileCode, Loader2, Palette, Upload, X } fr
 import { ApparelType, DesignAnalysisResult, LocationPosition } from '../types';
 import { parseDstFile } from '../services/dstParser';
 import { ColorAnalyzer } from './ColorAnalyzer';
+import { trackEvent } from '../src/lib/analytics';
 
 interface PendingDesign extends DesignAnalysisResult {
   id: string;
@@ -66,11 +67,18 @@ export const DesignAnalyzer: React.FC<DesignAnalyzerProps> = ({ onAnalysisComple
           hasEndCommand: data.hasEndCommand,
           warnings: data.warnings,
         });
+        trackEvent('dst_analysis_completed', {
+          color_bucket: data.colors <= 3 ? '1-3' : data.colors <= 8 ? '4-8' : '9+',
+          warning_count: data.warnings.length,
+          inferred_trims: data.trimCount > 0,
+          has_end_command: data.hasEndCommand,
+        });
       } catch (error) {
         updatePendingDesign(pending.id, {
           isAnalyzing: false,
           error: error instanceof Error ? error.message : 'This DST file could not be read.',
         });
+        trackEvent('dst_analysis_failed');
       }
     }
   };
