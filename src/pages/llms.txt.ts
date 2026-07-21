@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 
 export const GET: APIRoute = ({ site }) => {
-  const origin = site ?? new URL('https://embroiderycalc-preview.bmparent.chatgpt.site');
+  const origin = site ?? new URL('https://embroiderycalc-pro.pages.dev');
   const absolute = (path: string) => new URL(path, origin).toString();
   return new Response(`# EmbroideryCalc
 
