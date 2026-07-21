@@ -1,0 +1,9 @@
+---
+import { getCollection } from 'astro:content';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import SectionIndex from '../../components/SectionIndex.astro';
+const entries = await getCollection('articles');
+---
+<SiteLayout title="Embroidery Articles and Field Notes" description="Embroidery articles connecting production choices, color, materials, design, business, clothing, and everyday use." canonicalPath="/articles/">
+  <SectionIndex eyebrow="Field notes" title="Embroidery articles" description="Useful thinking beyond the calculator: color, design, garment life, production decisions, and the role embroidery plays in everyday objects." basePath="articles" cardLabel="Article" entries={entries} />
+</SiteLayout>

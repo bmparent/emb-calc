@@ -1,0 +1,135 @@
+---
+import '../../index.css';
+import ConsentManager from '../components/ConsentManager.astro';
+import { SITE } from '../site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonicalPath?: string;
+  type?: 'website' | 'article';
+  publishedTime?: Date;
+  updatedTime?: Date;
+  noindex?: boolean;
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const {
+  title,
+  description = SITE.description,
+  canonicalPath = Astro.url.pathname,
+  type = 'website',
+  publishedTime,
+  updatedTime,
+  noindex = false,
+  schema,
+} = Astro.props;
+const pageTitle = title ? `${title} | ${SITE.name}` : `${SITE.name} — Free Embroidery Production Tools`;
+const canonical = new URL(canonicalPath, Astro.site);
+const defaultSchema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: SITE.name,
+    url: new URL('/', Astro.site).toString(),
+    description: SITE.description,
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: SITE.name,
+    url: new URL('/', Astro.site).toString(),
+    sameAs: [SITE.repositoryUrl],
+  },
+];
+const schemas = [...defaultSchema, ...(schema ? (Array.isArray(schema) ? schema : [schema]) : [])];
+const googleVerification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION?.trim();
+const bingVerification = import.meta.env.PUBLIC_BING_SITE_VERIFICATION?.trim();
+const analyticsConfigured = Boolean(import.meta.env.PUBLIC_GTM_ID?.trim() || import.meta.env.PUBLIC_GA_MEASUREMENT_ID?.trim());
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    {googleVerification && <meta name="google-site-verification" content={googleVerification} />}
+    {bingVerification && <meta name="msvalidate.01" content={bingVerification} />}
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" type="application/rss+xml" title={`${SITE.name} updates`} href={new URL('/rss.xml', Astro.site)} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    {publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()} />}
+    {updatedTime && <meta property="article:modified_time" content={updatedTime.toISOString()} />}
+    <title>{pageTitle}</title>
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(schemas)} />
+  </head>
+  <body class="min-h-screen bg-slate-50 text-slate-950">
+    <a href="#main-content" class="sr-only z-[100] rounded-lg bg-white px-4 py-3 font-bold text-indigo-700 focus:not-sr-only focus:fixed focus:left-4 focus:top-4">Skip to content</a>
+    <header class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/95 backdrop-blur">
+      <div class="mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-5 px-4 sm:px-6">
+        <a href="/" class="flex items-center gap-2.5" aria-label="EmbroideryCalc home">
+          <span aria-hidden="true" class="grid h-9 w-9 place-items-center rounded-xl bg-indigo-600 text-lg font-black text-white">E</span>
+          <span class="text-lg font-black tracking-tight text-slate-950">EmbroideryCalc</span>
+        </a>
+        <nav class="hidden items-center gap-1 md:flex" aria-label="Primary navigation">
+          <a class="rounded-lg px-3 py-2 text-sm font-bold text-slate-600 hover:bg-slate-100 hover:text-slate-950" href="/calculator/">Calculator</a>
+          <a class="rounded-lg px-3 py-2 text-sm font-bold text-slate-600 hover:bg-slate-100 hover:text-slate-950" href="/guides/">Guides</a>
+          <a class="rounded-lg px-3 py-2 text-sm font-bold text-slate-600 hover:bg-slate-100 hover:text-slate-950" href="/articles/">Articles</a>
+          <a class="rounded-lg px-3 py-2 text-sm font-bold text-slate-600 hover:bg-slate-100 hover:text-slate-950" href="/embroidery-news/">News</a>
+          <a class="ml-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-black text-white hover:bg-indigo-700" href="/calculator/">Open free tool</a>
+        </nav>
+        <details class="relative md:hidden">
+          <summary class="cursor-pointer list-none rounded-lg border border-slate-200 px-3 py-2 text-sm font-black text-slate-700">Menu</summary>
+          <nav class="absolute right-0 top-12 flex w-56 flex-col rounded-2xl border border-slate-200 bg-white p-2 shadow-xl" aria-label="Mobile navigation">
+            <a class="rounded-lg px-4 py-3 text-sm font-bold hover:bg-slate-100" href="/calculator/">Calculator</a>
+            <a class="rounded-lg px-4 py-3 text-sm font-bold hover:bg-slate-100" href="/guides/">Guides</a>
+            <a class="rounded-lg px-4 py-3 text-sm font-bold hover:bg-slate-100" href="/articles/">Articles</a>
+            <a class="rounded-lg px-4 py-3 text-sm font-bold hover:bg-slate-100" href="/embroidery-news/">News & analysis</a>
+          </nav>
+        </details>
+      </div>
+    </header>
+    <main id="main-content">
+      <slot />
+    </main>
+    <footer class="mt-20 border-t border-slate-200 bg-slate-950 text-slate-300">
+      <div class="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr]">
+        <div>
+          <p class="text-lg font-black text-white">EmbroideryCalc</p>
+          <p class="mt-3 max-w-md text-sm font-medium leading-relaxed text-slate-400">Practical production estimates and design-file tools built from measured embroidery-shop workflow. Core calculator, DST, image, and color work stays in your browser.</p>
+        </div>
+        <div>
+          <p class="text-xs font-black uppercase tracking-widest text-white">Learn</p>
+          <div class="mt-4 flex flex-col gap-2 text-sm font-semibold">
+            <a class="hover:text-white" href="/methodology/">Calculation methodology</a>
+            <a class="hover:text-white" href="/tools/dst-stitch-count/">DST stitch count</a>
+            <a class="hover:text-white" href="/tools/thread-color-match/">Thread color matching</a>
+            <a class="hover:text-white" href="/rss.xml">RSS feed</a>
+          </div>
+        </div>
+        <div>
+          <p class="text-xs font-black uppercase tracking-widest text-white">Trust</p>
+          <div class="mt-4 flex flex-col gap-2 text-sm font-semibold">
+            <a class="hover:text-white" href="/about/">About</a>
+            <a class="hover:text-white" href="/privacy/">Privacy</a>
+            <a class="hover:text-white" href="/terms/">Terms</a>
+            <a class="hover:text-white" href="/affiliate-disclosure/">Affiliate disclosure</a>
+            {analyticsConfigured && <button id="open-analytics-settings" type="button" class="text-left hover:text-white">Privacy choices</button>}
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-slate-800 px-4 py-5 text-center text-xs font-semibold text-slate-500">Estimates support planning; they do not guarantee production completion times. © {new Date().getUTCFullYear()} EmbroideryCalc.</div>
+    </footer>
+    <ConsentManager />
+  </body>
+</html>

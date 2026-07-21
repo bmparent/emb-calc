@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { 
   ApparelType, 
   LocationPosition, 
@@ -17,7 +17,9 @@ import { HistoryModal } from './components/HistoryModal';
 import { HowToModal } from './components/HowToModal';
 import { CalibrationModal } from './components/CalibrationModal';
 import { DesignAnalyzer } from './components/DesignAnalyzer';
+import { SupplyRecommendations } from './components/SupplyRecommendations';
 import { DEFAULT_CALIBRATION_PROFILE, MADEIRA_BACKING_OPTIONS } from './constants';
+import { bucketLocationCount, bucketMachineHeads, bucketQuantity, trackEvent } from './src/lib/analytics';
 import { 
   Calculator, 
   Pause, 
@@ -62,7 +64,11 @@ const normalizeLocation = (location: LocationInfo): LocationInfo => ({
   downtimeFactor: location.downtimeFactor ?? 1,
 });
 
-function App() {
+interface AppProps {
+  embedded?: boolean;
+}
+
+function App({ embedded = false }: AppProps) {
   const [calibration, setCalibration] = useState<CalibrationProfile>(DEFAULT_CALIBRATION_PROFILE);
   const [templates, setTemplates] = useState<JobTemplate[]>([]);
   const [isCalibrationOpen, setIsCalibrationOpen] = useState(false);
@@ -219,6 +225,14 @@ function App() {
       setActualEndTimeInput('');
       setActualComparison(null);
       setActiveCalculationLogId(logEvent('CALC', result, 0));
+      trackEvent('calculation_completed', {
+        mode: result.mode,
+        quantity_bucket: bucketQuantity(jobDetails.quantity),
+        location_count_bucket: bucketLocationCount(locations.length),
+        machine_heads_bucket: bucketMachineHeads(machineDetails.heads),
+        garment_type: machineDetails.apparelType,
+        warning_count: result.warnings.length,
+      });
     } catch (error) {
       if (error instanceof RuntimeValidationError) {
         setFormError(error.issues.join(' '));
@@ -363,8 +377,8 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen pb-12 bg-slate-50/50">
-      <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-slate-200 sticky top-0 z-30">
+    <div className={`${embedded ? 'min-h-0' : 'min-h-screen'} pb-12 bg-slate-50/50`}>
+      {!embedded && <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-slate-200 sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 py-3 md:py-5 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-indigo-600 rounded-xl">
@@ -388,9 +402,9 @@ function App() {
             </button>
           </div>
         </div>
-      </header>
+      </header>}
 
-      <main className="max-w-7xl mx-auto px-4 py-6 md:py-10">
+      <main id="design-tools" className="max-w-7xl mx-auto px-4 py-6 md:py-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-10">
           <div className="lg:col-span-7 space-y-6 md:space-y-10">
             <DesignAnalyzer onAnalysisComplete={(results) => {
@@ -583,6 +597,7 @@ function App() {
                 </>
               )}
             </div>
+            {calculation && <SupplyRecommendations apparelType={machineDetails.apparelType} backingInfo={machineDetails.backingInfo} totalColors={locations.reduce((sum, location) => sum + location.colors, 0)} />}
           </div>
         </div>
       </main>

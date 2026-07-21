@@ -34,3 +34,52 @@
     outline-offset: 2px;
   }
 }
+
+@layer components {
+  .article-body {
+    @apply text-[1.0625rem] leading-8 text-slate-700;
+  }
+
+  .article-body h2 {
+    @apply mt-10 text-[1.7rem] font-black leading-tight tracking-tight text-slate-950;
+  }
+
+  .article-body h3 {
+    @apply mt-8 text-xl font-black text-slate-950;
+  }
+
+  .article-body p,
+  .article-body ul,
+  .article-body ol {
+    @apply mt-5;
+  }
+
+  .article-body ul,
+  .article-body ol {
+    @apply pl-6;
+  }
+
+  .article-body ul {
+    @apply list-disc;
+  }
+
+  .article-body ol {
+    @apply list-decimal;
+  }
+
+  .article-body li + li {
+    @apply mt-2;
+  }
+
+  .article-body a {
+    @apply font-bold text-indigo-700 underline decoration-indigo-200 underline-offset-4 hover:decoration-indigo-600;
+  }
+
+  .article-body strong {
+    @apply font-extrabold text-slate-950;
+  }
+
+  .article-body blockquote {
+    @apply mt-6 border-l-4 border-indigo-500 bg-indigo-50 px-5 py-4 text-indigo-950;
+  }
+}

@@ -1,0 +1,27 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+const description = 'Extract colors from an image or camera photo, select an exact area, and rank nearby Madeira thread colors with approximate PMS screen references.';
+const schema = {
+  '@context': 'https://schema.org', '@type': 'SoftwareApplication', name: 'Photo to Madeira Thread Color Matcher', applicationCategory: 'DesignApplication', operatingSystem: 'Web browser', isAccessibleForFree: true, description,
+};
+---
+<SiteLayout title="Photo and Image to Madeira Thread Color Matcher" description={description} canonicalPath="/tools/thread-color-match/" schema={schema}>
+  <section class="mx-auto max-w-5xl px-4 py-14 sm:px-6 sm:py-20">
+    <p class="text-xs font-black uppercase tracking-[0.22em] text-indigo-600">Approximate screen-to-thread matching</p>
+    <h1 class="mt-4 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">Turn an image color into nearby Madeira thread options</h1>
+    <p class="mt-5 max-w-3xl text-lg font-medium leading-relaxed text-slate-600">Upload artwork or use a camera photo, choose a prominent color or sample a precise region, then compare ranked Madeira options. Approximate PMS references are shown separately.</p>
+    <a class="mt-8 inline-flex min-h-12 items-center rounded-xl bg-indigo-600 px-6 text-sm font-black text-white hover:bg-indigo-700" href="/calculator/">Open the color matcher →</a>
+
+    <ol class="mt-14 grid gap-5 md:grid-cols-3">
+      <li class="rounded-3xl border border-slate-200 bg-white p-6"><span class="text-xs font-black text-indigo-600">STEP 1</span><h2 class="mt-2 text-lg font-black">Add the image</h2><p class="mt-2 text-sm font-medium leading-relaxed text-slate-600">Use clean digital artwork when available. For photos, use even, neutral light and avoid glare.</p></li>
+      <li class="rounded-3xl border border-slate-200 bg-white p-6"><span class="text-xs font-black text-indigo-600">STEP 2</span><h2 class="mt-2 text-lg font-black">Choose the useful area</h2><p class="mt-2 text-sm font-medium leading-relaxed text-slate-600">Select an automatic palette color, tap a spot, or drag a rectangle over the color you actually want.</p></li>
+      <li class="rounded-3xl border border-slate-200 bg-white p-6"><span class="text-xs font-black text-indigo-600">STEP 3</span><h2 class="mt-2 text-lg font-black">Review real thread</h2><p class="mt-2 text-sm font-medium leading-relaxed text-slate-600">Compare several nearby options and verify the final choice on a physical Madeira shade card.</p></li>
+    </ol>
+
+    <div class="mt-14 grid gap-10 lg:grid-cols-2">
+      <div><h2 class="text-2xl font-black">How ranking works</h2><p class="mt-4 text-sm font-medium leading-relaxed text-slate-600">The sampled sRGB color is converted to Lab and compared with electronic-card colors using CIEDE2000 (ΔE). A lower value means the screen references are closer under the calculation—not that thread, fabric, lighting, and a monitor will look identical.</p></div>
+      <div><h2 class="text-2xl font-black">About the PMS result</h2><p class="mt-4 text-sm font-medium leading-relaxed text-slate-600">The built-in PMS values are community-maintained screen approximations, not an official Pantone library or conversion. Treat them as searchable language for discussion; use licensed Pantone materials when a contract or approval requires an official standard.</p></div>
+    </div>
+    <div class="mt-12 rounded-3xl bg-slate-950 p-7 text-slate-200"><h2 class="text-xl font-black text-white">Good matching is a short list, not a false promise</h2><p class="mt-3 text-sm font-medium leading-relaxed">Thread sheen, stitch direction, density, substrate color, lighting, camera processing, and display calibration all change perception. EmbroideryCalc deliberately gives nearby options and quality warnings so the final decision can happen against real thread.</p></div>
+  </section>
+</SiteLayout>

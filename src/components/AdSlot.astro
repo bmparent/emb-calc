@@ -1,0 +1,15 @@
+---
+interface Props {
+  placement: 'article-inline' | 'article-end' | 'calculator-result';
+}
+
+const { placement } = Astro.props;
+const showPlaceholder = import.meta.env.DEV && import.meta.env.PUBLIC_SHOW_AD_PLACEHOLDERS === 'true';
+---
+
+{showPlaceholder && (
+  <aside aria-label="Reserved sponsorship placement" data-ad-placement={placement} class="my-8 rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-5 py-7 text-center">
+    <p class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Reserved for a relevant sponsor</p>
+    <p class="mt-2 text-xs font-medium text-slate-500">Hidden in production until a reviewed advertising partner is configured.</p>
+  </aside>
+)}

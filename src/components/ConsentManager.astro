@@ -1,0 +1,74 @@
+---
+const gtmId = import.meta.env.PUBLIC_GTM_ID?.trim();
+const gaId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID?.trim();
+const enabled = Boolean(gtmId || gaId);
+---
+
+{enabled && (
+  <aside id="analytics-consent" class="fixed inset-x-4 bottom-4 z-50 mx-auto hidden max-w-3xl rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl" aria-labelledby="analytics-consent-title">
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h2 id="analytics-consent-title" class="text-sm font-black text-slate-950">Help improve EmbroideryCalc?</h2>
+        <p class="mt-1 text-xs font-medium leading-relaxed text-slate-600">Optional analytics tells us which tools and guides are useful. Uploaded files, images, job names, and exact order data are not sent.</p>
+      </div>
+      <div class="flex shrink-0 gap-2">
+        <button id="analytics-decline" type="button" class="min-h-11 rounded-xl border border-slate-200 px-4 text-xs font-black text-slate-700">Necessary only</button>
+        <button id="analytics-accept" type="button" class="min-h-11 rounded-xl bg-indigo-600 px-4 text-xs font-black text-white hover:bg-indigo-700">Allow analytics</button>
+      </div>
+    </div>
+  </aside>
+)}
+
+{enabled && (
+  <script is:inline define:vars={{ gtmId, gaId }}>
+    (() => {
+      const storageKey = 'embroiderycalc_analytics_consent';
+      const banner = document.getElementById('analytics-consent');
+      let analyticsLoaded = false;
+      const loadAnalytics = () => {
+        if (analyticsLoaded) return;
+        analyticsLoaded = true;
+        window.dataLayer = window.dataLayer || [];
+        window.embroideryCalcAnalyticsConsent = true;
+        if (gtmId) {
+          window.embroideryCalcAnalyticsMode = 'gtm';
+          window.dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
+          const script = document.createElement('script');
+          script.async = true;
+          script.src = `https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(gtmId)}`;
+          document.head.appendChild(script);
+          return;
+        }
+        if (gaId) {
+          window.embroideryCalcAnalyticsMode = 'ga';
+          const script = document.createElement('script');
+          script.async = true;
+          script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(gaId)}`;
+          document.head.appendChild(script);
+          window.gtag = function () { window.dataLayer.push(arguments); };
+          window.gtag('js', new Date());
+          window.gtag('config', gaId, { anonymize_ip: true });
+        }
+      };
+
+      const choice = localStorage.getItem(storageKey);
+      if (choice === 'granted') loadAnalytics();
+      if (!choice && banner) banner.classList.remove('hidden');
+
+      document.getElementById('analytics-accept')?.addEventListener('click', () => {
+        localStorage.setItem(storageKey, 'granted');
+        banner?.classList.add('hidden');
+        loadAnalytics();
+      });
+      document.getElementById('analytics-decline')?.addEventListener('click', () => {
+        const wasGranted = localStorage.getItem(storageKey) === 'granted';
+        localStorage.setItem(storageKey, 'denied');
+        banner?.classList.add('hidden');
+        if (wasGranted) window.location.reload();
+      });
+      document.getElementById('open-analytics-settings')?.addEventListener('click', () => {
+        banner?.classList.remove('hidden');
+      });
+    })();
+  </script>
+)}

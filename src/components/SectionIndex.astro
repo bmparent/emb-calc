@@ -1,0 +1,28 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import ContentCard from './ContentCard.astro';
+import { formatDate } from '../lib/content';
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  description: string;
+  basePath: string;
+  cardLabel: string;
+  entries: Array<CollectionEntry<'guides'> | CollectionEntry<'articles'> | CollectionEntry<'news'>>;
+}
+
+const { eyebrow, title, description, basePath, cardLabel, entries } = Astro.props;
+const sortedEntries = [...entries].sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
+---
+
+<section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
+  <header class="max-w-3xl">
+    <p class="text-xs font-black uppercase tracking-[0.22em] text-indigo-600">{eyebrow}</p>
+    <h1 class="mt-3 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">{title}</h1>
+    <p class="mt-5 text-lg font-medium leading-relaxed text-slate-600">{description}</p>
+  </header>
+  <div class="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+    {sortedEntries.map((entry) => <ContentCard href={`/${basePath}/${entry.id}/`} label={cardLabel} title={entry.data.title} description={entry.data.description} date={formatDate(entry.data.published)} />)}
+  </div>
+</section>
