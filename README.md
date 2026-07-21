@@ -5,9 +5,10 @@ analysis, artwork/photo color extraction, and Madeira thread matching. The site
 also includes statically rendered guides, articles, news analysis, methodology,
 privacy, terms, RSS, structured data, and crawler files.
 
-The calculator does not require an account, ERP integration, AI service, or API
-key. DST files, images, job history, templates, and calibration stay in the
-browser.
+The core calculator does not require an account, ERP integration, AI service,
+or API key. DST files, images, local history, templates, and calibration stay in
+the browser. An optional Pro workspace adds cloud saves, user-authorized
+read-only Printavo order import, and account-isolated timing suggestions.
 
 ## Calculator capabilities
 
@@ -28,6 +29,14 @@ browser.
   matches so conversion errors are not compounded.
 - Shop calibration, job history, templates, and custom color CSV references use
   local browser storage.
+- Optional passwordless accounts use Cloudflare Pages Functions and D1.
+- Pro subscriptions use Stripe-hosted Checkout and the customer portal.
+- Printavo credentials are encrypted server-side and never returned to browser
+  code after connection; the integration performs read-only, user-initiated
+  order queries.
+- Personal learning is opt-in, per-account, explainable, and requires at least
+  five completed runs before showing a suggestion. It never changes the base
+  calculator calibration automatically.
 
 The calibration rationale and source links are in
 [`docs/CALIBRATION_RESEARCH.md`](docs/CALIBRATION_RESEARCH.md). Public-facing
@@ -41,6 +50,10 @@ formulas and limits are also rendered at `/methodology/`.
 - Markdown in `src/content/` powers guides, articles, and news analysis.
 - Tailwind provides the shared visual system.
 - The production build is fully static and is emitted to `dist/`.
+- Cloudflare Pages Functions in `functions/` provide the optional account,
+  billing, Printavo, saved-work, and learning APIs.
+- D1 migrations live in `migrations/`; the free calculator remains usable when
+  the optional backend is not configured.
 
 ## Development
 
@@ -63,6 +76,11 @@ Astro telemetry can be disabled locally with
 `ASTRO_TELEMETRY_DISABLED=1`; CI already sets it.
 
 ## Deployment configuration
+
+For the current Cloudflare Pages project, set build command `npm run build`,
+output directory `dist`, and leave the root directory blank. The complete D1,
+Resend, Stripe, encryption, webhook, and launch procedure is in
+[`docs/CLOUDFLARE_PRO_SETUP.md`](docs/CLOUDFLARE_PRO_SETUP.md).
 
 Copy `.env.example` into the hosting provider's environment settings. All
 values are build-time values.

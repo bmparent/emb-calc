@@ -9,7 +9,8 @@ import {
   CalculationResult,
   LoggedJob,
   JobTemplate,
-  CalibrationProfile
+  CalibrationProfile,
+  ProJobSnapshot
 } from './types';
 import { calculateActualMinutes, calculateRuntime, parseDateTime, RuntimeValidationError } from './services/embroideryService';
 import { createCalculationInputKey, formatLocalDate, mergeImportedLocations } from './services/calculatorState';
@@ -18,6 +19,9 @@ import { HowToModal } from './components/HowToModal';
 import { CalibrationModal } from './components/CalibrationModal';
 import { DesignAnalyzer } from './components/DesignAnalyzer';
 import { SupplyRecommendations } from './components/SupplyRecommendations';
+import { ProWorkspace } from './components/ProWorkspace';
+import type { PrintavoCalculatorImport } from './shared/printavoMapping';
+import type { LearningSuggestion } from './shared/adaptiveLearning';
 import { DEFAULT_CALIBRATION_PROFILE, MADEIRA_BACKING_OPTIONS } from './constants';
 import { bucketLocationCount, bucketMachineHeads, bucketQuantity, trackEvent } from './src/lib/analytics';
 import { 
@@ -110,6 +114,10 @@ function App({ embedded = false }: AppProps) {
     batchAwareErrorMinutes: number;
   } | null>(null);
   const [formError, setFormError] = useState('');
+  const [learningEnabled, setLearningEnabled] = useState(false);
+  const [learningSuggestion, setLearningSuggestion] = useState<LearningSuggestion | null>(null);
+  const [learningRefresh, setLearningRefresh] = useState(0);
+  const [printavoContext, setPrintavoContext] = useState<{ orderId: string; visualId: string } | null>(null);
 
   const calculationInputKey = createCalculationInputKey({
     jobQuantity: jobDetails.quantity,
@@ -166,6 +174,26 @@ function App({ embedded = false }: AppProps) {
     return () => clearInterval(interval);
   }, [calculation, isPaused, pauseStartTime, totalPauseSeconds, jobDetails]);
 
+  useEffect(() => {
+    if (!calculation || !learningEnabled) {
+      setLearningSuggestion(null);
+      return;
+    }
+    const controller = new AbortController();
+    const params = new URLSearchParams({
+      predictedMinutes: String(calculation.netMinutes),
+      garmentType: machineDetails.apparelType,
+    });
+    fetch(`/api/learning/suggestion?${params}`, { signal: controller.signal })
+      .then(async (response): Promise<{ suggestion: LearningSuggestion } | null> => response.ok ? response.json() : null)
+      .then((value) => setLearningSuggestion(value?.suggestion ?? null))
+      .catch((error) => {
+        if (error instanceof DOMException && error.name === 'AbortError') return;
+        setLearningSuggestion(null);
+      });
+    return () => controller.abort();
+  }, [calculation, learningEnabled, machineDetails.apparelType, learningRefresh]);
+
   const updateCalibration = (profile: CalibrationProfile) => {
     setCalibration(profile);
     localStorage.setItem(CALIBRATION_KEY, JSON.stringify(profile));
@@ -189,6 +217,37 @@ function App({ embedded = false }: AppProps) {
     setLocations((current) => current.map((location) => (
       location.quantity === previousQuantity ? { ...location, quantity } : location
     )));
+  };
+
+  const importPrintavoOrder = (order: PrintavoCalculatorImport) => {
+    const quantity = Math.max(1, order.quantity);
+    setJobDetails((current) => ({ ...current, jobNumber: order.visualId, quantity }));
+    setMachineDetails((current) => ({ ...current, apparelType: order.apparelType as ApparelType }));
+    if (order.locations.length > 0) {
+      setLocations(order.locations.map((location) => ({
+        ...createLocation(location.quantity || quantity),
+        id: createId(),
+        designNumber: location.designNumber,
+        stitches: location.stitches ?? 0,
+        colors: Math.max(1, location.colors ?? 1),
+        quantity: location.quantity || quantity,
+        position: Object.values(LocationPosition).includes(location.position as LocationPosition)
+          ? location.position as LocationPosition
+          : LocationPosition.ProductFront,
+      })));
+    }
+    setPrintavoContext({ orderId: order.orderId, visualId: order.visualId });
+    setEstimateNotice(order.warnings.join(' '));
+  };
+
+  const loadProJob = (snapshot: ProJobSnapshot) => {
+    setJobDetails(snapshot.jobDetails);
+    setMachineDetails(snapshot.machineDetails);
+    setLocations(snapshot.locations.map((location) => ({ ...normalizeLocation(location), id: createId() })));
+    setPrintavoContext(snapshot.printavoOrderId && snapshot.printavoVisualId
+      ? { orderId: snapshot.printavoOrderId, visualId: snapshot.printavoVisualId }
+      : null);
+    setEstimateNotice('Cloud-saved setup loaded. Calculate again to create a current estimate.');
   };
 
   const removeLocation = (id: string) => {
@@ -311,6 +370,29 @@ function App({ embedded = false }: AppProps) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
         return updated;
       });
+      if (learningEnabled) {
+        fetch('/api/learning/outcomes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            clientEventId: logId,
+            source: printavoContext ? 'printavo' : 'manual',
+            model: calculation.mode,
+            garmentType: machineDetails.apparelType,
+            quantity: jobDetails.quantity,
+            locationCount: locations.length,
+            heads: machineDetails.heads,
+            rpm: machineDetails.rpm,
+            predictedMinutes: calculation.netMinutes,
+            actualMinutes,
+            stitches: locations.reduce((sum, location) => sum + (location.stitches * location.quantity), 0),
+            colors: locations.reduce((sum, location) => sum + location.colors, 0),
+            trims: locations.reduce((sum, location) => sum + (location.trims * location.quantity), 0),
+          }),
+        }).then((response) => {
+          if (response.ok) setLearningRefresh((current) => current + 1);
+        }).catch(() => undefined);
+      }
     } catch (error) {
       if (error instanceof RuntimeValidationError) {
         alert(error.issues.join('\n'));
@@ -376,6 +458,15 @@ function App({ embedded = false }: AppProps) {
     });
   };
 
+  const currentProSnapshot: ProJobSnapshot = {
+    label: jobDetails.jobNumber ? `Job ${jobDetails.jobNumber}` : `${machineDetails.apparelType} · ${jobDetails.quantity} pieces`,
+    jobDetails,
+    machineDetails,
+    locations,
+    printavoOrderId: printavoContext?.orderId,
+    printavoVisualId: printavoContext?.visualId,
+  };
+
   return (
     <div className={`${embedded ? 'min-h-0' : 'min-h-screen'} pb-12 bg-slate-50/50`}>
       {!embedded && <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-slate-200 sticky top-0 z-30">
@@ -407,6 +498,12 @@ function App({ embedded = false }: AppProps) {
       <main id="design-tools" className="max-w-7xl mx-auto px-4 py-6 md:py-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-10">
           <div className="lg:col-span-7 space-y-6 md:space-y-10">
+            <ProWorkspace
+              currentSnapshot={currentProSnapshot}
+              onImport={importPrintavoOrder}
+              onLoadSavedJob={loadProJob}
+              onLearningStatusChange={setLearningEnabled}
+            />
             <DesignAnalyzer onAnalysisComplete={(results) => {
               const importedLocations = results.map((result) => ({
                 id: result.id,
@@ -550,6 +647,18 @@ function App({ embedded = false }: AppProps) {
                       {calculation.warnings.map((warning) => (
                         <div key={warning} className="flex gap-2 text-[10px] font-bold leading-relaxed text-amber-900"><AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500" />{warning}</div>
                       ))}
+                    </div>
+                  )}
+                  {learningEnabled && learningSuggestion && (
+                    <div className="mb-6 rounded-2xl border border-violet-200 bg-violet-50 p-4">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="text-[8px] font-black uppercase tracking-widest text-violet-600">Personal planning suggestion</p>
+                          <p className="mt-1 text-xs font-bold leading-relaxed text-slate-800">{learningSuggestion.explanation}</p>
+                        </div>
+                        {learningSuggestion.ready && <p className="shrink-0 text-lg font-black text-violet-700">{Math.round(learningSuggestion.adjustedMinutes)}m</p>}
+                      </div>
+                      <p className="mt-2 text-[9px] font-semibold text-slate-500">{learningSuggestion.sampleSize} completed runs · {learningSuggestion.confidence} confidence · {learningSuggestion.scope === 'garment' ? `${machineDetails.apparelType} history` : 'shop-wide history'}. This does not change the base estimate.</p>
                     </div>
                   )}
                   <details className="mb-6 rounded-2xl border border-slate-200 bg-slate-50">

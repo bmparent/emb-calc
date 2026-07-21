@@ -1,0 +1,17 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "embroiderycalc-pro",
+  "pages_build_output_dir": "./dist",
+  "compatibility_date": "2026-07-21",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "embroiderycalc-pro",
+      "database_id": "REPLACE_WITH_D1_DATABASE_ID"
+    }
+  ],
+  "vars": {
+    "SITE_URL": "https://embroiderycalc-pro.pages.dev",
+    "AUTH_FROM_EMAIL": "EmbroideryCalc <signin@YOUR_VERIFIED_DOMAIN>"
+  }
+}

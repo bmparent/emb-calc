@@ -157,3 +157,12 @@ export interface JobTemplate {
   machineDetails: MachineDetails;
   locations: LocationInfo[];
 }
+
+export interface ProJobSnapshot {
+  label: string;
+  jobDetails: JobDetails;
+  machineDetails: MachineDetails;
+  locations: LocationInfo[];
+  printavoOrderId?: string;
+  printavoVisualId?: string;
+}

@@ -1,0 +1,8 @@
+# Local Pages Functions only. Copy to .dev.vars and never commit real values.
+SITE_URL="http://localhost:8788"
+AUTH_FROM_EMAIL="EmbroideryCalc <signin@example.com>"
+RESEND_API_KEY=""
+PRINTAVO_ENCRYPTION_KEY=""
+STRIPE_SECRET_KEY=""
+STRIPE_WEBHOOK_SECRET=""
+STRIPE_PRICE_ID=""
