@@ -3,7 +3,7 @@ import mdx from '@astrojs/mdx';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 
-const site = process.env.SITE_URL ?? 'https://embroiderycalc-preview.bmparent.chatgpt.site';
+const site = process.env.SITE_URL ?? 'https://embroiderycalc-pro.pages.dev';
 
 export default defineConfig({
   site,
