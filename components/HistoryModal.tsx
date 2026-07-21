@@ -61,6 +61,11 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({ isOpen, onClose, his
                       <span className="px-4 py-2 bg-white border border-slate-200 rounded-full text-[10px] font-black text-indigo-600 uppercase tracking-widest">
                         {job.result ? `${Math.round(job.result.netMinutes)} MINS` : '-'}
                       </span>
+                      {job.actualMinutes !== undefined && (
+                        <p className="mt-2 text-[9px] font-bold text-slate-400">
+                          Actual {Math.round(job.actualMinutes)}m · DG {job.verifiedErrorMinutes! >= 0 ? '+' : ''}{Math.round(job.verifiedErrorMinutes!)}m · Batch {job.batchAwareErrorMinutes! >= 0 ? '+' : ''}{Math.round(job.batchAwareErrorMinutes!)}m
+                        </p>
+                      )}
                     </td>
                     <td className="p-8">
                       <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest">{job.locations.length} Zones</p>

@@ -1,7 +1,5 @@
 {
   "name": "EmbroideryCalc Pro",
   "description": "A modern, high-precision embroidery job time estimator with real-time production tracking, job history persistence, and visual analytics.",
-  "requestFramePermissions": [
-    "camera"
-  ]
+  "requestFramePermissions": []
 }
