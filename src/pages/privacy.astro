@@ -2,17 +2,28 @@
 import SiteLayout from '../layouts/SiteLayout.astro';
 import { SITE } from '../site';
 ---
-<SiteLayout title="Privacy Policy" description="How EmbroideryCalc handles browser-local design files, saved calculator settings, optional analytics, advertising, and third-party links." canonicalPath="/privacy/">
+<SiteLayout title="Privacy Policy" description="How EmbroideryCalc handles browser-local tools, optional Pro accounts and Printavo connections, personal learning, analytics, and third-party services." canonicalPath="/privacy/">
   <section class="mx-auto max-w-4xl px-4 py-14 sm:px-6 sm:py-20">
     <p class="text-xs font-black uppercase tracking-[0.22em] text-indigo-600">Trust and privacy</p>
     <h1 class="mt-4 text-4xl font-black tracking-tight sm:text-5xl">Privacy policy</h1>
     <p class="mt-4 text-sm font-bold text-slate-500">Last updated July 21, 2026</p>
     <div class="article-body mt-9">
-      <p>This policy explains what EmbroideryCalc processes when you use the website. The short version: the core calculator, DST reader, image sampler, and color matcher are designed to work in your browser.</p>
+      <p>This policy explains what EmbroideryCalc processes when you use the website. The short version: the core calculator, DST reader, image sampler, and color matcher work in your browser. Optional Pro features require an account and clearly identify information sent to the server.</p>
       <h2>Files and images</h2>
       <p>DST files, uploaded images, camera images, filenames, and pixels are processed locally by browser code. EmbroideryCalc does not intentionally transmit those files or their extracted contents to an EmbroideryCalc server.</p>
       <h2>Information stored on your device</h2>
       <p>The calculator may use browser local storage for job history, templates, calibration settings, and your analytics-consent choice. This information remains available to anyone who can use the same browser profile. You can remove it by clearing site data in your browser or deleting saved items in the tool.</p>
+      <h2>Optional Pro accounts and cloud saves</h2>
+      <p>If you request a Pro sign-in link, we process your email address, a short-lived one-time-link record, and a secure session record. If you subscribe, our payment provider processes payment and billing details; EmbroideryCalc stores provider identifiers, subscription status, and renewal timing but does not receive or store full card details.</p>
+      <p>When you explicitly save a calculator setup, EmbroideryCalc stores the job fields shown in the calculator, which can include an operator name, job identifier, production quantities, machine settings, and location details. Do not place customer contact information, confidential notes, or artwork in these fields. Cloud saves remain until you delete them or request account deletion.</p>
+      <h2>Optional Printavo connection</h2>
+      <p>If you connect Printavo, you provide the email associated with your Printavo account and an API token. The credentials are encrypted before they are stored and are used server-side for user-initiated, read-only API requests. The token is never returned to browser code after connection. Disconnecting Printavo deletes the stored encrypted credentials.</p>
+      <p>Order search can temporarily return order identifiers, nicknames, status, due date, quantities, garment descriptions and colors, and embroidery imprint details to your signed-in browser. EmbroideryCalc does not request customer contacts, prices, messages, or production-file downloads for this feature. Imported Printavo data is not retained unless you explicitly save the calculator setup.</p>
+      <h2>Optional personal learning</h2>
+      <p>Personal learning is off until an active Pro subscriber enables it. When enabled and you record an actual finish, EmbroideryCalc stores calculator model, garment category, quantity, locations, machine heads and RPM, aggregate stitches/colors/trims, predicted minutes, actual minutes, source type, and date. It does not store the job number, operator/customer name, artwork, Printavo order ID, or Printavo token in the learning record.</p>
+      <p>Learning data is isolated to your account and is used to produce an explainable personal planning adjustment. It is not pooled across shops, used to train a general model, sold, or used to silently change calculator calibration. Disabling learning stops new records; request deletion if you also want prior learning records removed.</p>
+      <h2>Service providers</h2>
+      <p>Optional Pro features use Cloudflare for hosting and database services, Resend for sign-in email delivery, Stripe for checkout and subscription management, and Printavo only when you connect its service. Each provider processes data under its own terms and privacy policy.</p>
       <h2>Analytics</h2>
       <p>EmbroideryCalc may use Cloudflare Web Analytics for aggregate page traffic and performance measurements. Cloudflare states that this service does not use cookies or local storage, fingerprint individual visitors, or track individuals across websites. Cloudflare Web Analytics is separate from the optional Google analytics described below.</p>
       <p>If Google Analytics or Google Tag Manager is configured, it remains disabled until you choose “Allow analytics.” We may then measure page views and coarse product events such as whether a calculation was completed, whether a DST parse succeeded, a broad quantity range, and the type of tool used.</p>
@@ -22,7 +33,7 @@ import { SITE } from '../site';
       <h2>External sites</h2>
       <p>Links to manufacturers, references, retailers, and other external sites are governed by those sites’ policies. EmbroideryCalc does not control their data practices.</p>
       <h2>Retention and choices</h2>
-      <p>Browser-local data remains until you remove it or the browser clears it. If analytics is enabled, provider retention settings apply. You can change the current browser’s Google analytics choice through the “Privacy choices” link in the site footer or by clearing EmbroideryCalc site data and reloading the page. That choice does not control Cloudflare Web Analytics, which does not use the consent value stored by EmbroideryCalc.</p>
+      <p>Browser-local data remains until you remove it or the browser clears it. Pro session records expire, expired one-time links are removed during normal sign-in activity, and cloud-saved work remains until deleted. If analytics is enabled, provider retention settings apply. You can change the current browser’s Google analytics choice through the “Privacy choices” link in the site footer or by clearing EmbroideryCalc site data and reloading the page. That choice does not control Cloudflare Web Analytics, which does not use the consent value stored by EmbroideryCalc.</p>
       <h2>Children</h2>
       <p>EmbroideryCalc is a general business and educational tool and is not directed to children under 13.</p>
       <h2>Changes and contact</h2>
