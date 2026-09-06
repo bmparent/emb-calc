@@ -1,3 +1,4 @@
+import { useModalDialog } from './useModalDialog';
 
 import React from 'react';
 import { LoggedJob } from '../types';
@@ -12,6 +13,8 @@ interface HistoryModalProps {
 }
 
 export const HistoryModal: React.FC<HistoryModalProps> = ({ isOpen, onClose, history, onLoad, onSaveAsTemplate }) => {
+  const dialog = useModalDialog(isOpen);
+
   if (!isOpen) return null;
 
   const uniqueJobs = history.reduce((acc, job) => {
@@ -20,19 +23,19 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({ isOpen, onClose, his
   }, [] as LoggedJob[]).sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
   return (
-    <div className="fixed inset-0 bg-slate-900/90 backdrop-blur-xl z-[60] flex items-center justify-center p-4">
+    <dialog ref={dialog} onCancel={onClose} aria-label="Job history" className="m-0 h-full w-full max-h-none max-w-none border-0 fixed inset-0 bg-slate-900/90 backdrop-blur-xl z-[60] flex items-center justify-center p-4">
       <div className="bg-white rounded-[3rem] shadow-2xl w-full max-w-6xl h-[85vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-300 border border-white/20">
-        <div className="flex justify-between items-center p-10 border-b border-slate-100 bg-slate-50/50">
-          <div className="flex items-center gap-6">
-            <div className="p-4 bg-indigo-600 rounded-[1.5rem] shadow-2xl">
+        <div className="flex justify-between items-center gap-3 p-4 sm:p-10 border-b border-slate-100 bg-slate-50/50">
+          <div className="flex min-w-0 items-center gap-3 sm:gap-6">
+            <div className="hidden sm:block p-4 bg-indigo-600 rounded-[1.5rem] shadow-2xl">
               <Clock className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h2 className="text-3xl font-black text-slate-900 tracking-tighter uppercase italic leading-none">Job <span className="text-indigo-600">Archives</span></h2>
+              <h2 className="text-xl sm:text-3xl font-black text-slate-900 tracking-tighter uppercase italic leading-none">Job <span className="text-indigo-600">Archives</span></h2>
               <p className="text-[11px] text-slate-400 font-black uppercase tracking-[0.3em] mt-2">Verified Production Log</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-3 bg-white border border-slate-200 rounded-2xl hover:bg-slate-50 transition-all"><X className="w-8 h-8 text-slate-400" /></button>
+          <button onClick={onClose} aria-label="Close job history" className="shrink-0 p-3 bg-white border border-slate-200 rounded-2xl hover:bg-slate-50 transition-all"><X className="w-6 h-6 text-slate-400" /></button>
         </div>
 
         <div className="flex-1 overflow-auto p-0 custom-scrollbar">
@@ -84,6 +87,6 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({ isOpen, onClose, his
           </table>
         </div>
       </div>
-    </div>
+    </dialog>
   );
 };

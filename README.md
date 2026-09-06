@@ -64,6 +64,17 @@ Astro telemetry can be disabled locally with
 
 ## Deployment configuration
 
+The standalone public release uses Cloudflare Pages project
+`embroiderycalc-public`, at <https://embroiderycalc-public.pages.dev/>. Its
+calculator is at `/calculator/`. This is a static direct upload with no runtime
+secrets or service bindings. The older `embroiderycalc-pro` project retains its
+Printavo and AI deployment; automatic production builds on that legacy project
+are paused so changes to this repository cannot replace the operational app.
+
+The calculator toolbar provides Guide, Job history, and Shop calibration even
+inside the Astro page. These dialogs support Escape dismissal and return focus
+to the opening control. History and calibration remain browser-local.
+
 Copy `.env.example` into the hosting provider's environment settings. All
 values are build-time values.
 
