@@ -1,3 +1,4 @@
+import { useModalDialog } from './useModalDialog';
 import React, { useEffect, useState } from 'react';
 import { FlaskConical, RotateCcw, Save, Settings2, X } from 'lucide-react';
 import { CalibrationProfile } from '../types';
@@ -62,6 +63,8 @@ export const CalibrationModal: React.FC<CalibrationModalProps> = ({
     if (isOpen) setDraft(profile);
   }, [isOpen, profile]);
 
+  const dialog = useModalDialog(isOpen);
+
   if (!isOpen) return null;
 
   const update = <K extends keyof CalibrationProfile>(key: K, value: CalibrationProfile[K]) => {
@@ -74,7 +77,7 @@ export const CalibrationModal: React.FC<CalibrationModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/85 p-3 backdrop-blur-lg">
+    <dialog ref={dialog} onCancel={onClose} aria-label="Shop calibration" className="m-0 h-full w-full max-h-none max-w-none border-0 fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/85 p-3 backdrop-blur-lg">
       <div className="flex max-h-[95vh] w-full max-w-5xl flex-col overflow-hidden rounded-3xl border border-white/20 bg-white shadow-2xl md:rounded-[2.5rem]">
         <header className="flex items-center justify-between border-b border-slate-100 bg-slate-50/70 p-5 md:p-8">
           <div className="flex items-center gap-4">
@@ -169,6 +172,6 @@ export const CalibrationModal: React.FC<CalibrationModalProps> = ({
           </button>
         </footer>
       </div>
-    </div>
+    </dialog>
   );
 };

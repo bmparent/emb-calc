@@ -378,14 +378,14 @@ function App({ embedded = false }: AppProps) {
 
   return (
     <div className={`${embedded ? 'min-h-0' : 'min-h-screen'} pb-12 bg-slate-50/50`}>
-      {!embedded && <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-slate-200 sticky top-0 z-30">
+      <header className={`bg-white/80 backdrop-blur-md shadow-sm border-b border-slate-200 ${embedded ? '' : 'sticky top-0 z-30'}`}>
         <div className="max-w-7xl mx-auto px-4 py-3 md:py-5 flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-3">
+          {!embedded && <div className="flex items-center gap-3">
             <div className="p-2 bg-indigo-600 rounded-xl">
                 <Calculator className="w-6 h-6 md:w-8 md:h-8 text-white" />
             </div>
             <h1 className="text-xl md:text-3xl font-black text-slate-900 tracking-tighter italic">EmbroideryCalc <span className="text-indigo-600">Pro</span></h1>
-          </div>
+          </div>}
           <div className="flex flex-wrap items-center justify-center gap-2">
             <button onClick={() => setIsHowToOpen(true)} className="flex items-center gap-1.5 px-3 py-2 text-[10px] md:text-xs font-black uppercase tracking-widest text-slate-500 hover:text-indigo-600">
               <HelpCircle className="w-4 h-4" /> Guide
@@ -402,7 +402,7 @@ function App({ embedded = false }: AppProps) {
             </button>
           </div>
         </div>
-      </header>}
+      </header>
 
       <main id="design-tools" className="max-w-7xl mx-auto px-4 py-6 md:py-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-10">

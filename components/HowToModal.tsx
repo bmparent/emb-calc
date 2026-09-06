@@ -1,3 +1,4 @@
+import { useModalDialog } from './useModalDialog';
 import React from 'react';
 import { Calculator, FileCode, FlaskConical, HelpCircle, Palette, Play, Target, X } from 'lucide-react';
 
@@ -40,10 +41,12 @@ const steps = [
 ];
 
 export const HowToModal: React.FC<HowToModalProps> = ({ isOpen, onClose }) => {
+  const dialog = useModalDialog(isOpen);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/85 p-3 backdrop-blur-xl">
+    <dialog ref={dialog} onCancel={onClose} aria-label="Calculator guide" className="m-0 h-full w-full max-h-none max-w-none border-0 fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/85 p-3 backdrop-blur-xl">
       <div className="flex max-h-[94vh] w-full max-w-3xl flex-col overflow-hidden rounded-3xl border border-white/20 bg-white shadow-2xl md:rounded-[3rem]">
         <header className="flex items-center justify-between border-b border-slate-100 bg-slate-50/70 p-6 md:p-9">
           <div className="flex items-center gap-4">
@@ -89,6 +92,6 @@ export const HowToModal: React.FC<HowToModalProps> = ({ isOpen, onClose }) => {
           </button>
         </footer>
       </div>
-    </div>
+    </dialog>
   );
 };
