@@ -31,6 +31,14 @@ async function ready(page: Page) {
     page.getByRole("heading", { name: "Ready when you are" }),
   ).toBeVisible();
   await saved(page);
+  await expect(page.locator(".p-brand")).toBeInViewport();
+  expect(await page.evaluate(() => window.scrollY)).toBe(0);
+  await page.reload();
+  await expect(
+    page.getByRole("heading", { name: "Ready when you are" }),
+  ).toBeVisible();
+  await expect(page.locator(".p-brand")).toBeInViewport();
+  expect(await page.evaluate(() => window.scrollY)).toBe(0);
 }
 async function check(page: Page, name: string, project: string) {
   const result = await new AxeBuilder({ page })

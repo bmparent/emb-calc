@@ -57,7 +57,9 @@ export default function ProductionApp() {
     backupInput = useRef<HTMLInputElement>(null);
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
-    heading.current?.focus();
+    // WKWebView can defer focus scrolling until after scrollTo; keep the header
+    // and step rail visible while still announcing the new screen to assistive tech.
+    heading.current?.focus({ preventScroll: true });
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [view, step]);
   const job = store?.jobs.find((j) => j.id === store.activeId);

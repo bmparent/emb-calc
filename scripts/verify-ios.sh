@@ -45,10 +45,12 @@ PY
   xcrun simctl launch "$DEVICE" com.embroiderycalc.companion
   sleep 12
   xcrun simctl io "$DEVICE" screenshot "artifacts/ios/$KIND-ready.png"
+  swift scripts/verify-screenshot.swift "artifacts/ios/$KIND-ready.png" "EmbroideryCalc" "Ready when you are" "24 embroidered polos" > "artifacts/ios/$KIND-ready-ocr.json"
   xcrun simctl terminate "$DEVICE" com.embroiderycalc.companion
   xcrun simctl launch "$DEVICE" com.embroiderycalc.companion
   sleep 5
   xcrun simctl io "$DEVICE" screenshot "artifacts/ios/$KIND-restart.png"
+  swift scripts/verify-screenshot.swift "artifacts/ios/$KIND-restart.png" "EmbroideryCalc" "Ready when you are" "24 embroidered polos" > "artifacts/ios/$KIND-restart-ocr.json"
   xcrun simctl shutdown "$DEVICE"
 done
 

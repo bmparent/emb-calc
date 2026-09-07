@@ -20,6 +20,15 @@ html {
 .production-app * {
   box-sizing: border-box;
 }
+.production-app::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  background: #fff;
+  z-index: 100;
+  pointer-events: none;
+}
 .p-header {
   max-width: 1060px;
   margin: auto;
