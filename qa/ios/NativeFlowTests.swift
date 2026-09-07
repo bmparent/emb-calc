@@ -68,9 +68,12 @@ final class NativeFlowTests: XCTestCase {
         tap("Share quote")
         let sheet = app.otherElements["ActivityListView"].firstMatch
         XCTAssertTrue(sheet.waitForExistence(timeout: 30), "Native share sheet opened")
-        let caption = app.otherElements["LP.CaptionBar.BottomCaption"].firstMatch
-        XCTAssertTrue(caption.waitForExistence(timeout: 20))
-        XCTAssertTrue(caption.label.contains("PDF"), "The native sheet received a PDF")
+        // iOS creates the caption before its asynchronously resolved file type.
+        let caption = app.otherElements.matching(NSPredicate(
+            format: "identifier == %@ AND label CONTAINS %@",
+            "LP.CaptionBar.BottomCaption", "PDF"
+        )).firstMatch
+        XCTAssertTrue(caption.waitForExistence(timeout: 20), "The native sheet received a PDF")
         capture("Native PDF share sheet")
         let dismiss = app.otherElements["PopoverDismissRegion"].firstMatch
         XCTAssertTrue(dismiss.exists)

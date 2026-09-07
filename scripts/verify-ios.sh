@@ -66,7 +66,7 @@ npm test > artifacts/ios/tests.txt 2>&1
 node scripts/prepare-ios-uitests.mjs
 python3 -m unittest discover -s qa/signing -v > artifacts/ios/signing-tests.txt 2>&1
 xcrun altool --help > artifacts/ios/altool-help.txt 2>&1
-[[ "${IOS_TEST_DEVICE:-all}" == all || "${IOS_TEST_DEVICE:-}" == iphone || "${IOS_TEST_DEVICE:-}" == ipad ]] || { echo 'Invalid IOS_TEST_DEVICE' >&2; exit 1; }
+[[ -z "${IOS_TEST_DEVICE:-}" || "${IOS_TEST_DEVICE:-}" == iphone || "${IOS_TEST_DEVICE:-}" == ipad ]] || { echo 'Invalid IOS_TEST_DEVICE' >&2; exit 1; }
 for KIND in ${IOS_TEST_DEVICE:-iphone ipad}; do
   CHOICE=$(python3 - "$KIND" "$SIMULATOR_SDK_VERSION" <<'PY'
 import json,sys
