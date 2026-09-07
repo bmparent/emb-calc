@@ -107,7 +107,7 @@ export const ColorAnalyzer: React.FC = () => {
   const [selectionMode, setSelectionMode] = useState<SelectionMode>("point");
   const [selection, setSelection] = useState<CanvasSelection | null>(null);
   const [sampleRadius, setSampleRadius] = useState(12);
-  const [inventoryOnly, setInventoryOnly] = useState(true);
+  const [inventoryOnly, setInventoryOnly] = useState(false);
   const [lineFilter, setLineFilter] = useState<ThreadLineFilter>("all");
 
   useEffect(() => {
@@ -813,11 +813,12 @@ export const ColorAnalyzer: React.FC = () => {
                     onClick={() => setInventoryOnly((current) => !current)}
                     className={`min-h-10 rounded-xl border px-3 text-xs font-black ${inventoryOnly ? "border-emerald-200 bg-emerald-50 text-emerald-800" : "border-slate-200 bg-white text-slate-600"}`}
                   >
-                    {inventoryOnly ? "Shop inventory" : "All Madeira"}
+                    {inventoryOnly ? "Example + imported list" : "All Madeira"}
                   </button>
                 </div>
               </div>
 
+              <p className="px-4 pb-3 text-xs text-slate-600">The example list is not your shop stock. Import a CSV to add your own color references.</p>
               {threadMatches.length ? (
                 <ol className="divide-y divide-slate-100">
                   {threadMatches.map((match, index) => (
@@ -839,7 +840,7 @@ export const ColorAnalyzer: React.FC = () => {
                           </p>
                           {match.entry.inInventory && (
                             <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[9px] font-black uppercase tracking-wide text-emerald-800">
-                              In inventory
+                              Listed reference
                             </span>
                           )}
                         </div>

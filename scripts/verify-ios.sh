@@ -10,15 +10,6 @@ grep -q 'iphoneos26' artifacts/ios/sdks.txt
 xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath artifacts/ios/device CODE_SIGNING_ALLOWED=NO build > artifacts/ios/device-build.log 2>&1
 xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Debug -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath artifacts/ios/simulator CODE_SIGNING_ALLOWED=NO build > artifacts/ios/simulator-build.log 2>&1
 xcrun simctl list devices available -j > artifacts/ios/devices.json
-DEVICE=$(python3 -c 'import json; d=json.load(open("artifacts/ios/devices.json")); print(next(x["udid"] for k,v in d["devices"].items() if "iOS-26" in k for x in v if "iPhone" in x["name"]))')
-xcrun simctl boot "$DEVICE"
-xcrun simctl bootstatus "$DEVICE" -b
-xcrun simctl install "$DEVICE" artifacts/ios/simulator/Build/Products/Debug-iphonesimulator/App.app
-xcrun simctl launch "$DEVICE" com.embroiderycalc.companion | tee artifacts/ios/launch.txt
-sleep 15
-xcrun simctl io "$DEVICE" screenshot artifacts/ios/iphone-launch.png
-xcrun simctl shutdown "$DEVICE"
-
 # Generate the same validated synthetic job used by the submission capture.
 npm test > artifacts/ios/tests.txt 2>&1
 for KIND in iphone ipad; do
