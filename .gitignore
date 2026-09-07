@@ -30,3 +30,4 @@ artifacts/ios-*/
 scripts/ui-debug.mjs
 test-results/
 playwright-report/
+ios/App/AppUITests.xcodeproj/

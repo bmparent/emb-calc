@@ -12,6 +12,7 @@ xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Debug -sdk 
 xcrun simctl list devices available -j > artifacts/ios/devices.json
 # Generate the same validated synthetic job used by the submission capture.
 npm test > artifacts/ios/tests.txt 2>&1
+node scripts/prepare-ios-uitests.mjs
 for KIND in iphone ipad; do
   DEVICE=$(python3 - "$KIND" <<'PY'
 import json,sys
@@ -51,6 +52,17 @@ PY
   sleep 5
   xcrun simctl io "$DEVICE" screenshot "artifacts/ios/$KIND-restart.png"
   swift scripts/verify-screenshot.swift "artifacts/ios/$KIND-restart.png" "EmbroideryCalc" "Ready when you are" "24 embroidered polos" > "artifacts/ios/$KIND-restart-ocr.json"
+  xcrun simctl terminate "$DEVICE" com.embroiderycalc.companion
+  # Reinstall into fresh, disposable data so the UI test creates every save.
+  xcrun simctl uninstall "$DEVICE" com.embroiderycalc.companion
+  for CASE in ProductionFlow RecoveryFromCorruptSnapshot; do
+    xcodebuild -project ios/App/AppUITests.xcodeproj -scheme AppUITests -configuration Debug -destination "platform=iOS Simulator,id=$DEVICE" -derivedDataPath artifacts/ios/ui-build -parallel-testing-enabled NO -maximum-concurrent-test-simulator-destinations 1 -resultBundlePath "artifacts/ios/$KIND-$CASE.xcresult" "-only-testing:AppUITests/NativeFlowTests/test$CASE" CODE_SIGNING_ALLOWED=NO test > "artifacts/ios/$KIND-$CASE.log" 2>&1
+    xcrun xcresulttool get test-results summary --path "artifacts/ios/$KIND-$CASE.xcresult" > "artifacts/ios/$KIND-$CASE-summary.json"
+    xcrun xcresulttool export attachments --path "artifacts/ios/$KIND-$CASE.xcresult" --output-path "artifacts/ios/$KIND-$CASE-attachments"
+    CONTAINER=$(xcrun simctl get_app_container "$DEVICE" com.embroiderycalc.companion data)
+    if [ "$CASE" = ProductionFlow ]; then MODE=prepare-recovery; else MODE=verify-recovery; fi
+    python3 scripts/check-native-store.py "$CONTAINER" "$MODE" "artifacts/ios/$KIND-$MODE.json"
+  done
   xcrun simctl shutdown "$DEVICE"
 done
 
@@ -65,4 +77,4 @@ pathlib.Path('artifacts/ios/bundle-inspection.json').write_text(json.dumps(repor
 PY
 ditto -c -k --keepParent artifacts/ios/device/Build/Products/Release-iphoneos/App.app artifacts/ios/unsigned-device-app.zip
 ditto -c -k --keepParent artifacts/ios/simulator/Build/Products/Debug-iphonesimulator/App.app artifacts/ios/simulator-app.zip
-rm -rf artifacts/ios/device artifacts/ios/simulator
+rm -rf artifacts/ios/device artifacts/ios/simulator artifacts/ios/ui-build
