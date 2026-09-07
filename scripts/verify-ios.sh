@@ -85,13 +85,23 @@ PY
   xcrun simctl terminate "$DEVICE" com.embroiderycalc.companion
   # Reinstall into fresh, disposable data so the UI test creates every save.
   xcrun simctl uninstall "$DEVICE" com.embroiderycalc.companion
-  for CASE in ProductionFlow RecoveryFromCorruptSnapshot; do
-    xcodebuild -project ios/App/AppUITests.xcodeproj -scheme AppUITests -configuration Debug -destination "platform=iOS Simulator,id=$DEVICE" -derivedDataPath artifacts/ios/ui-build -parallel-testing-enabled NO -maximum-concurrent-test-simulator-destinations 1 -test-timeouts-enabled YES -default-test-execution-time-allowance 300 -maximum-test-execution-time-allowance 420 -resultBundlePath "artifacts/ios/$KIND-$CASE.xcresult" "-only-testing:AppUITests/NativeFlowTests/test$CASE" CODE_SIGNING_ALLOWED=NO test > "artifacts/ios/$KIND-$CASE.log" 2>&1
-    xcrun xcresulttool get test-results summary --path "artifacts/ios/$KIND-$CASE.xcresult" > "artifacts/ios/$KIND-$CASE-summary.json"
-    xcrun xcresulttool export attachments --path "artifacts/ios/$KIND-$CASE.xcresult" --output-path "artifacts/ios/$KIND-$CASE-attachments"
+  for CASE in ProductionFlow RecoveryFromCorruptSnapshot Accessibility; do
+    TEST_STATUS=0
+    xcodebuild -project ios/App/AppUITests.xcodeproj -scheme AppUITests -configuration Debug -destination "platform=iOS Simulator,id=$DEVICE" -derivedDataPath artifacts/ios/ui-build -parallel-testing-enabled NO -maximum-concurrent-test-simulator-destinations 1 -test-timeouts-enabled YES -default-test-execution-time-allowance 300 -maximum-test-execution-time-allowance 420 -resultBundlePath "artifacts/ios/$KIND-$CASE.xcresult" "-only-testing:AppUITests/NativeFlowTests/test$CASE" CODE_SIGNING_ALLOWED=NO test > "artifacts/ios/$KIND-$CASE.log" 2>&1 || TEST_STATUS=$?
+    if [ -d "artifacts/ios/$KIND-$CASE.xcresult" ]; then
+      xcrun xcresulttool get test-results summary --path "artifacts/ios/$KIND-$CASE.xcresult" > "artifacts/ios/$KIND-$CASE-summary.json"
+      xcrun xcresulttool export attachments --path "artifacts/ios/$KIND-$CASE.xcresult" --output-path "artifacts/ios/$KIND-$CASE-attachments"
+    fi
+    if [ "$TEST_STATUS" -ne 0 ]; then
+      tail -100 "artifacts/ios/$KIND-$CASE.log"
+      exit "$TEST_STATUS"
+    fi
     CONTAINER=$(xcrun simctl get_app_container "$DEVICE" com.embroiderycalc.companion data)
-    if [ "$CASE" = ProductionFlow ]; then MODE=prepare-recovery; else MODE=verify-recovery; fi
-    python3 scripts/check-native-store.py "$CONTAINER" "$MODE" "artifacts/ios/$KIND-$MODE.json"
+    if [ "$CASE" = ProductionFlow ]; then
+      python3 scripts/check-native-store.py "$CONTAINER" prepare-recovery "artifacts/ios/$KIND-prepare-recovery.json"
+    elif [ "$CASE" = RecoveryFromCorruptSnapshot ]; then
+      python3 scripts/check-native-store.py "$CONTAINER" verify-recovery "artifacts/ios/$KIND-verify-recovery.json"
+    fi
   done
   xcrun simctl shutdown "$DEVICE"
 done

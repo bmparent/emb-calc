@@ -77,7 +77,7 @@ IPA=$(find "$OUT/export" -maxdepth 1 -name '*.ipa')
 shasum -a 256 "$IPA" > "$OUT/ipa-sha256.txt"
 if [[ "${UPLOAD_TESTFLIGHT:-false}" == true ]]; then
   # altool reads ./private_keys; only this subprocess changes its working folder.
-  (cd "$SIGNING_DIR"; xcrun altool --validate-app -f "$IPA" -t ios --apiKey "$ASC_KEY_ID" --apiIssuer "$ASC_ISSUER_ID" --output-format json) > "$OUT/apple-validation.json" 2>&1
-  (cd "$SIGNING_DIR"; xcrun altool --upload-app -f "$IPA" -t ios --apiKey "$ASC_KEY_ID" --apiIssuer "$ASC_ISSUER_ID" --output-format json) > "$OUT/apple-upload.json" 2>&1
+  (cd "$SIGNING_DIR"; xcrun altool --validate-app -f "$IPA" -t ios --api-key "$ASC_KEY_ID" --api-issuer "$ASC_ISSUER_ID" --output-format json) > "$OUT/apple-validation.json" 2>&1
+  (cd "$SIGNING_DIR"; xcrun altool --upload-app -f "$IPA" -t ios --api-key "$ASC_KEY_ID" --api-issuer "$ASC_ISSUER_ID" --output-format json) > "$OUT/apple-upload.json" 2>&1
 fi
 echo 'Signed candidate exported. An upload still requires Apple processing and TestFlight verification.'

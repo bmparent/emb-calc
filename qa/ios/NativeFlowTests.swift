@@ -103,4 +103,12 @@ final class NativeFlowTests: XCTestCase {
         app.launch()
         text("Job complete")
     }
+
+    func testAccessibility() throws {
+        text("Job complete")
+        capture("Before native accessibility audit")
+        // Apple's audit is additional automated evidence. It does not replace
+        // an owner navigating the real device with VoiceOver and Larger Text.
+        try app.performAccessibilityAudit()
+    }
 }
