@@ -1,16 +1,24 @@
 {
   "name": "embroiderycalc-pro",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
     "typecheck": "astro check && tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "build:native": "npm run build && node scripts/prepare-native.mjs && cap sync ios",
+    "ios": "cap open ios"
   },
   "dependencies": {
+    "@capacitor/core": "^8.5.1",
+    "@capacitor/filesystem": "^8.1.3",
+    "@capacitor/ios": "^8.5.1",
+    "@capacitor/preferences": "^8.0.1",
+    "@capacitor/share": "^8.0.1",
+    "jspdf": "^4.2.1",
     "lucide-react": "^0.561.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3"
@@ -21,6 +29,7 @@
     "@astrojs/react": "^6.0.1",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
+    "@capacitor/cli": "^8.5.1",
     "@types/node": "^22.14.0",
     "astro": "^7.1.3",
     "autoprefixer": "^10.4.21",

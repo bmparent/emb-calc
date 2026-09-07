@@ -7,6 +7,7 @@
  */
 
 export interface DstMetadata {
+  preview: Array<{ x: number; y: number; jump: boolean; color: number }>;
   label: string;
   stitches: number;
   decodedStitches: number;
@@ -100,6 +101,9 @@ export const parseDstBuffer = (buffer: ArrayBuffer, fallbackName = 'Untitled.dst
   let inferredTrims = 0;
   let sequinMode = false;
   let recordsRead = 0;
+  const preview: DstMetadata['preview'] = [{ x: 0, y: 0, jump: true, color: 0 }];
+  let previewMove = false;
+  const previewStride = Math.max(1, Math.ceil((bytes.length - HEADER_LENGTH) / 3 / 12000));
 
   const closeJumpSequence = () => {
     // Tajima DST has no universal explicit trim command. Three or more
@@ -125,6 +129,8 @@ export const parseDstBuffer = (buffer: ArrayBuffer, fallbackName = 'Untitled.dst
     const distance = Math.hypot(dx, dy);
     x += dx;
     y += dy;
+    previewMove ||= (b2 & 0x83) === 0x83;
+    if (recordsRead % previewStride === 0) { preview.push({ x: x / 10, y: y / 10, jump: previewMove, color: colorChanges }); previewMove = false; }
     minX = Math.min(minX, x);
     maxX = Math.max(maxX, x);
     minY = Math.min(minY, y);
@@ -194,6 +200,7 @@ export const parseDstBuffer = (buffer: ArrayBuffer, fallbackName = 'Untitled.dst
     : headerColorChanges;
 
   return {
+    preview,
     label,
     stitches: trustedStitchCount,
     decodedStitches,

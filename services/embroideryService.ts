@@ -38,7 +38,7 @@ export class RuntimeValidationError extends Error {
 
 const secondsToMinutes = (seconds: number) => seconds / 60;
 
-const validateInput = (input: RuntimeInput) => {
+export const validateInput = (input: RuntimeInput) => {
   const issues: string[] = [];
 
   if (!Number.isFinite(input.rpm) || input.rpm <= 0) issues.push('RPM must be greater than zero.');
@@ -214,6 +214,7 @@ const calculateBatchAware = (input: RuntimeInput): ModelResult => {
   let machineMinutes = 0;
   let placementLaborMinutes = 0;
   let interventionLaborMinutes = 0;
+  let serialHandlingMinutes = 0;
 
   locations.forEach((location) => {
     const batches = Math.ceil(location.quantity / heads);
@@ -227,7 +228,7 @@ const calculateBatchAware = (input: RuntimeInput): ModelResult => {
       batches * location.manualStops * calibration.manualStopSeconds,
     );
     const downtimeMinutes = secondsToMinutes(
-      (location.quantity / heads) * (location.stitches / 1000) *
+      location.quantity * (location.stitches / 1000) *
       calibration.downtimeSecondsPer1000Stitches * location.downtimeFactor,
     );
     const bobbinChanges = bobbinChangesForLocation(
@@ -237,6 +238,11 @@ const calculateBatchAware = (input: RuntimeInput): ModelResult => {
       calibration.bobbinCapacityStitches,
     );
     const bobbinMinutes = secondsToMinutes(bobbinChanges * calibration.bobbinChangeSeconds);
+    const firstBatch = Math.min(heads, location.quantity);
+    const lastBatch = location.quantity % heads || Math.min(heads, location.quantity);
+    serialHandlingMinutes += secondsToMinutes(
+      (firstBatch * (markingSeconds + hoopSeconds) + lastBatch * calibration.removeHoopSecondsPerPlacement) * location.handlingFactor,
+    ) / calibration.operatorCount;
     const operatorMinutes = secondsToMinutes(
       location.quantity * (markingSeconds + hoopSeconds + calibration.removeHoopSecondsPerPlacement) *
       location.handlingFactor,
@@ -272,9 +278,17 @@ const calculateBatchAware = (input: RuntimeInput): ModelResult => {
     jobQuantity * (calibration.foldSteamSecondsPerGarment + calibration.packSecondsPerGarment),
   );
   const operatorMinutes = setupMinutes + placementLaborMinutes + finishingLaborMinutes;
-  const parallelizedHandlingMinutes = (
-    (placementLaborMinutes - interventionLaborMinutes + finishingLaborMinutes) / calibration.operatorCount
-  ) * (1 - calibration.operatorOverlapPercent);
+  // Only work between the first load and last unload can overlap unattended sewing.
+  // Setup, final finishing, and operator interventions remain serial. Cap overlap
+  // by both available sewing time and available labor, never erase required work.
+  const handlingElapsed = (placementLaborMinutes - interventionLaborMinutes + finishingLaborMinutes) / calibration.operatorCount;
+  const serialHandling = serialHandlingMinutes + finishingLaborMinutes / calibration.operatorCount;
+  const unattendedMinutes = Math.max(0, machineMinutes - interventionLaborMinutes);
+  const overlapMinutes = Math.min(
+    Math.max(0, handlingElapsed - serialHandling),
+    unattendedMinutes * calibration.operatorOverlapPercent,
+  );
+  const parallelizedHandlingMinutes = handlingElapsed - overlapMinutes;
   const subtotal = setupMinutes + machineMinutes + parallelizedHandlingMinutes;
   const bufferMinutes = subtotal * calibration.contingencyPercent;
 
@@ -296,12 +310,15 @@ export const calculateRuntime = (input: RuntimeInput): CalculationResult => {
   validateInput(input);
   const verified = calculateVerifiedBaseline(input);
   const batchAware = calculateBatchAware(input);
-  const mode = input.mode ?? input.calibration.mode;
-  const selected = mode === 'batch-aware' ? batchAware : verified;
+  // Old mode values may arrive from saved jobs. The aggregate model is archival only.
+  const mode = 'batch-aware' as const;
+  const selected = batchAware;
   const endTime = new Date(input.startDateTime.getTime() + selected.minutes * 60_000);
 
   return {
     mode,
+    formulaVersion: '3.0.0',
+    projectedEndAt: endTime.toISOString(),
     netMinutes: selected.minutes,
     projectedEndTime: formatTime(endTime),
     machineMinutes: selected.machineMinutes,

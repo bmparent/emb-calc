@@ -103,6 +103,8 @@ export interface LocationCalculation {
 }
 
 export interface CalculationResult {
+  formulaVersion?: string;
+  projectedEndAt?: string;
   mode: CalculationMode;
   netMinutes: number;
   projectedEndTime: string; // HH:MM

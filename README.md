@@ -7,17 +7,16 @@ privacy, terms, RSS, structured data, and crawler files.
 
 The calculator does not require an account, ERP integration, AI service, or API
 key. DST files, images, job history, templates, and calibration stay in the
-browser.
+browser. The iOS companion uses native private files and the system share sheet.
 
 ## Calculator capabilities
 
-- **DG verified** preserves the original shop-tested formula and remains the
-  default estimate.
-- **Batch-aware** rounds multi-head work into whole machine runs and models
-  trims, color changes, manual stops, bobbins, design slowdown, difficult
-  handling, break risk, operator count, and operator/machine overlap.
-- Both estimates are calculated together and can be compared with an actual
-  finish.
+- A guided **Job → Estimate → Next** workflow with versioned drafts, jobs,
+  machine profiles, PDF quotes, and explicit production controls.
+- One batch-aware engine with whole runs and physically capped handling overlap.
+  The historical aggregate baseline is retained only for regression comparison.
+- Complete start/pause/resume/finish timestamps, excluded off-shift time,
+  actual comparisons, and backup merge without overwriting conflicting jobs.
 - Full Tajima DST command-stream parsing reports stitch/color counts,
   dimensions, jumps, inferred trims, thread travel, thread-use estimates,
   long-stitch checks, header mismatches, truncation, and missing end records.
@@ -149,3 +148,10 @@ YOUR-CODE,#0047AB,1842,Sample blue,Polyneon 40
 
 Alternatively, use `type,code,hex,name,line` and set `type` to `pms` or
 `thread`. Photo, monitor, and electronic-card matches are estimates.
+
+## iOS companion
+
+`npm ci` then `npm run build:native` prepares all offline web assets and syncs
+plugins into the checked-in Xcode project. On a Mac, `npm run ios` opens Xcode.
+Set the Apple developer team and a registered bundle identifier before signing.
+See [release verification and remaining gates](docs/RELEASE_READINESS.md).

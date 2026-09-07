@@ -26,8 +26,8 @@ export const OTHER_ISSUES_BUFFER = 0.33; // +33% contingency
  */
 export const DEFAULT_CALIBRATION_PROFILE: CalibrationProfile = {
   id: 'data-graphics-verified',
-  name: 'Data Graphics Verified',
-  mode: 'verified',
+  name: 'DG shop defaults',
+  mode: 'batch-aware',
   loadDstSeconds: LOAD_DST_TIME,
   inputSettingsSeconds: INPUT_DST_TIME,
   markSecondsPerPlacement: MARK_SHIRT_TIME,

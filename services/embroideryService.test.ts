@@ -154,8 +154,8 @@ describe('DG verified baseline', () => {
     const subtotal = preparationSeconds / 60 + stitchingMinutes + reliabilityMinutes + colorMinutes;
     const expected = subtotal * 1.33 / 4;
 
-    expect(result.mode).toBe('verified');
-    expect(result.netMinutes).toBeCloseTo(expected, 8);
+    expect(result.mode).toBe('batch-aware');
+    expect(result.netMinutes).toBeGreaterThan(expected);
     expect(result.verifiedBaselineMinutes).toBeCloseTo(expected, 8);
   });
 });
@@ -207,4 +207,10 @@ describe('actual production comparison', () => {
       10 * 60,
     )).toThrowError(RuntimeValidationError);
   });
+});
+
+describe('physical timing floors',()=>{
+ it('never divides a single design among multiple heads',()=>{const r=calculateRuntime(input({heads:6,rpm:800,mode:'verified'}));expect(r.netMinutes).toBeCloseTo(12.5);});
+ it('cannot hide more labor than the available machine time',()=>{const r=calculateRuntime(input({heads:6,jobQuantity:60,locations:[location({quantity:60,stitches:1})],calibration:{...neutralCalibration,hoopShirtSecondsPerPlacement:60,operatorOverlapPercent:1}}));expect(r.operatorMinutes).toBeCloseTo(60);expect(r.netMinutes).toBeGreaterThanOrEqual(60);});
+ it.each([1,5,6,7,24,25])('rounds %i pieces into whole runs',quantity=>{const r=calculateRuntime(input({heads:6,jobQuantity:quantity,locations:[location({quantity})]}));expect(r.breakdown.stitching).toBe(Math.ceil(quantity/6)*10);});
 });
