@@ -139,6 +139,7 @@ export const parseDstBuffer = (buffer: ArrayBuffer, fallbackName = 'Untitled.dst
     if ((b2 & 0xc3) === 0xc3) {
       closeJumpSequence();
       colorChanges += 1;
+      if (preview.length < 24000) preview.push({x:x/10,y:y/10,jump:true,color:colorChanges});
     } else if ((b2 & 0x43) === 0x43) {
       closeJumpSequence();
       sequinMode = !sequinMode;
@@ -156,6 +157,7 @@ export const parseDstBuffer = (buffer: ArrayBuffer, fallbackName = 'Untitled.dst
     }
   }
   closeJumpSequence();
+  if (preview.at(-1)?.x !== x/10 || preview.at(-1)?.y !== y/10) preview.push({x:x/10,y:y/10,jump:previewMove,color:colorChanges});
 
   const widthMm = (maxX - minX) / 10;
   const heightMm = (maxY - minY) / 10;

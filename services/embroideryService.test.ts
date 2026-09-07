@@ -55,6 +55,22 @@ const input = (overrides: Partial<RuntimeInput> = {}): RuntimeInput => ({
 });
 
 describe('batch-aware runtime model', () => {
+  it('does not borrow overlap from another placement', () => {
+    const cal={...neutralCalibration,hoopShirtSecondsPerPlacement:60,operatorOverlapPercent:1};
+    const a=location({id:'a',quantity:1,stitches:100000}), b=location({id:'b',quantity:10,stitches:1});
+    const together=calculateRuntime(input({jobQuantity:10,locations:[a,b],calibration:cal}));
+    const separate=[a,b].reduce((sum,l)=>sum+calculateRuntime(input({jobQuantity:10,locations:[l],calibration:cal})).netMinutes,0);
+    expect(together.netMinutes).toBeCloseTo(separate,8);
+  });
+  it('does not divide one garment operation among ten operators', () => {
+    const result=calculateRuntime(input({calibration:{...neutralCalibration,operatorCount:10,hoopShirtSecondsPerPlacement:60,packSecondsPerGarment:60}}));
+    expect(result.netMinutes).toBe(12);
+    expect(result.operatorMinutes).toBe(2);
+  });
+  it.each([1,6,7])('respects whole cycles for %s items on six heads at 800 RPM',quantity=>{
+    const result=calculateRuntime(input({rpm:800,heads:6,jobQuantity:quantity,locations:[location({quantity})]}));
+    expect(result.netMinutes).toBe(12.5*Math.ceil(quantity/6));
+  });
   it('rounds a partial multi-head quantity up to a whole machine run', () => {
     const result = calculateRuntime(input({
       heads: 6,

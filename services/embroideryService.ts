@@ -18,6 +18,8 @@ export interface RuntimeInput {
   startDateTime: Date;
   calibration: CalibrationProfile;
   mode?: CalculationMode;
+  /** Only for reproducing persisted 3.0.0 production records. */
+  formulaVersion?: '3.0.0' | '3.1.0';
 }
 
 interface ModelResult {
@@ -215,6 +217,7 @@ const calculateBatchAware = (input: RuntimeInput): ModelResult => {
   let placementLaborMinutes = 0;
   let interventionLaborMinutes = 0;
   let serialHandlingMinutes = 0;
+  let correctedHandlingMinutes = 0;
 
   locations.forEach((location) => {
     const batches = Math.ceil(location.quantity / heads);
@@ -248,6 +251,21 @@ const calculateBatchAware = (input: RuntimeInput): ModelResult => {
       location.handlingFactor,
     ) + manualStopMinutes + downtimeMinutes + bobbinMinutes;
     const locationMachineMinutes = stitchingMinutes + colorMinutes + trimMinutes + manualStopMinutes + downtimeMinutes + bobbinMinutes;
+    // Each placement is a separate sequence. Work cannot borrow sewing time
+    // from another placement, or split one physical item between many people.
+    const prepPerItem = secondsToMinutes((markingSeconds + hoopSeconds) * location.handlingFactor);
+    const removePerItem = secondsToMinutes(calibration.removeHoopSecondsPerPlacement * location.handlingFactor);
+    const fullBatches = Math.floor(location.quantity / heads);
+    const remainder = location.quantity % heads;
+    const handlingWaves = fullBatches * Math.ceil(heads / calibration.operatorCount)
+      + Math.ceil(remainder / calibration.operatorCount);
+    const handling = handlingWaves * (prepPerItem + removePerItem);
+    const serial = Math.ceil(firstBatch / calibration.operatorCount) * prepPerItem
+      + Math.ceil(lastBatch / calibration.operatorCount) * removePerItem;
+    // Reserve the final sewing cycle; only preceding unattended cycles offer
+    // a conservative opportunity to prepare/unhoop between batches.
+    const available = (stitchingMinutes + colorMinutes + trimMinutes) * (batches - 1) / batches;
+    correctedHandlingMinutes += handling - Math.min(Math.max(0, handling - serial), available * calibration.operatorOverlapPercent);
 
     if (location.quantity % heads !== 0) {
       warnings.push(`${location.designNumber || 'A location'} uses ${batches} runs; the final run has ${location.quantity % heads} active head${location.quantity % heads === 1 ? '' : 's'}.`);
@@ -288,7 +306,10 @@ const calculateBatchAware = (input: RuntimeInput): ModelResult => {
     Math.max(0, handlingElapsed - serialHandling),
     unattendedMinutes * calibration.operatorOverlapPercent,
   );
-  const parallelizedHandlingMinutes = handlingElapsed - overlapMinutes;
+  const parallelizedHandlingMinutes = input.formulaVersion === '3.0.0'
+    ? handlingElapsed - overlapMinutes
+    : correctedHandlingMinutes + Math.ceil(jobQuantity / calibration.operatorCount)
+      * secondsToMinutes(calibration.foldSteamSecondsPerGarment + calibration.packSecondsPerGarment);
   const subtotal = setupMinutes + machineMinutes + parallelizedHandlingMinutes;
   const bufferMinutes = subtotal * calibration.contingencyPercent;
 
@@ -314,10 +335,13 @@ export const calculateRuntime = (input: RuntimeInput): CalculationResult => {
   const mode = 'batch-aware' as const;
   const selected = batchAware;
   const endTime = new Date(input.startDateTime.getTime() + selected.minutes * 60_000);
+  if (!Number.isFinite(endTime.getTime()) || ![selected.minutes, selected.machineMinutes, selected.operatorMinutes].every(Number.isFinite)) {
+    throw new RuntimeValidationError(['These inputs exceed the supported production range.']);
+  }
 
   return {
     mode,
-    formulaVersion: '3.0.0',
+    formulaVersion: input.formulaVersion ?? '3.1.0',
     projectedEndAt: endTime.toISOString(),
     netMinutes: selected.minutes,
     projectedEndTime: formatTime(endTime),

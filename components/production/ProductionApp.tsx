@@ -1,64 +1,848 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react';
-import { ArrowRight, Check, ChevronRight, Copy, Folder, PlusCircle, Settings2, Shirt, ShoppingBag, Wrench, Share2, Play, Pause, CheckCircle2, ArrowLeft } from 'lucide-react';
-import { ApparelType } from '../../types';
-import { Job, duplicateJob, editJob, estimateJob, jobName, newJob, transition, duration, money } from '../../services/production/model';
-import { validateStore, mergeBackup } from '../../services/production/storage';
-import { exportBackup, shareQuote } from '../../services/production/export';
-import { useJobs } from './useJobs';
-import { NumberField, TextField, localDateTime } from './Fields';
-import { DesignEditor } from './DesignEditor';
-import { EstimateView } from './EstimateView';
-import { ShopView } from './ShopView';
-import './production.css';
-const ColorAnalyzer=lazy(()=>import('../ColorAnalyzer').then(m=>({default:m.ColorAnalyzer})));
-type View='estimate'|'jobs'|'tools'|'shop';
-export default function ProductionApp(){
-  const {store,ref,commit,error,setError,saveState,flush}=useJobs();const [view,setView]=useState<View>('estimate'),[step,setStep]=useState(0),[search,setSearch]=useState(''),[busy,setBusy]=useState(false),[finish,setFinish]=useState(''),[reason,setReason]=useState('Off-shift / excluded time');
-  const heading=useRef<HTMLDivElement>(null),backupInput=useRef<HTMLInputElement>(null);const [now,setNow]=useState(Date.now());
-  useEffect(()=>{heading.current?.focus();window.scrollTo({top:0,behavior:'instant'});},[view,step]);
-  const job=store?.jobs.find(j=>j.id===store.activeId);
-  useEffect(()=>{if(job?.status!=='running'&&job?.status!=='paused')return;const timer=setInterval(()=>setNow(Date.now()),1000);return()=>clearInterval(timer);},[job?.status]);
-  useEffect(()=>{if(job)setStep(job.status==='draft'?0:2);},[job?.id]);
-  const attempt=async(action:()=>void|Promise<void>)=>{setError('');setBusy(true);try{await action();}catch(e){if((e as Error).name!=='AbortError')setError((e as Error).message);}finally{setBusy(false);}};
-  function put(next:Job){const s=ref.current!;return commit({...s,jobs:s.jobs.map(j=>j.id===next.id?next:j)});}
-  function patch(change:Partial<Job>){if(!job)return;try{void put(editJob(ref.current!.jobs.find(j=>j.id===job.id)!,change));}catch(e){setError((e as Error).message);}}
-  function openJob(j:Job){void commit({...ref.current!,activeId:j.id});setView('estimate');setStep(j.status==='draft'?0:2);setFinish('');}
-  function create(source?:Job){const s=ref.current!;const j=source?duplicateJob(source):newJob(s.profiles.find(p=>p.id===s.defaultProfileId)!);void commit({...s,jobs:[j,...s.jobs],activeId:j.id});setView('estimate');setStep(0);setFinish('');}
-  async function review(){if(!job)return;await attempt(async()=>{const updated=estimateJob(job);if(await put(updated))setStep(1);});}
-  async function saveEstimate(){if(!job)return;await attempt(async()=>{const updated=estimateJob(job);if(!updated.quote||updated.quote.total<=0)throw new Error('Add your costs before saving a quote.');if(await put({...updated,name:jobName(updated),status:'ready',updatedAt:new Date().toISOString()}))setStep(2);});}
-  async function action(type:'start'|'pause'|'resume'|'complete'){if(!job)return;await attempt(async()=>{if(!await flush())throw new Error('Save your job successfully before changing its production status.');await put(transition(job,type,type==='complete'&&finish?new Date(finish).toISOString():new Date().toISOString(),reason));});}
-  async function restore(file?:File){if(!file)return;await attempt(async()=>{if(file.size>25*1024*1024)throw new Error('Choose a backup smaller than 25 MB.');const incoming=validateStore(JSON.parse(await file.text()));if(!ref.current)throw new Error('Export or repair the existing unreadable store before restoring; it has not been overwritten.');await commit(mergeBackup(ref.current,incoming));});if(backupInput.current)backupInput.current.value='';}
-  if(!store||!job)return <div className="production-app"><h1>EmbroideryCalc</h1><p role={error?'alert':'status'}>{error||'Opening your jobs…'}</p>{error&&<button className="p-button p-secondary" onClick={()=>location.reload()}>Retry opening jobs</button>}</div>;
-  const locked=['running','paused','complete'].includes(job.status);
-  const pausedMs=job.run?.pauses.reduce((n,p)=>n+(Date.parse(p.endedAt||new Date(now).toISOString())-Date.parse(p.startedAt)),0)||0;
-  const elapsed=job.run?Math.max(0,(now-Date.parse(job.run.startedAt)-pausedMs)/60000):0;
-  const projected=job.run&&job.estimate?new Date(Date.parse(job.run.startedAt)+job.estimate.netMinutes*60000+pausedMs):null;
-  return <div className="production-app"><header className="p-header"><div><a href="/calculator/" className="p-brand">EmbroideryCalc</a><p>From stitches to a clear plan.</p></div><span className={`p-save ${saveState}`} role="status">{saveState==='saved'?<><Check size={14}/>Saved on this device</>:saveState==='saving'?'Saving…':'Not saved'}</span></header>
-    {error&&<div className="p-error" role="alert"><p>{error}</p><div className="p-error-actions">{saveState==='failed'&&<><button onClick={()=>attempt(()=>exportBackup(ref.current!))}>Export unsaved work</button><button onClick={()=>location.reload()}>Reload saved jobs</button></>}<button onClick={()=>setError('')}>Dismiss message</button></div></div>}
-    <main ref={heading} tabIndex={-1} className={`p-content ${view==='estimate'?'':'p-wide'}`}>
-    {view==='estimate'&&<><nav className="p-progress" aria-label="Estimate progress">{['Job','Estimate','Next'].map((label,i)=><button key={label} disabled={locked?i!==2:i>step} onClick={()=>setStep(i)} aria-current={i===step?'step':undefined}><span className={i<=step?'done':''}>{i<step?<Check size={18}/>:['A','B','C'][i]}</span>{label}</button>)}</nav>
-      {step===0&&<fieldset disabled={busy} className="p-workflow-fields"><h1>What are we making?</h1><fieldset className="p-garments"><legend>Garment type</legend>{([ApparelType.Tshirt,ApparelType.Polo,ApparelType.Hat,ApparelType.Bag] as ApparelType[]).map(type=><button key={type} aria-pressed={job.machine.apparelType===type} onClick={()=>patch({machine:{...job.machine,apparelType:type}})}>{type===ApparelType.Bag?<ShoppingBag/>:<Shirt/>}{type===ApparelType.Tshirt?'Shirt':type}</button>)}</fieldset>
-        <NumberField label="Quantity" value={job.quantity} min={1} step={1} suffix="pieces" onChange={quantity=>patch({quantity,designs:job.designs.map(d=>({...d,quantity:d.quantity===job.quantity?quantity:Math.min(d.quantity,quantity)}))})}/>
-        <details className="p-machine"><summary><span><Settings2 size={20}/>{job.machine.heads} {job.machine.heads===1?'head':'heads'} · {job.machine.rpm} RPM</span><span>Change <ChevronRight size={17}/></span></summary><div className="p-grid-2"><NumberField label="Usable heads" value={job.machine.heads} min={1} step={1} onChange={heads=>patch({machine:{...job.machine,heads}})}/><NumberField label="Machine RPM" value={job.machine.rpm} min={1} step={1} onChange={rpm=>patch({machine:{...job.machine,rpm}})}/></div><label className="p-field"><span>Apply saved machine</span><select value="" onChange={e=>{const p=store.profiles.find(p=>p.id===e.target.value);if(p)patch({machine:{...p.machine,apparelType:job.machine.apparelType},calibration:{...p.calibration}});}}><option value="">Choose a profile</option>{store.profiles.map(p=><option key={p.id} value={p.id}>{p.name}</option>)}</select></label></details>
-        <DesignEditor job={job} onBusy={setBusy} onChange={designs=>patch({designs})} onError={setError}/>
-        <details className="p-details"><summary>Job name & planned start <span>(optional)</span></summary><TextField label="Job name" value={job.name} onChange={name=>patch({name})}/><TextField label="Planned start" type="datetime-local" value={localDateTime(job.plannedStart)} onChange={v=>{if(Number.isFinite(Date.parse(v)))patch({plannedStart:new Date(v).toISOString()});}}/><p className="p-hint">Your estimate does not start production. Start the job when the machine is ready.</p></details>
-        <button className="p-button p-primary p-full" disabled={busy} onClick={review}>Review estimate <ArrowRight size={20}/></button>
-        {job.designs.length===1&&job.designs[0].stitches===0&&<button className="p-text-button p-example" onClick={()=>patch({quantity:24,machine:{...job.machine,heads:6,apparelType:ApparelType.Polo},designs:[{...job.designs[0],stitches:10000,colors:3,quantity:24}],name:'24 embroidered polos'})}>Try an example job</button>}
-      </fieldset>}
-      {step===1&&job.estimate&&<><EstimateView job={job} onRates={rates=>void put({...job,status:'draft',rates,quote:undefined,revision:job.revision+1,updatedAt:new Date().toISOString()})}/><button className="p-button p-primary p-full" disabled={busy} onClick={saveEstimate}>Save estimate <Check size={20}/></button><button className="p-text-button" onClick={()=>setStep(0)}><ArrowLeft size={16}/>Edit job details</button></>}
-      {step===2&&job.estimate&&<><h1>{job.status==='complete'?'Job complete':job.status==='running'?'Production is running':job.status==='paused'?'Production paused':'Ready when you are'}</h1><section className="p-panel"><TextField label="Job name" value={job.name} onChange={name=>void put({...job,name,updatedAt:new Date().toISOString()})}/><p className="p-hint">{saveState==='saved'?'Saved on this device':'Waiting for save'} · Revision {job.revision}</p></section><section className="p-panel p-summary"><div><span>{job.status==='complete'?'Actual production':'Total production time'}</span><strong>{duration(job.run?.actualMinutes??job.estimate.netMinutes)}</strong></div><div><span>Quote total</span><strong>{job.quote?money(job.quote.total):'Recalculate'}</strong></div></section><dl className="p-panel p-breakdown"><div><dt>Quantity</dt><dd>{job.quantity} pieces</dd></div><div><dt>Garment</dt><dd>{job.machine.apparelType}</dd></div>{job.designs.map(d=><div key={d.id}><dt>{d.position}</dt><dd>{d.stitches.toLocaleString()} stitches</dd></div>)}<div><dt>Machine</dt><dd>{job.machine.heads} heads · {job.machine.rpm} RPM</dd></div></dl>
-        <button className="p-button p-primary p-full" disabled={busy||saveState!=='saved'} onClick={()=>attempt(()=>shareQuote(job,store.shopName))}><Share2 size={20}/>Share quote</button>
-        {job.status==='ready'&&<><button className="p-button p-secondary p-full" disabled={busy||saveState!=='saved'} onClick={()=>action('start')}><Play size={20}/>Start production</button><p className="p-hint p-center">Estimate only — not started</p><button className="p-text-button" onClick={()=>setStep(0)}>Edit estimate</button></>}
-        {(job.status==='running'||job.status==='paused')&&<section className="p-panel"><h2>{duration(elapsed)} of production time</h2><p className="p-hint">Started {new Date(job.run!.startedAt).toLocaleString()}. Estimated finish {projected?.toLocaleString()}.</p>{job.status==='running'?<><label className="p-field"><span>Pause reason</span><select value={reason} onChange={e=>setReason(e.target.value)}><option>Off-shift / excluded time</option><option>Waiting for materials / excluded time</option></select></label><button className="p-button p-secondary p-full" onClick={()=>action('pause')} disabled={busy}><Pause size={20}/>Pause production</button><p className="p-hint">Keep routine thread breaks and machine stops in production time. Pauses here are excluded from the comparison.</p></>:<button className="p-button p-secondary p-full" onClick={()=>action('resume')} disabled={busy}><Play size={20}/>Resume production</button>}
-          <details className="p-details"><summary>Enter a different finish time</summary><TextField label="Actual finish" type="datetime-local" value={finish} onChange={setFinish}/><p className="p-hint">Leave blank to finish now. Full dates support overnight and multi-day jobs.</p></details><button className="p-button p-primary p-full" disabled={busy} onClick={()=>action('complete')}><CheckCircle2 size={20}/>Complete job</button></section>}
-        {job.status==='complete'&&<section className="p-panel"><h2>{job.run!.actualMinutes!>job.estimate.netMinutes?'Longer than planned':'Within the estimate'}</h2><p>{duration(Math.abs(job.run!.actualMinutes!-job.estimate.netMinutes))} {job.run!.actualMinutes!>job.estimate.netMinutes?'over':'under'} the estimate. Completed {new Date(job.run!.completedAt!).toLocaleString()}.</p><p className="p-hint">Excluded pauses: {duration(pausedMs/60000)}. See comparable jobs in Shop.</p></section>}
-        <button className="p-button p-secondary p-full" onClick={()=>create(job)}><Copy size={18}/>Duplicate job</button>
-      </>}
-    </>}
-    {view==='jobs'&&<><div className="p-section-head"><h1>Your jobs</h1><button className="p-button p-primary" onClick={()=>create()}><PlusCircle size={18}/>New</button></div><TextField label="Search jobs" value={search} onChange={setSearch}/><div className="p-job-list">{store.jobs.filter(j=>jobName(j).toLowerCase().includes(search.toLowerCase())).map(j=><button className="p-job-row" key={j.id} onClick={()=>openJob(j)}><div><strong>{jobName(j)}</strong><span>{j.quantity} items · {new Date(j.updatedAt).toLocaleDateString()}</span></div><div><span className={`p-status ${j.status}`}>{j.status}</span><span>{j.estimate?duration(j.estimate.netMinutes):'Continue draft'}</span></div><ChevronRight size={18}/></button>)}</div>{!store.jobs.some(j=>jobName(j).toLowerCase().includes(search.toLowerCase()))&&<p>No jobs match this search.</p>}</>}
-    {view==='tools'&&<><h1>Design tools</h1><p className="p-intro">Find thread colors from artwork. To estimate production from a DST, import it in a job.</p><Suspense fallback={<p role="status">Opening color tools…</p>}><ColorAnalyzer/></Suspense></>}
-    {view==='shop'&&<ShopView store={store} onSave={commit} onError={setError} onBackup={()=>attempt(()=>exportBackup(ref.current!))} onRestore={()=>backupInput.current?.click()}/>}
-    </main><input ref={backupInput} type="file" accept="application/json,.json" hidden onChange={e=>restore(e.target.files?.[0])}/>
-    <nav className="p-bottom-nav" aria-label="Main navigation">{([{key:'jobs',label:'Jobs',Icon:Folder},{key:'estimate',label:'New estimate',Icon:PlusCircle},{key:'tools',label:'Tools',Icon:Wrench},{key:'shop',label:'Shop',Icon:Settings2}] as const).map(({key,label,Icon})=><button key={key} disabled={busy} aria-current={view===key?'page':undefined} onClick={()=>{setView(key);if(key==='estimate'&&locked)create();}}><Icon size={22}/><span>{label}</span></button>)}</nav>
-  </div>;
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import {
+  ArrowRight,
+  Check,
+  ChevronRight,
+  Copy,
+  Folder,
+  PlusCircle,
+  Settings2,
+  Wrench,
+  Share2,
+  Play,
+  Pause,
+  CheckCircle2,
+  ArrowLeft,
+} from "lucide-react";
+import { Capacitor } from "@capacitor/core";
+import {
+  recoverRepository,
+  recoveryBundle,
+} from "../../services/production/repository";
+import { shareBlob } from "../../services/production/export";
+import { GarmentIcon } from "./GarmentIcon";
+import { ApparelType } from "../../types";
+import {
+  Job,
+  duplicateJob,
+  editJob,
+  estimateJob,
+  jobName,
+  newJob,
+  transition,
+  duration,
+  money,
+} from "../../services/production/model";
+import { validateStore, mergeBackup } from "../../services/production/storage";
+import { exportBackup, shareQuote } from "../../services/production/export";
+import { useJobs } from "./useJobs";
+import { NumberField, TextField, localDateTime } from "./Fields";
+import { DesignEditor } from "./DesignEditor";
+import { EstimateView } from "./EstimateView";
+import { ShopView } from "./ShopView";
+import "./production.css";
+const ColorAnalyzer = lazy(() =>
+  import("../ColorAnalyzer").then((m) => ({ default: m.ColorAnalyzer })),
+);
+type View = "estimate" | "jobs" | "tools" | "shop";
+export default function ProductionApp() {
+  const { store, ref, commit, error, setError, saveState, flush } = useJobs();
+  const [view, setView] = useState<View>("estimate"),
+    [step, setStep] = useState(0),
+    [search, setSearch] = useState(""),
+    [busy, setBusy] = useState(false),
+    [finish, setFinish] = useState(""),
+    [reason, setReason] = useState("Off-shift / excluded time");
+  const heading = useRef<HTMLDivElement>(null),
+    backupInput = useRef<HTMLInputElement>(null);
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    heading.current?.focus();
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [view, step]);
+  const job = store?.jobs.find((j) => j.id === store.activeId);
+  useEffect(() => {
+    if (job?.status !== "running" && job?.status !== "paused") return;
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, [job?.status]);
+  useEffect(() => {
+    if (job) setStep(job.status === "draft" ? 0 : 2);
+  }, [job?.id]);
+  const attempt = async (action: () => void | Promise<void>) => {
+    setError("");
+    setBusy(true);
+    try {
+      await action();
+    } catch (e) {
+      if ((e as Error).name !== "AbortError") setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+  function put(next: Job, durable = false) {
+    const s = ref.current!;
+    return commit(
+      { ...s, jobs: s.jobs.map((j) => (j.id === next.id ? next : j)) },
+      durable,
+    );
+  }
+  function patch(change: Partial<Job>) {
+    if (!job) return;
+    try {
+      void put(
+        editJob(
+          ref.current!.jobs.find((j) => j.id === job.id)!,
+          change,
+        ),
+      );
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  }
+  function openJob(j: Job) {
+    void commit({ ...ref.current!, activeId: j.id });
+    setView("estimate");
+    setStep(j.status === "draft" ? 0 : 2);
+    setFinish("");
+  }
+  function create(source?: Job) {
+    const s = ref.current!;
+    const j = source
+      ? duplicateJob(source)
+      : newJob(s.profiles.find((p) => p.id === s.defaultProfileId)!);
+    void commit({ ...s, jobs: [j, ...s.jobs], activeId: j.id });
+    setView("estimate");
+    setStep(0);
+    setFinish("");
+  }
+  async function review() {
+    if (!job) return;
+    await attempt(async () => {
+      const updated = estimateJob(job);
+      if (await put(updated)) setStep(1);
+    });
+  }
+  async function saveEstimate() {
+    if (!job) return;
+    await attempt(async () => {
+      const updated = estimateJob(job);
+      if (!updated.quote || updated.quote.total <= 0)
+        throw new Error("Add your costs before saving a quote.");
+      if (
+        await put(
+          {
+            ...updated,
+            name: jobName(updated),
+            status: "ready",
+            revision: updated.revision + 1,
+            updatedAt: new Date().toISOString(),
+          },
+          true,
+        )
+      )
+        setStep(2);
+    });
+  }
+  async function action(type: "start" | "pause" | "resume" | "complete") {
+    if (!job) return;
+    await attempt(async () => {
+      if (!(await flush()))
+        throw new Error(
+          "Save your job successfully before changing its production status.",
+        );
+      await put(
+        transition(
+          ref.current!.jobs.find((j) => j.id === job.id)!,
+          type,
+          type === "complete" && finish
+            ? new Date(finish).toISOString()
+            : new Date().toISOString(),
+          reason,
+        ),
+        true,
+      );
+    });
+  }
+  async function restore(file?: File) {
+    if (!file) return;
+    await attempt(async () => {
+      if (file.size > 25 * 1024 * 1024)
+        throw new Error("Choose a backup smaller than 25 MB.");
+      const incoming = validateStore(JSON.parse(await file.text()));
+      if (!ref.current) {
+        await recoverRepository(incoming);
+        location.reload();
+        return;
+      }
+      await commit(mergeBackup(ref.current, incoming), true);
+    });
+    if (backupInput.current) backupInput.current.value = "";
+  }
+  const exportRecovery = () =>
+    attempt(async () => {
+      await shareBlob(
+        new Blob([JSON.stringify(await recoveryBundle(), null, 2)], {
+          type: "application/json",
+        }),
+        "embroidery-recovery.json",
+        "Preserved saved data",
+      );
+    });
+  if (!store || !job)
+    return (
+      <div className="production-app">
+        <h1>EmbroideryCalc</h1>
+        <p role={error ? "alert" : "status"}>{error || "Opening your jobs…"}</p>
+        {error && (
+          <section className="p-content">
+            <p>
+              Keep a recovery file before restoring. Restoring archives the
+              unreadable data on this device and opens your selected backup.
+            </p>
+            <button
+              disabled={busy}
+              className="p-button p-secondary p-full"
+              onClick={exportRecovery}
+            >
+              Export recovery file
+            </button>
+            {Capacitor.isNativePlatform() && (
+              <button
+                disabled={busy}
+                className="p-button p-secondary p-full"
+                onClick={() =>
+                  attempt(async () => {
+                    await recoverRepository();
+                    location.reload();
+                  })
+                }
+              >
+                Restore previous save
+              </button>
+            )}
+            <label className="p-field">
+              <span>Restore an exported backup</span>
+              <input
+                disabled={busy}
+                type="file"
+                accept=".json,application/json"
+                onChange={(e) => restore(e.target.files?.[0])}
+              />
+            </label>
+            <button
+              className="p-button p-secondary"
+              onClick={() => location.reload()}
+            >
+              Retry opening jobs
+            </button>
+          </section>
+        )}
+      </div>
+    );
+  const locked = ["running", "paused", "complete"].includes(job.status);
+  const pausedMs =
+    job.run?.pauses.reduce(
+      (n, p) =>
+        n +
+        (Date.parse(p.endedAt || new Date(now).toISOString()) -
+          Date.parse(p.startedAt)),
+      0,
+    ) || 0;
+  const elapsed = job.run
+    ? Math.max(0, (now - Date.parse(job.run.startedAt) - pausedMs) / 60000)
+    : 0;
+  const projected =
+    job.run && job.estimate
+      ? new Date(
+          Date.parse(job.run.startedAt) +
+            job.estimate.netMinutes * 60000 +
+            pausedMs,
+        )
+      : null;
+  return (
+    <div className="production-app">
+      <header className="p-header">
+        <div>
+          <a href="#main-content" className="p-brand">
+            EmbroideryCalc
+          </a>
+          <p>From stitches to a clear plan.</p>
+        </div>
+        <span className={`p-save ${saveState}`} role="status">
+          {saveState === "saved" ? (
+            <>
+              <Check size={14} />
+              Saved on this device
+            </>
+          ) : saveState === "saving" ? (
+            "Saving…"
+          ) : (
+            "Not saved"
+          )}
+        </span>
+      </header>
+      {error && (
+        <div className="p-error" role="alert">
+          <p>{error}</p>
+          <div className="p-error-actions">
+            {saveState === "failed" && (
+              <>
+                <button
+                  onClick={() => attempt(() => exportBackup(ref.current!))}
+                >
+                  Export unsaved work
+                </button>
+                <button onClick={() => location.reload()}>
+                  Reload saved jobs
+                </button>
+              </>
+            )}
+            <button onClick={() => setError("")}>Dismiss message</button>
+          </div>
+        </div>
+      )}
+      <main
+        id="main-content"
+        ref={heading}
+        tabIndex={-1}
+        className={`p-content ${view === "estimate" ? "" : "p-wide"}`}
+      >
+        {view === "estimate" && (
+          <>
+            <nav className="p-progress" aria-label="Estimate progress">
+              {["Job", "Estimate", "Next"].map((label, i) => (
+                <button
+                  key={label}
+                  disabled={busy || (locked ? i !== 2 : i > step)}
+                  onClick={() => setStep(i)}
+                  aria-current={i === step ? "step" : undefined}
+                >
+                  <span className={i <= step ? "done" : ""}>
+                    {i < step ? <Check size={18} /> : ["A", "B", "C"][i]}
+                  </span>
+                  {label}
+                </button>
+              ))}
+            </nav>
+            {step === 0 && (
+              <fieldset disabled={busy} className="p-workflow-fields">
+                <h1>What are we making?</h1>
+                <p className="p-intro">
+                  A: Add the job. B: Review time and price. C: Save, share, and
+                  track production.
+                </p>
+                <fieldset className="p-garments">
+                  <legend>Garment type</legend>
+                  {(
+                    [
+                      ApparelType.Tshirt,
+                      ApparelType.Polo,
+                      ApparelType.Hat,
+                      ApparelType.Bag,
+                    ] as ApparelType[]
+                  ).map((type) => (
+                    <button
+                      key={type}
+                      aria-pressed={job.machine.apparelType === type}
+                      onClick={() =>
+                        patch({
+                          machine: { ...job.machine, apparelType: type },
+                        })
+                      }
+                    >
+                      {<GarmentIcon type={type} />}
+                      {type === ApparelType.Tshirt ? "Shirt" : type}
+                    </button>
+                  ))}
+                </fieldset>
+                <NumberField
+                  label="Quantity"
+                  value={job.quantity}
+                  min={1}
+                  step={1}
+                  suffix="pieces"
+                  onChange={(quantity) =>
+                    patch({
+                      quantity,
+                      designs: job.designs.map((d) => ({
+                        ...d,
+                        quantity:
+                          d.quantity === job.quantity
+                            ? quantity
+                            : Math.min(d.quantity, quantity),
+                      })),
+                    })
+                  }
+                />
+                <details className="p-machine">
+                  <summary>
+                    <span>
+                      <Settings2 size={20} />
+                      {job.machine.heads}{" "}
+                      {job.machine.heads === 1 ? "head" : "heads"} ·{" "}
+                      {job.machine.rpm} RPM
+                    </span>
+                    <span>
+                      Change <ChevronRight size={17} />
+                    </span>
+                  </summary>
+                  <div className="p-grid-2">
+                    <NumberField
+                      label="Usable heads"
+                      value={job.machine.heads}
+                      min={1}
+                      step={1}
+                      onChange={(heads) =>
+                        patch({ machine: { ...job.machine, heads } })
+                      }
+                    />
+                    <NumberField
+                      label="Machine RPM"
+                      value={job.machine.rpm}
+                      min={1}
+                      step={1}
+                      onChange={(rpm) =>
+                        patch({ machine: { ...job.machine, rpm } })
+                      }
+                    />
+                  </div>
+                  <label className="p-field">
+                    <span>Apply saved machine</span>
+                    <select
+                      value=""
+                      onChange={(e) => {
+                        const p = store.profiles.find(
+                          (p) => p.id === e.target.value,
+                        );
+                        if (p)
+                          patch({
+                            machine: {
+                              ...p.machine,
+                              apparelType: job.machine.apparelType,
+                            },
+                            calibration: { ...p.calibration },
+                          });
+                      }}
+                    >
+                      <option value="">Choose a profile</option>
+                      {store.profiles.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </details>
+                <DesignEditor
+                  job={job}
+                  onBusy={setBusy}
+                  onChange={(designs) => patch({ designs })}
+                  onError={setError}
+                />
+                <details className="p-details">
+                  <summary>
+                    Job name & planned start <span>(optional)</span>
+                  </summary>
+                  <TextField
+                    label="Job name"
+                    value={job.name}
+                    onChange={(name) => patch({ name })}
+                  />
+                  <TextField
+                    label="Planned start"
+                    type="datetime-local"
+                    value={localDateTime(job.plannedStart)}
+                    onChange={(v) => {
+                      if (Number.isFinite(Date.parse(v)))
+                        patch({ plannedStart: new Date(v).toISOString() });
+                    }}
+                  />
+                  <p className="p-hint">
+                    Your estimate does not start production. Start the job when
+                    the machine is ready.
+                  </p>
+                </details>
+                <button
+                  className="p-button p-primary p-full"
+                  disabled={busy}
+                  onClick={review}
+                >
+                  Review estimate <ArrowRight size={20} />
+                </button>
+                {job.designs.length === 1 && job.designs[0].stitches === 0 && (
+                  <button
+                    className="p-text-button p-example"
+                    onClick={() =>
+                      patch({
+                        quantity: 24,
+                        machine: {
+                          ...job.machine,
+                          heads: 6,
+                          apparelType: ApparelType.Polo,
+                        },
+                        designs: [
+                          {
+                            ...job.designs[0],
+                            stitches: 10000,
+                            colors: 3,
+                            quantity: 24,
+                          },
+                        ],
+                        name: "24 embroidered polos",
+                      })
+                    }
+                  >
+                    Try an example job
+                  </button>
+                )}
+              </fieldset>
+            )}
+            {step === 1 && job.estimate && (
+              <>
+                <EstimateView
+                  job={job}
+                  onRates={(rates) =>
+                    void put({
+                      ...job,
+                      status: "draft",
+                      rates,
+                      quote: undefined,
+                      revision: job.revision + 1,
+                      updatedAt: new Date().toISOString(),
+                    })
+                  }
+                />
+                <button
+                  className="p-button p-primary p-full"
+                  disabled={busy}
+                  onClick={saveEstimate}
+                >
+                  Save estimate <Check size={20} />
+                </button>
+                <button className="p-text-button" onClick={() => setStep(0)}>
+                  <ArrowLeft size={16} />
+                  Edit job details
+                </button>
+              </>
+            )}
+            {step === 2 && job.estimate && (
+              <>
+                <h1>
+                  {job.status === "complete"
+                    ? "Job complete"
+                    : job.status === "running"
+                      ? "Production is running"
+                      : job.status === "paused"
+                        ? "Production paused"
+                        : "Ready when you are"}
+                </h1>
+                <section className="p-panel">
+                  <TextField
+                    disabled={busy}
+                    label="Job name"
+                    value={job.name}
+                    onChange={(name) =>
+                      void put({
+                        ...job,
+                        name,
+                        revision: job.revision + 1,
+                        updatedAt: new Date().toISOString(),
+                      })
+                    }
+                  />
+                  <p className="p-hint">
+                    {saveState === "saved"
+                      ? "Saved on this device"
+                      : "Waiting for save"}{" "}
+                    · Revision {job.revision}
+                  </p>
+                </section>
+                <section className="p-panel p-summary">
+                  <div>
+                    <span>
+                      {job.status === "complete"
+                        ? "Actual production"
+                        : "Total production time"}
+                    </span>
+                    <strong>
+                      {duration(
+                        job.run?.actualMinutes ?? job.estimate.netMinutes,
+                      )}
+                    </strong>
+                  </div>
+                  <div>
+                    <span>Quote total</span>
+                    <strong>
+                      {job.quote ? money(job.quote.total) : "Recalculate"}
+                    </strong>
+                  </div>
+                </section>
+                <dl className="p-panel p-breakdown">
+                  <div>
+                    <dt>Quantity</dt>
+                    <dd>{job.quantity} pieces</dd>
+                  </div>
+                  <div>
+                    <dt>Garment</dt>
+                    <dd>{job.machine.apparelType}</dd>
+                  </div>
+                  {job.designs.map((d) => (
+                    <div key={d.id}>
+                      <dt>{d.position}</dt>
+                      <dd>{d.stitches.toLocaleString()} stitches</dd>
+                    </div>
+                  ))}
+                  <div>
+                    <dt>Machine</dt>
+                    <dd>
+                      {job.machine.heads} heads · {job.machine.rpm} RPM
+                    </dd>
+                  </div>
+                </dl>
+                <button
+                  className="p-button p-primary p-full"
+                  disabled={busy || saveState !== "saved"}
+                  onClick={() => attempt(() => shareQuote(job, store.shopName))}
+                >
+                  <Share2 size={20} />
+                  Share quote
+                </button>
+                {job.status === "ready" && (
+                  <>
+                    <button
+                      className="p-button p-secondary p-full"
+                      disabled={busy || saveState !== "saved"}
+                      onClick={() => action("start")}
+                    >
+                      <Play size={20} />
+                      Start production
+                    </button>
+                    <p className="p-hint p-center">
+                      Estimate only — not started
+                    </p>
+                    <button
+                      className="p-text-button"
+                      onClick={() => setStep(0)}
+                    >
+                      Edit estimate
+                    </button>
+                  </>
+                )}
+                {(job.status === "running" || job.status === "paused") && (
+                  <section className="p-panel">
+                    <h2>{duration(elapsed)} of production time</h2>
+                    <p className="p-hint">
+                      Started {new Date(job.run!.startedAt).toLocaleString()}.
+                      Estimated finish {projected?.toLocaleString()}.
+                    </p>
+                    {job.status === "running" ? (
+                      <>
+                        <label className="p-field">
+                          <span>Pause reason</span>
+                          <select
+                            value={reason}
+                            onChange={(e) => setReason(e.target.value)}
+                          >
+                            <option>Off-shift / excluded time</option>
+                            <option>
+                              Waiting for materials / excluded time
+                            </option>
+                          </select>
+                        </label>
+                        <button
+                          className="p-button p-secondary p-full"
+                          onClick={() => action("pause")}
+                          disabled={busy}
+                        >
+                          <Pause size={20} />
+                          Pause production
+                        </button>
+                        <p className="p-hint">
+                          Keep routine thread breaks and machine stops in
+                          production time. Pauses here are excluded from the
+                          comparison.
+                        </p>
+                      </>
+                    ) : (
+                      <button
+                        className="p-button p-secondary p-full"
+                        onClick={() => action("resume")}
+                        disabled={busy}
+                      >
+                        <Play size={20} />
+                        Resume production
+                      </button>
+                    )}
+                    <details className="p-details">
+                      <summary>Enter a different finish time</summary>
+                      <TextField
+                        label="Actual finish"
+                        type="datetime-local"
+                        value={finish}
+                        onChange={setFinish}
+                      />
+                      <p className="p-hint">
+                        Leave blank to finish now. Full dates support overnight
+                        and multi-day jobs.
+                      </p>
+                    </details>
+                    <button
+                      className="p-button p-primary p-full"
+                      disabled={busy}
+                      onClick={() => action("complete")}
+                    >
+                      <CheckCircle2 size={20} />
+                      Complete job
+                    </button>
+                  </section>
+                )}
+                {job.status === "complete" && (
+                  <section className="p-panel">
+                    <h2>
+                      {job.run!.actualMinutes! > job.estimate.netMinutes
+                        ? "Longer than planned"
+                        : "Within the estimate"}
+                    </h2>
+                    <p>
+                      {duration(
+                        Math.abs(
+                          job.run!.actualMinutes! - job.estimate.netMinutes,
+                        ),
+                      )}{" "}
+                      {job.run!.actualMinutes! > job.estimate.netMinutes
+                        ? "over"
+                        : "under"}{" "}
+                      the estimate. Completed{" "}
+                      {new Date(job.run!.completedAt!).toLocaleString()}.
+                    </p>
+                    <p className="p-hint">
+                      Excluded pauses: {duration(pausedMs / 60000)}. See
+                      comparable jobs in Shop.
+                    </p>
+                  </section>
+                )}
+                <button
+                  className="p-button p-secondary p-full"
+                  disabled={busy}
+                  onClick={() => create(job)}
+                >
+                  <Copy size={18} />
+                  Duplicate job
+                </button>
+              </>
+            )}
+          </>
+        )}
+        {view === "jobs" && (
+          <>
+            <div className="p-section-head">
+              <h1>Your jobs</h1>
+              <button className="p-button p-primary" onClick={() => create()}>
+                <PlusCircle size={18} />
+                New
+              </button>
+            </div>
+            <TextField
+              label="Search jobs"
+              value={search}
+              onChange={setSearch}
+            />
+            <div className="p-job-list">
+              {store.jobs
+                .filter((j) =>
+                  jobName(j).toLowerCase().includes(search.toLowerCase()),
+                )
+                .map((j) => (
+                  <button
+                    className="p-job-row"
+                    key={j.id}
+                    onClick={() => openJob(j)}
+                  >
+                    <div>
+                      <strong>{jobName(j)}</strong>
+                      <span>
+                        {j.quantity} items ·{" "}
+                        {new Date(j.updatedAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <div>
+                      <span className={`p-status ${j.status}`}>{j.status}</span>
+                      <span>
+                        {j.estimate
+                          ? duration(j.estimate.netMinutes)
+                          : "Continue draft"}
+                      </span>
+                    </div>
+                    <ChevronRight size={18} />
+                  </button>
+                ))}
+            </div>
+            {!store.jobs.some((j) =>
+              jobName(j).toLowerCase().includes(search.toLowerCase()),
+            ) && <p>No jobs match this search.</p>}
+          </>
+        )}
+        {view === "tools" && (
+          <>
+            <h1>Design tools</h1>
+            <p className="p-intro">
+              Find thread colors from artwork. To estimate production from a
+              DST, import it in a job.
+            </p>
+            <Suspense fallback={<p role="status">Opening color tools…</p>}>
+              <ColorAnalyzer />
+            </Suspense>
+          </>
+        )}
+        <div hidden={view !== "shop"}>
+          <ShopView
+            store={store}
+            onSave={async (s) => {
+              setBusy(true);
+              try {
+                return await commit(s, true);
+              } finally {
+                setBusy(false);
+              }
+            }}
+            onError={setError}
+            onBackup={() => attempt(() => exportBackup(ref.current!))}
+            onRestore={() => backupInput.current?.click()}
+          />
+        </div>
+      </main>
+      <input
+        ref={backupInput}
+        type="file"
+        accept="application/json,.json"
+        hidden
+        onChange={(e) => restore(e.target.files?.[0])}
+      />
+      <nav className="p-bottom-nav" aria-label="Main navigation">
+        {(
+          [
+            { key: "jobs", label: "Jobs", Icon: Folder },
+            { key: "estimate", label: "New estimate", Icon: PlusCircle },
+            { key: "tools", label: "Tools", Icon: Wrench },
+            { key: "shop", label: "Shop", Icon: Settings2 },
+          ] as const
+        ).map(({ key, label, Icon }) => (
+          <button
+            key={key}
+            disabled={busy}
+            aria-current={view === key ? "page" : undefined}
+            onClick={() => {
+              if (key === "estimate") {
+                if (view !== "estimate" || locked) create();
+              } else setView(key);
+            }}
+          >
+            <Icon size={22} />
+            <span>{label}</span>
+          </button>
+        ))}
+      </nav>
+    </div>
+  );
 }

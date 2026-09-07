@@ -26,5 +26,7 @@ dist-ssr
 
 dist-native/
 artifacts/ios/
+artifacts/ios-*/
+scripts/ui-debug.mjs
 test-results/
 playwright-report/
