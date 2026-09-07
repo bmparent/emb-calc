@@ -31,3 +31,8 @@ scripts/ui-debug.mjs
 test-results/
 playwright-report/
 ios/App/AppUITests.xcodeproj/
+__pycache__/
+*.p12
+*.p8
+*.mobileprovision
+*.key
