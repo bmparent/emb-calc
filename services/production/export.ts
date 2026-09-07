@@ -24,9 +24,16 @@ export async function shareBlob(
     try {
       await Share.share({ title, files: [file.uri] });
     } catch (error) {
-      if ((error as Error).message !== "Share canceled" && (error as Error).name !== "AbortError") throw error;
+      if (
+        (error as Error).message !== "Share canceled" &&
+        (error as Error).name !== "AbortError"
+      )
+        throw error;
     } finally {
-      await Filesystem.deleteFile({path:filename,directory:Directory.Cache}).catch(()=>undefined);
+      await Filesystem.deleteFile({
+        path: filename,
+        directory: Directory.Cache,
+      }).catch(() => undefined);
     }
     return;
   }
@@ -101,7 +108,8 @@ export async function makeQuotePdf(job: Job, shopName: string): Promise<Blob> {
 export async function shareQuote(job: Job, shopName: string) {
   await shareBlob(
     await makeQuotePdf(job, shopName),
-    `quote-${job.id.slice(0, 8)}.pdf`,
+    // Imported IDs are data, never paths in the native cache directory.
+    `quote-${job.id.replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 8)}.pdf`,
     jobName(job),
   );
 }
