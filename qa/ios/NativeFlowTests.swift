@@ -65,22 +65,6 @@ final class NativeFlowTests: XCTestCase {
         saved()
         capture("C - Next")
 
-        tap("Share quote")
-        let sheet = app.otherElements["ActivityListView"].firstMatch
-        XCTAssertTrue(sheet.waitForExistence(timeout: 30), "Native share sheet opened")
-        // iOS creates the caption before its asynchronously resolved file type.
-        let caption = app.otherElements.matching(NSPredicate(
-            format: "identifier == %@ AND label CONTAINS %@",
-            "LP.CaptionBar.BottomCaption", "PDF"
-        )).firstMatch
-        XCTAssertTrue(caption.waitForExistence(timeout: 20), "The native sheet received a PDF")
-        capture("Native PDF share sheet")
-        let dismiss = app.otherElements["PopoverDismissRegion"].firstMatch
-        XCTAssertTrue(dismiss.exists)
-        // This system region surrounds the centered popover on both devices.
-        dismiss.coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.1)).tap()
-        text("Ready when you are")
-
         tap("Start production")
         text("Production is running")
         saved()
@@ -127,5 +111,26 @@ final class NativeFlowTests: XCTestCase {
         // Apple's audit is additional automated evidence. It does not replace
         // an owner navigating the real device with VoiceOver and Larger Text.
         try app.performAccessibilityAudit()
+    }
+
+    func testNativeShare() throws {
+        text("Job complete")
+        tap("Share quote")
+        let sheet = app.otherElements["ActivityListView"].firstMatch
+        XCTAssertTrue(sheet.waitForExistence(timeout: 30), "Native share sheet opened")
+        // Keep this system-rendering check independent of durable lifecycle and
+        // recovery. Hosted simulators can take time to start share extensions.
+        let caption = app.otherElements.matching(NSPredicate(
+            format: "identifier == %@ AND label CONTAINS %@",
+            "LP.CaptionBar.BottomCaption", "PDF"
+        )).firstMatch
+        XCTAssertTrue(caption.waitForExistence(timeout: 60), "The native sheet received a PDF")
+        capture("Native PDF share sheet")
+        let dismiss = app.otherElements["PopoverDismissRegion"].firstMatch
+        XCTAssertTrue(dismiss.exists)
+        dismiss.coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.1)).tap()
+        XCTAssertTrue(sheet.waitForNonExistence(timeout: 20), "Share cancelled")
+        text("Job complete")
+        saved()
     }
 }

@@ -2,6 +2,7 @@
 set -euo pipefail
 mkdir -p artifacts/ios
 CREATED_DEVICES=''
+SUITE_STATUS=0
 bounded() {
   python3 - "$@" <<'PY'
 import subprocess,sys
@@ -113,7 +114,7 @@ PY
   xcrun simctl terminate "$DEVICE" com.embroiderycalc.companion
   # Reinstall into fresh, disposable data so the UI test creates every save.
   xcrun simctl uninstall "$DEVICE" com.embroiderycalc.companion
-  for CASE in ProductionFlow RecoveryFromCorruptSnapshot Accessibility; do
+  for CASE in ProductionFlow RecoveryFromCorruptSnapshot Accessibility NativeShare; do
     echo "Testing $KIND $CASE"
     TEST_STATUS=0
     bounded 600 xcodebuild -project ios/App/AppUITests.xcodeproj -scheme AppUITests -configuration Debug -destination "platform=iOS Simulator,id=$DEVICE" -derivedDataPath artifacts/ios/ui-build -parallel-testing-enabled NO -maximum-concurrent-test-simulator-destinations 1 -test-timeouts-enabled YES -default-test-execution-time-allowance 300 -maximum-test-execution-time-allowance 420 -resultBundlePath "artifacts/ios/$KIND-$CASE.xcresult" "-only-testing:AppUITests/NativeFlowTests/test$CASE" CODE_SIGNING_ALLOWED=NO test > "artifacts/ios/$KIND-$CASE.log" 2>&1 || TEST_STATUS=$?
@@ -123,7 +124,8 @@ PY
     fi
     if [ "$TEST_STATUS" -ne 0 ]; then
       tail -100 "artifacts/ios/$KIND-$CASE.log"
-      exit "$TEST_STATUS"
+      SUITE_STATUS=1
+      continue
     fi
     CONTAINER=$(xcrun simctl get_app_container "$DEVICE" com.embroiderycalc.companion data)
     if [ "$CASE" = ProductionFlow ]; then
@@ -134,3 +136,4 @@ PY
   done
   bounded 30 xcrun simctl shutdown "$DEVICE"
 done
+exit "$SUITE_STATUS"
