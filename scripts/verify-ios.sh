@@ -35,6 +35,20 @@ xcodebuild -showsdks > artifacts/ios/sdks.txt
 grep -q 'iphoneos26' artifacts/ios/sdks.txt
 xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath artifacts/ios/device CODE_SIGNING_ALLOWED=NO build > artifacts/ios/device-build.log 2>&1
 xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Debug -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath artifacts/ios/simulator CODE_SIGNING_ALLOWED=NO build > artifacts/ios/simulator-build.log 2>&1
+# Preserve completed build evidence even if a later interaction test fails.
+python3 - <<'PY'
+import pathlib,plistlib,json
+root=pathlib.Path('artifacts/ios/device/Build/Products/Release-iphoneos/App.app')
+info=plistlib.loads((root/'Info.plist').read_bytes())
+report={'bundleId':info['CFBundleIdentifier'],'version':info['CFBundleShortVersionString'],'build':info['CFBundleVersion'],'minimumOS':info['MinimumOSVersion'],'requiredCapabilities':info['UIRequiredDeviceCapabilities'],'interfaceStyle':info['UIUserInterfaceStyle'],'deviceFamily':info['UIDeviceFamily'],'launchStoryboard':info['UILaunchStoryboardName'],'privacyManifests':{str(p.relative_to(root)):plistlib.loads(p.read_bytes()) for p in root.rglob('PrivacyInfo.xcprivacy')}}
+assert report['privacyManifests'], 'Missing privacy manifests'
+assert report['requiredCapabilities']==['arm64']
+assert report['interfaceStyle']=='Light'
+assert report['deviceFamily']==[1,2]
+pathlib.Path('artifacts/ios/bundle-inspection.json').write_text(json.dumps(report,indent=2))
+PY
+ditto -c -k --keepParent artifacts/ios/device/Build/Products/Release-iphoneos/App.app artifacts/ios/unsigned-device-app.zip
+ditto -c -k --keepParent artifacts/ios/simulator/Build/Products/Debug-iphonesimulator/App.app artifacts/ios/simulator-app.zip
 xcrun simctl list devices available -j > artifacts/ios/devices.json
 # Generate the same validated synthetic job used by the submission capture.
 npm test > artifacts/ios/tests.txt 2>&1
@@ -105,16 +119,3 @@ PY
   done
   xcrun simctl shutdown "$DEVICE"
 done
-
-# Keep the deliverable apps and logs, excluding rebuildable intermediate objects.
-python3 - <<'PY'
-import pathlib,plistlib,json
-root=pathlib.Path('artifacts/ios/device/Build/Products/Release-iphoneos/App.app')
-info=plistlib.loads((root/'Info.plist').read_bytes())
-report={'bundleId':info['CFBundleIdentifier'],'version':info['CFBundleShortVersionString'],'build':info['CFBundleVersion'],'minimumOS':info['MinimumOSVersion'],'privacyManifests':{str(p.relative_to(root)):plistlib.loads(p.read_bytes()) for p in root.rglob('PrivacyInfo.xcprivacy')}}
-assert report['privacyManifests'], 'Missing privacy manifests'
-pathlib.Path('artifacts/ios/bundle-inspection.json').write_text(json.dumps(report,indent=2))
-PY
-ditto -c -k --keepParent artifacts/ios/device/Build/Products/Release-iphoneos/App.app artifacts/ios/unsigned-device-app.zip
-ditto -c -k --keepParent artifacts/ios/simulator/Build/Products/Debug-iphonesimulator/App.app artifacts/ios/simulator-app.zip
-rm -rf artifacts/ios/device artifacts/ios/simulator artifacts/ios/ui-build
