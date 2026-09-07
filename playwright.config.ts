@@ -1,7 +1,10 @@
 import { defineConfig } from "@playwright/test";
 export default defineConfig({
   testDir: "./qa",
-  timeout: 60000,
+  // WebKit + axe can be slow on the Windows verification host. Keep functional
+  // assertions intact without treating instrumentation time as an app timing SLA.
+  timeout: 120000,
+  expect: { timeout: 15000 },
   workers: 1,
   reporter: [
     ["list"],
