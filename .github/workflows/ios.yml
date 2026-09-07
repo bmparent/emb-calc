@@ -6,10 +6,16 @@ permissions:
   contents: read
 jobs:
   native:
+    name: native (${{ matrix.device }})
     runs-on: macos-15
-    timeout-minutes: 30
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        device: [iphone, ipad]
     env:
       ASTRO_TELEMETRY_DISABLED: 1
+      IOS_TEST_DEVICE: ${{ matrix.device }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -19,9 +25,10 @@ jobs:
       - run: npm ci
       - run: npm run build:native
       - name: Compile and launch unsigned iOS candidate
+        timeout-minutes: 30
         run: bash scripts/verify-ios.sh
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: ios-evidence-${{ github.event.pull_request.head.sha || github.sha }}
+          name: ios-evidence-${{ github.event.pull_request.head.sha || github.sha }}-${{ matrix.device }}
           path: artifacts/ios/
