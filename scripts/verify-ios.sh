@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 mkdir -p artifacts/ios
-CREATED_DEVICES=()
+CREATED_DEVICES=''
 cleanup() {
-  for device in "${CREATED_DEVICES[@]}"; do
+  for device in $CREATED_DEVICES; do
     xcrun simctl shutdown "$device" >/dev/null 2>&1 || true
     xcrun simctl delete "$device" >/dev/null 2>&1 || true
   done
@@ -42,7 +42,7 @@ node scripts/prepare-ios-uitests.mjs
 python3 -m unittest discover -s qa/signing -v > artifacts/ios/signing-tests.txt 2>&1
 xcrun altool --help > artifacts/ios/altool-help.txt 2>&1
 for KIND in iphone ipad; do
-  read -r DEVICE_TYPE RUNTIME < <(python3 - "$KIND" <<'PY'
+  CHOICE=$(python3 - "$KIND" <<'PY'
 import json,sys
 d=json.load(open("artifacts/ios/devices.json"))
 items=[{**x,"runtime":k} for k,v in d["devices"].items() if "iOS-26" in k for x in v]
@@ -54,8 +54,9 @@ if not matches: raise SystemExit("Required screenshot simulator is unavailable")
 print(matches[0]["deviceTypeIdentifier"], matches[0]["runtime"])
 PY
 )
+  read -r DEVICE_TYPE RUNTIME <<< "$CHOICE"
   DEVICE=$(xcrun simctl create "EmbroideryCalc-QA-$KIND-$$" "$DEVICE_TYPE" "$RUNTIME")
-  CREATED_DEVICES+=("$DEVICE")
+  CREATED_DEVICES="$CREATED_DEVICES $DEVICE"
   echo "$KIND $DEVICE $DEVICE_TYPE $RUNTIME" >> artifacts/ios/test-devices.txt
   xcrun simctl boot "$DEVICE" || true
   xcrun simctl bootstatus "$DEVICE" -b
