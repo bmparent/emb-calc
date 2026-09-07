@@ -25,3 +25,6 @@ dist-ssr
 *.sw?
 
 dist-native/
+artifacts/ios/
+test-results/
+playwright-report/

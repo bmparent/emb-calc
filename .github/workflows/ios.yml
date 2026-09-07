@@ -1,0 +1,27 @@
+name: iOS release candidate
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native:
+    runs-on: macos-15
+    timeout-minutes: 30
+    env:
+      ASTRO_TELEMETRY_DISABLED: 1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build:native
+      - name: Compile and launch unsigned iOS candidate
+        run: bash scripts/verify-ios.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ios-evidence-${{ github.event.pull_request.head.sha || github.sha }}
+          path: artifacts/ios/
