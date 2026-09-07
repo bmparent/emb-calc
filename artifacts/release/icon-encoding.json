@@ -1,0 +1,9 @@
+{
+  "purpose": "Lossless opaque RGB PNG encoding for App Store asset catalog",
+  "rgbPixelsUnchanged": true,
+  "width": 1024,
+  "height": 1024,
+  "hasAlpha": false,
+  "beforeSHA256": "c00bb75f8ca218fdeba48cc538a9a86993c1b153d587e003a446a718ba880d22",
+  "afterSHA256": "defde6632c1829f3ae76c6dafff3b06c16036813a16b1b8e8922199720bc8b68"
+}

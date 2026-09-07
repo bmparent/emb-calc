@@ -1,0 +1,207 @@
+
+> embroiderycalc-pro@1.0.0 test:ui
+> playwright test
+
+[WebServer] (node:18064) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 21 tests using 1 worker
+
+(node:14156) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [chromium-phone] › qa\concurrency.spec.ts:2:1 › rapid draft edits and another window cannot silently overwrite saved work (6.3s)
+  ok  2 [chromium-phone] › qa\release.spec.ts:63:1 › A to B to C, accessible plan, PDF, run, pause, restart and duplication (14.0s)
+  ok  3 [chromium-phone] › qa\release.spec.ts:151:1 › invalid drafts survive restart; shop edits survive navigation and explicit save (9.1s)
+  ok  4 [chromium-phone] › qa\release.spec.ts:180:1 › a failed production write does not advance status (8.2s)
+  ok  5 [chromium-phone] › qa\release.spec.ts:205:1 › backups merge and corrupt browser data has an accessible restore path (5.3s)
+  ok  6 [chromium-phone] › qa\release.spec.ts:257:1 › DST multi-location and local color tools (12.1s)
+  ok  7 [chromium-phone] › qa\release.spec.ts:309:1 › narrow landscape, keyboard and enlarged text layout (7.8s)
+(node:2028) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  8 [webkit-phone] › qa\concurrency.spec.ts:2:1 › rapid draft edits and another window cannot silently overwrite saved work (14.3s)
+  ok  9 [webkit-phone] › qa\release.spec.ts:63:1 › A to B to C, accessible plan, PDF, run, pause, restart and duplication (51.3s)
+  x  10 [webkit-phone] › qa\release.spec.ts:151:1 › invalid drafts survive restart; shop edits survive navigation and explicit save (1.2m)
+(node:23220) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  11 [webkit-phone] › qa\release.spec.ts:180:1 › a failed production write does not advance status (9.4s)
+(node:21056) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  12 [webkit-phone] › qa\release.spec.ts:205:1 › backups merge and corrupt browser data has an accessible restore path (8.4s)
+(node:24216) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  13 [webkit-phone] › qa\release.spec.ts:257:1 › DST multi-location and local color tools (39.0s)
+(node:21132) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  14 [webkit-phone] › qa\release.spec.ts:309:1 › narrow landscape, keyboard and enlarged text layout (8.5s)
+(node:25480) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 15 [chromium-tablet] › qa\concurrency.spec.ts:2:1 › rapid draft edits and another window cannot silently overwrite saved work (7.4s)
+  ok 16 [chromium-tablet] › qa\release.spec.ts:63:1 › A to B to C, accessible plan, PDF, run, pause, restart and duplication (27.1s)
+  ok 17 [chromium-tablet] › qa\release.spec.ts:151:1 › invalid drafts survive restart; shop edits survive navigation and explicit save (14.2s)
+  ok 18 [chromium-tablet] › qa\release.spec.ts:180:1 › a failed production write does not advance status (9.0s)
+  ok 19 [chromium-tablet] › qa\release.spec.ts:205:1 › backups merge and corrupt browser data has an accessible restore path (6.2s)
+  ok 20 [chromium-tablet] › qa\release.spec.ts:257:1 › DST multi-location and local color tools (13.0s)
+  ok 21 [chromium-tablet] › qa\release.spec.ts:309:1 › narrow landscape, keyboard and enlarged text layout (10.1s)
+
+
+  1) [webkit-phone] › qa\release.spec.ts:151:1 › invalid drafts survive restart; shop edits survive navigation and explicit save 
+
+    Test timeout of 60000ms exceeded.
+
+    Error Context: test-results\release-invalid-drafts-sur-f011c-avigation-and-explicit-save-webkit-phone\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\release-invalid-drafts-sur-f011c-avigation-and-explicit-save-webkit-phone\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\release-invalid-drafts-sur-f011c-avigation-and-explicit-save-webkit-phone\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [webkit-phone] › qa\release.spec.ts:180:1 › a failed production write does not advance status ─
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: 'What are we making?' })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: 'What are we making?' }) with timeout 5000ms
+      - waiting for getByRole('heading', { name: 'What are we making?' })
+
+
+       7 |   await expect(
+       8 |     page.getByRole("heading", { name: "What are we making?" }),
+    >  9 |   ).toBeVisible();
+         |     ^
+      10 | }
+      11 | async function saved(page: Page) {
+      12 |   await expect(page.locator(".p-save")).toHaveText("Saved on this device");
+        at opened (C:\Users\bmpar\embroiderycalc-rc\qa\release.spec.ts:9:5)
+        at example (C:\Users\bmpar\embroiderycalc-rc\qa\release.spec.ts:15:3)
+        at ready (C:\Users\bmpar\embroiderycalc-rc\qa\release.spec.ts:26:3)
+        at C:\Users\bmpar\embroiderycalc-rc\qa\release.spec.ts:183:3
+
+    Error Context: test-results\release-a-failed-production-write-does-not-advance-status-webkit-phone\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\release-a-failed-production-write-does-not-advance-status-webkit-phone\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\release-a-failed-production-write-does-not-advance-status-webkit-phone\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [webkit-phone] › qa\release.spec.ts:205:1 › backups merge and corrupt browser data has an accessible restore path 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: 'What are we making?' })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: 'What are we making?' }) with timeout 5000ms
+      - waiting for getByRole('heading', { name: 'What are we making?' })
+
+
+       7 |   await expect(
+       8 |     page.getByRole("heading", { name: "What are we making?" }),
+    >  9 |   ).toBeVisible();
+         |     ^
+      10 | }
+      11 | async function saved(page: Page) {
+      12 |   await expect(page.locator(".p-save")).toHaveText("Saved on this device");
+        at opened (C:\Users\bmpar\embroiderycalc-rc\qa\release.spec.ts:9:5)
+        at example (C:\Users\bmpar\embroiderycalc-rc\qa\release.spec.ts:15:3)
+        at ready (C:\Users\bmpar\embroiderycalc-rc\qa\release.spec.ts:26:3)
+        at C:\Users\bmpar\embroiderycalc-rc\qa\release.spec.ts:208:3
+
+    Error Context: test-results\release-backups-merge-and--96534--an-accessible-restore-path-webkit-phone\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\release-backups-merge-and--96534--an-accessible-restore-path-webkit-phone\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\release-backups-merge-and--96534--an-accessible-restore-path-webkit-phone\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [webkit-phone] › qa\release.spec.ts:257:1 › DST multi-location and local color tools ──────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('button', { name: 'Choose image', exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('button', { name: 'Choose image', exact: true }) with timeout 5000ms
+      - waiting for getByRole('button', { name: 'Choose image', exact: true })
+
+
+      283 |   await expect(
+      284 |     page.getByRole("button", { name: "Choose image", exact: true }),
+    > 285 |   ).toBeVisible();
+          |     ^
+      286 |   await check(page, "tools-empty", info.project.name);
+      287 |   const png = Buffer.from(
+      288 |     await page.evaluate(() => {
+        at C:\Users\bmpar\embroiderycalc-rc\qa\release.spec.ts:285:5
+
+    Error Context: test-results\release-DST-multi-location-and-local-color-tools-webkit-phone\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\release-DST-multi-location-and-local-color-tools-webkit-phone\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\release-DST-multi-location-and-local-color-tools-webkit-phone\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) [webkit-phone] › qa\release.spec.ts:309:1 › narrow landscape, keyboard and enlarged text layout 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: 'What are we making?' })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: 'What are we making?' }) with timeout 5000ms
+      - waiting for getByRole('heading', { name: 'What are we making?' })
+
+
+       7 |   await expect(
+       8 |     page.getByRole("heading", { name: "What are we making?" }),
+    >  9 |   ).toBeVisible();
+         |     ^
+      10 | }
+      11 | async function saved(page: Page) {
+      12 |   await expect(page.locator(".p-save")).toHaveText("Saved on this device");
+        at opened (C:\Users\bmpar\embroiderycalc-rc\qa\release.spec.ts:9:5)
+        at example (C:\Users\bmpar\embroiderycalc-rc\qa\release.spec.ts:15:3)
+        at C:\Users\bmpar\embroiderycalc-rc\qa\release.spec.ts:312:3
+
+    Error Context: test-results\release-narrow-landscape-keyboard-and-enlarged-text-layout-webkit-phone\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\release-narrow-landscape-keyboard-and-enlarged-text-layout-webkit-phone\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\release-narrow-landscape-keyboard-and-enlarged-text-layout-webkit-phone\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5 failed
+    [webkit-phone] › qa\release.spec.ts:151:1 › invalid drafts survive restart; shop edits survive navigation and explicit save 
+    [webkit-phone] › qa\release.spec.ts:180:1 › a failed production write does not advance status ──
+    [webkit-phone] › qa\release.spec.ts:205:1 › backups merge and corrupt browser data has an accessible restore path 
+    [webkit-phone] › qa\release.spec.ts:257:1 › DST multi-location and local color tools ───────────
+    [webkit-phone] › qa\release.spec.ts:309:1 › narrow landscape, keyboard and enlarged text layout 
+  16 passed (6.8m)

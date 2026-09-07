@@ -1,63 +1,61 @@
-# EmbroideryCalc companion — implementation review
+# EmbroideryCalc iOS release readiness
 
-Implemented September 7, 2026. This branch is a review build, not an App Store release.
+Updated September 7, 2026. **Review candidate; public release remains blocked.**
+PR [#5](https://github.com/bmparent/emb-calc/pull/5) remains a draft on
+`feat/ios-production-companion`. Nothing has been merged or submitted to Apple.
 
-## Implemented
+## Verification ledger
 
-- A Job / B Estimate / C Next flow, garment selection, batch visualization,
-  real DST stitch previews, contextual directions, accessible labels, large controls,
-  and Jobs / New estimate / Tools / Shop navigation.
-- Formula 3.0.0: whole machine cycles even with partially occupied heads;
-  serialized stop risk; labor overlap bounded by available machine time and
-  eligible work. Setup, first loading, last removal and finishing remain included.
-- Versioned drafts and production records; edits invalidate estimates; running
-  inputs are protected; duplication starts a separate draft. Old calculation
-  events migrate as drafts while legacy storage remains untouched.
-- Cost-based quotes using gross margin, separate tax, and customer-facing PDF
-  export. Initial rates are editable examples, not a pricing recommendation.
-- Start, pause, resume and complete with full dates. Routine stoppages stay in
-  elapsed production; explicit pauses are excluded. Completed comparisons inform
-  manual shop calibration without automatically changing defaults.
-- Browser persistence with serialized writes, cross-window conflict detection,
-  visible quota failures and backup export/import. Conflicting imported versions
-  are retained separately. Native snapshots commit through a small atomic pointer
-  and preserve the previous snapshot. Corrupt data is preserved and reported.
-- Capacitor iOS project, offline app bundle, native storage and sharing, app icon,
-  optional camera purpose description, and required-reason privacy manifest.
+| Gate | State | Evidence and limits |
+|---|---|---|
+| Dependency installation / CI | passed | Clean Node 22 CI install, tests, typecheck and build on `69d1f9a`; [CI run](https://github.com/bmparent/emb-calc/actions/runs/34159655281). Local audit reports zero known vulnerabilities on September 7. |
+| Production / quote regression checks | passed, model accuracy partial | 80 tests in 11 files. Whole cycles, handling floors, per-placement overlap, historical formula replay and margin/tax checks pass. Physical sew-outs remain unmeasured. |
+| Save / restore regression checks | passed, native device behavior partial | Invalid drafts, corrupt nested backups, revision conflicts, failed writes, frozen runs and recovery tested. Native repository fault tests use mocked Capacitor ports. |
+| Rendered A → B → C | passed in browser | 21 tests: Chromium phone, WebKit phone and Chromium tablet. Final export checks passed in Chromium phone/tablet and a separate WebKit run; timeout attempts are retained and explained in the report. Screenshots and JSON results are in `artifacts/release/`. |
+| Accessibility | partial | No axe WCAG 2 A/AA or 2.1 AA violations on exercised screens; 320px, landscape and 200% browser text reflow checked. Physical VoiceOver, device keyboard and iOS Larger Text remain open. |
+| Customer PDF | passed for sample | Actual downloaded one-page quote rendered and text inspected. Internal margin/cost fields absent. PDF is untagged; arbitrary Unicode font coverage is not verified. |
+| Offline native asset preparation | passed | `npm run build:native` builds a dedicated app bundle, removes website/editorial/analytics pages and syncs Capacitor. No off-origin HTTP requests in the tested browser production workflow. |
+| Xcode unsigned device / simulator build | passed | Final candidate `69d1f9a`: Xcode 26.3 Release device and Debug simulator builds; iPhone/iPad seeded snapshot load, relaunch and OCR checks passed. [Native run](https://github.com/bmparent/emb-calc/actions/runs/34159655224), receipts in `artifacts/release/native/`. No signed archive or physical interaction is claimed. |
+| Signed archive / TestFlight | blocked: Apple account | No Apple signing credentials are configured in repository Actions secrets. Bundle ownership, team, signing, upload and TestFlight require the owner. |
+| Physical iPhone / iPad acceptance | blocked: hardware | Execute [device test plan](DEVICE_TEST_PLAN.md) on the signed candidate. No physical-device claims are made. |
+| Production estimate accuracy | blocked: measurements | Complete [sew-out sheet](SEW_OUT_VALIDATION.csv) and [measurement protocol](SEW_OUT_VALIDATION.md). Defaults are examples; no accuracy percentage is claimed. |
+| Submission metadata / privacy / assets | prepared; owner review required | [Submission package](APP_STORE_SUBMISSION.md) and [privacy policy](APP_PRIVACY.md). Legal/account fields, final privacy answers and final screenshots must match the signed binary. |
+| Separate operational site | preserved | Cloudflare production deployment IDs and disabled automatic production setting were inspected read-only. Branch preview checks do not establish or authorize a production release. |
 
-## Verification
+## Acceptance boundary
 
-Run `npm run typecheck`, `npm test`, and `npm run build:native`.
-Verified: 60 tests pass, TypeScript/Astro checks pass, and the static build plus
-iOS asset/plugin sync succeeds. Xcode compilation has not been run.
+Formula **3.1.0** prevents unrelated placements from lending time to handling
+overlap and preserves whole operator waves. Existing running/completed 3.0.0
+records retain their versioned computation; obsolete ready estimates become drafts.
+This is a conservative scheduling approximation, not a measured machine guarantee.
 
-Unit coverage includes partial-head timing, overlap floors, workload factors,
-DST parsing, color matching, quote margin/tax, overnight lifecycle, invalid events,
-draft invalidation, backup merge, stale revisions, quota failures, and native
-snapshot commit/failure behavior. Native repository tests use mocked plugin ports;
-they do not replace device tests.
+Data recovery preserves corrupt bytes, exposes export/restore actions, and validates
+backups before use. Production transitions wait for durable writes. JSON backups
+contain jobs and profiles; keep original DST files, photos and custom color CSVs
+separately. Clearing app data or uninstalling can remove local records.
 
-The managed preview browser repeatedly timed out during tab discovery. No rendered
-UI walkthrough or screenshot comparison could be completed. The concept under
-`docs/design/` is a design reference, not a screenshot of the implemented app.
+## Reproduce from the repository root
 
-## Required release gates
+```bash
+npm ci
+npm run typecheck
+npm test
+npm audit --json
+npm run build:native
+npx playwright install chromium webkit
+npm run test:ui
+```
 
-1. Walk through A → B → C on narrow iPhone and iPad layouts. Check keyboard,
-   landscape, text enlargement, VoiceOver, errors, multi-location input, DST
-   previews, and the color tools. Confirm the layout against the design reference.
-2. On macOS with Xcode, run `npm ci`, `npm run build:native`, `npm run ios`.
-   Register the final bundle ID, select the developer team, build and run on a
-   real iPhone. Validate Files import, native PDF/JSON share, camera denial,
-   airplane mode, force-quit recovery during drafts/runs, paused overnight work,
-   backups, upgrades, and low-storage failures. Archive/sign in Xcode.
-3. Time representative real sew-outs. The overlap model is a conservative planning
-   approximation; the included shop defaults require machine-specific validation.
-4. Provide App Store Connect ownership, screenshots from the tested build, support
-   and privacy URLs, age rating and privacy answers matching the final binary.
-   Review the archive privacy report and submit to TestFlight before App Review.
+On macOS with Xcode 26 and iOS 26 simulator runtimes:
 
-No production deployment, existing operational-site change, App Store submission,
-Apple signing, real-device verification, or automatic calibration is claimed.
-Browser data is device-local; native data is private app storage. Backups remain
-necessary before clearing data, removing the app, or switching devices.
+```bash
+bash scripts/verify-ios.sh
+```
+
+The script compiles unsigned Release/device and Debug/simulator apps, captures
+the actual simulator UI and saves build/SDK/privacy evidence. It does not sign,
+archive for App Store upload, run physical tests or submit a release.
+
+See [release report](RELEASE_REPORT.md) for defects fixed, exact evidence provenance,
+remaining risks and the owner's final actions. A passing build alone does not close
+the physical-device, measured-accuracy or Apple submission gates.

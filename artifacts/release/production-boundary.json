@@ -1,0 +1,32 @@
+{
+  "inspectionStartedAt": "2026-09-07 20:50:14 UTC",
+  "scope": "Read-only Cloudflare production routing inspection. Canonical IDs and disabled operational production setting match pre-push baseline.",
+  "projects": [
+    {
+      "name": "embroiderycalc-pro",
+      "production_branch": "main",
+      "source": {
+        "type": "github",
+        "owner": "bmparent",
+        "repo_name": "emb-calc",
+        "production_deployments_enabled": false,
+        "preview_deployment_setting": "all"
+      },
+      "canonical_deployment": {
+        "id": "c27e2636-e7b8-40c3-a99f-c405a5d92a0d",
+        "environment": "production",
+        "commit_hash": ""
+      }
+    },
+    {
+      "name": "embroiderycalc-public",
+      "production_branch": "main",
+      "source": null,
+      "canonical_deployment": {
+        "id": "e9d621ec-3245-41c0-b59d-74e65cc1de58",
+        "environment": "production",
+        "commit_hash": "249c73c1307a06f4c05ea7f562d2b65ad9a41a3f"
+      }
+    }
+  ]
+}

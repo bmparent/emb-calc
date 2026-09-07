@@ -1,0 +1,8 @@
+native	Compile and launch unsigned iOS candidate	2026-09-07T20:30:47.0267270Z Xcode 26.3
+native	Compile and launch unsigned iOS candidate	2026-09-07T20:30:47.0268190Z Build version 17C529
+native	Compile and launch unsigned iOS candidate	2026-09-07T20:33:54.4069390Z Monitoring boot status for iPhone 17 Pro Max (3044E2A7-26A2-43EF-B8BF-2D0B50D0EE4D).
+native	Compile and launch unsigned iOS candidate	2026-09-07T20:36:40.0250860Z Wrote screenshot to: artifacts/ios/iphone-ready.png
+native	Compile and launch unsigned iOS candidate	2026-09-07T20:37:11.6369530Z Wrote screenshot to: artifacts/ios/iphone-restart.png
+native	Compile and launch unsigned iOS candidate	2026-09-07T20:37:36.4453090Z Monitoring boot status for iPad Pro 13-inch (M5) (A0AEA485-E377-475A-B387-A02F2BBD3F58).
+native	Compile and launch unsigned iOS candidate	2026-09-07T20:40:19.6507120Z Wrote screenshot to: artifacts/ios/ipad-ready.png
+native	Compile and launch unsigned iOS candidate	2026-09-07T20:40:56.3169860Z Wrote screenshot to: artifacts/ios/ipad-restart.png

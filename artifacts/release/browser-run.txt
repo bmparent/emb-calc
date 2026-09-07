@@ -1,0 +1,38 @@
+
+> embroiderycalc-pro@1.0.0 test:ui
+> playwright test
+
+[WebServer] (node:23612) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 21 tests using 1 worker
+
+(node:21484) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [chromium-phone] › qa\concurrency.spec.ts:2:1 › rapid draft edits and another window cannot silently overwrite saved work (5.3s)
+  ok  2 [chromium-phone] › qa\release.spec.ts:63:1 › A to B to C, accessible plan, PDF, run, pause, restart and duplication (16.6s)
+  ok  3 [chromium-phone] › qa\release.spec.ts:151:1 › invalid drafts survive restart; shop edits survive navigation and explicit save (9.6s)
+  ok  4 [chromium-phone] › qa\release.spec.ts:180:1 › a failed production write does not advance status (7.2s)
+  ok  5 [chromium-phone] › qa\release.spec.ts:205:1 › backups merge and corrupt browser data has an accessible restore path (5.7s)
+  ok  6 [chromium-phone] › qa\release.spec.ts:257:1 › DST multi-location and local color tools (16.4s)
+  ok  7 [chromium-phone] › qa\release.spec.ts:309:1 › narrow landscape, keyboard and enlarged text layout (11.6s)
+(node:20344) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  8 [webkit-phone] › qa\concurrency.spec.ts:2:1 › rapid draft edits and another window cannot silently overwrite saved work (8.4s)
+  ok  9 [webkit-phone] › qa\release.spec.ts:63:1 › A to B to C, accessible plan, PDF, run, pause, restart and duplication (20.8s)
+  ok 10 [webkit-phone] › qa\release.spec.ts:151:1 › invalid drafts survive restart; shop edits survive navigation and explicit save (14.1s)
+  ok 11 [webkit-phone] › qa\release.spec.ts:180:1 › a failed production write does not advance status (12.0s)
+  ok 12 [webkit-phone] › qa\release.spec.ts:205:1 › backups merge and corrupt browser data has an accessible restore path (10.1s)
+  ok 13 [webkit-phone] › qa\release.spec.ts:257:1 › DST multi-location and local color tools (25.2s)
+  ok 14 [webkit-phone] › qa\release.spec.ts:309:1 › narrow landscape, keyboard and enlarged text layout (21.6s)
+(node:14720) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 15 [chromium-tablet] › qa\concurrency.spec.ts:2:1 › rapid draft edits and another window cannot silently overwrite saved work (5.2s)
+  ok 16 [chromium-tablet] › qa\release.spec.ts:63:1 › A to B to C, accessible plan, PDF, run, pause, restart and duplication (27.8s)
+  ok 17 [chromium-tablet] › qa\release.spec.ts:151:1 › invalid drafts survive restart; shop edits survive navigation and explicit save (15.6s)
+  ok 18 [chromium-tablet] › qa\release.spec.ts:180:1 › a failed production write does not advance status (12.7s)
+  ok 19 [chromium-tablet] › qa\release.spec.ts:205:1 › backups merge and corrupt browser data has an accessible restore path (10.6s)
+  ok 20 [chromium-tablet] › qa\release.spec.ts:257:1 › DST multi-location and local color tools (26.3s)
+  ok 21 [chromium-tablet] › qa\release.spec.ts:309:1 › narrow landscape, keyboard and enlarged text layout (27.0s)
+
+  21 passed (5.8m)

@@ -1,5 +1,11 @@
 # Codex handoff: finish EmbroideryCalc for iOS shipment
 
+> Continuation status, September 7, 2026: this historical handoff has been executed
+> through the software review and verification work. Start with
+> [RELEASE_READINESS.md](RELEASE_READINESS.md) and [RELEASE_REPORT.md](RELEASE_REPORT.md)
+> for current evidence and open Apple, hardware and sew-out gates. The original
+> 60-test/no-browser/no-Xcode statements below describe the starting point only.
+
 Continue implementation and verification until EmbroideryCalc is ready to ship on
 the iOS App Store. Do the work, fix issues, and produce a reviewable release
 candidate. Do not stop after an audit, a plan, or a passing unit-test suite.

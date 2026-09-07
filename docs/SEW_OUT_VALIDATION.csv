@@ -1,0 +1,8 @@
+case,garment,quantity,usable_heads,rpm,stitches_per_item,placements,operators,setup_seconds,hoop_seconds_per_item,remove_seconds_per_item,finish_seconds_per_item,actual_start_iso,actual_finish_iso,excluded_pause_seconds,estimated_minutes,actual_minutes,error_percent,notes,status
+single_partial,flat,1,6,800,10000,1,1,,,,,,,,,,,"At least 12.5 ideal sewing minutes; record measured setup and handling",not_measured
+full_batch,flat,6,6,800,10000,1,1,,,,,,,,,,,"Same design and machine as single_partial",not_measured
+partial_final_batch,flat,7,6,800,10000,1,1,,,,,,,,,,,"Two whole sewing cycles; record final batch handling",not_measured
+handling_limited,flat,60,6,800,1000,1,1,,,,,,,,,,,"Measure all hooping; compare overlap 0 and measured feasible overlap",not_measured
+multiple_placements,polo,24,6,800,10000,2,1,,,,,,,,,,,"Record stitches for each placement separately and sequence of operations",not_measured
+cap_or_visor,hat,6,6,700,8000,1,1,,,,,,,,,,,"Measure hat hooping and speed reduction; count stops and breaks",not_measured
+two_operators,flat,7,6,800,10000,1,2,,,,,,,,,,,"Record total person-minutes and elapsed handling separately",not_measured

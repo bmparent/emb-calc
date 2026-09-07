@@ -1,0 +1,678 @@
+{
+  "createdAt": "2026-09-07T20:53:11.257882+00:00",
+  "codeCandidate": "69d1f9afa37dfa1f996e2e800dc3fe1129aa5d17",
+  "nativePRMergeCheckout": "c8d475be740ad93c87d557f5395c9289c8be092e",
+  "nativeRun": "https://github.com/bmparent/emb-calc/actions/runs/34159655224",
+  "fullBrowserSuiteCommit": "d5f228b69452c9acf383a49e4f0899ee3864de03",
+  "finalExportChecksCommit": "69d1f9afa37dfa1f996e2e800dc3fe1129aa5d17",
+  "counts": {
+    "unitPassed": 80,
+    "fullBrowserSuitePassed": 21,
+    "finalChromiumChecksPassed": 2,
+    "finalWebKitIsolatedPassed": 1
+  },
+  "limits": [
+    "Unsigned device and simulator builds only",
+    "Native snapshot was seeded before launch; interactive device saves remain unverified",
+    "No Apple signing, TestFlight upload, physical VoiceOver or measured sew-outs",
+    "Timeout attempts retained; functional tests do not establish a performance SLA"
+  ],
+  "historicalToolsLabelCheck": {
+    "file": "artifacts/release/tools-final-run.txt",
+    "commit": "f745686e0f3d187ab1b4cd12a725fc68a5bc7b9a"
+  },
+  "files": [
+    {
+      "path": "artifacts/release/browser-full-results.json",
+      "bytes": 25657,
+      "sha256": "d7e1e9eb164261db723fe08d20b6a8b24e345d01613abd78f8b28cc3651291db"
+    },
+    {
+      "path": "artifacts/release/browser-results.json",
+      "bytes": 4094,
+      "sha256": "7e5440e2032867196f640970fd2ac5ed0e21619350ce0407ec0bd61693f74dc4"
+    },
+    {
+      "path": "artifacts/release/browser-run.txt",
+      "bytes": 3517,
+      "sha256": "577763591ee2f3881ddc32ec87cca1101b0d854a1da7d7612a05a9c9cb16383a"
+    },
+    {
+      "path": "artifacts/release/browser-timeout-attempt.json",
+      "bytes": 42931,
+      "sha256": "56f1e662eb9ebf27310ba87b0485ab86a4c1604558eb3524d9c196483df4dc73"
+    },
+    {
+      "path": "artifacts/release/browser-timeout-attempt.txt",
+      "bytes": 13561,
+      "sha256": "ab933e544fe28100c9cdbe251fbac9e36f2fe45f221cb158f42578ea9655d386"
+    },
+    {
+      "path": "artifacts/release/chromium-phone-a-job-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/chromium-phone-b-estimate-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/chromium-phone-c-next-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/chromium-phone-complete-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/chromium-phone-dst-plan-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/chromium-phone-quote.pdf",
+      "bytes": 5246,
+      "sha256": "4cba0ac918a6fc6066d433a0a37b6b9858953932c7358f5c8295e78c59a95ee5"
+    },
+    {
+      "path": "artifacts/release/chromium-phone-recovery-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/chromium-phone-save-failed-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/chromium-phone-shop-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/chromium-phone-size-320-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/chromium-phone-size-844-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/chromium-phone-tools-empty-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/chromium-phone-tools-image-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/chromium-phone-validation-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/chromium-tablet-a-job-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/chromium-tablet-b-estimate-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/chromium-tablet-c-next-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/chromium-tablet-complete-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/chromium-tablet-dst-plan-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/chromium-tablet-quote.pdf",
+      "bytes": 5246,
+      "sha256": "6815f90e29950c6c0255c9c53c907db0b300e2a46d2a62bc4338bf941b67741b"
+    },
+    {
+      "path": "artifacts/release/chromium-tablet-recovery-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/chromium-tablet-save-failed-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/chromium-tablet-shop-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/chromium-tablet-size-320-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/chromium-tablet-size-844-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/chromium-tablet-tools-empty-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/chromium-tablet-tools-image-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/chromium-tablet-validation-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/dependency-audit.json",
+      "bytes": 388,
+      "sha256": "a45c674016f2e266765fa98847fccdeb9829596823be27e30a6858692dedf471"
+    },
+    {
+      "path": "artifacts/release/final-export-timeout-attempt.json",
+      "bytes": 8378,
+      "sha256": "482ce8d09384f41b0979cb0bbe7371a39ca27e9914adbe0a849e9a6fa0cb562a"
+    },
+    {
+      "path": "artifacts/release/final-export-timeout-attempt.txt",
+      "bytes": 3158,
+      "sha256": "ace522f89254261afc41cd60d703d0f4eb4b31711039bddfe7b99dd440f27fbc"
+    },
+    {
+      "path": "artifacts/release/final-export-ui-run.txt",
+      "bytes": 3158,
+      "sha256": "ace522f89254261afc41cd60d703d0f4eb4b31711039bddfe7b99dd440f27fbc"
+    },
+    {
+      "path": "artifacts/release/final-webkit-run.txt",
+      "bytes": 663,
+      "sha256": "470c5125021ba1adfec51deca79fc1fdc389713cb930467b56a3ad4d1966a1f2"
+    },
+    {
+      "path": "artifacts/release/icon-encoding.json",
+      "bytes": 336,
+      "sha256": "3907a5502bc2f4d95b2e21e0aa6cffa2f9c2beb3b1a5c5d189d19796933951db"
+    },
+    {
+      "path": "artifacts/release/implementation-changed-files.txt",
+      "bytes": 1168,
+      "sha256": "1570b3f82de3928b72abc374fbdd88528243e2ee3521a72f86fe49a04bcc6574"
+    },
+    {
+      "path": "artifacts/release/native/bundle-inspection.json",
+      "bytes": 1099,
+      "sha256": "07d135bd96d118a6530136086a940bad0825ab4fea67bc735e92eb3bbb8e5fd5"
+    },
+    {
+      "path": "artifacts/release/native/capture-events.txt",
+      "bytes": 1038,
+      "sha256": "89ebeb58cbdf739636e861d5a53a6186fb4fdaa777f8efbb0f40c203bea9b3c4"
+    },
+    {
+      "path": "artifacts/release/native/device-build.txt",
+      "bytes": 306334,
+      "sha256": "d70b7d4ce1cbe0d3f3957c8a4942c31a178cef40c3cd1256907aa4ed28a913c3"
+    },
+    {
+      "path": "artifacts/release/native/devices.json",
+      "bytes": 71890,
+      "sha256": "a8111489e0621412cb43ea42fa4c9f68827c5a83319efa82ee5cb5857c6fb853"
+    },
+    {
+      "path": "artifacts/release/native/git-commit.txt",
+      "bytes": 41,
+      "sha256": "d7995e6da4806bf1c2e07517a2d8e97d4e2777ccd6dcce74165bdb1af3cb0820"
+    },
+    {
+      "path": "artifacts/release/native/ipad-ready-ocr.json",
+      "bytes": 814,
+      "sha256": "a72cb26b6e795bcc06984c4a78d9c1ea2fb284bc15efe5ecd4ee8fd8ecd6a3ae"
+    },
+    {
+      "path": "artifacts/release/native/ipad-ready.png",
+      "bytes": 280003,
+      "sha256": "15816c248e31e82d7368dc11e8425d0ed2b7a88d72448359ccdeb12a94fb5246"
+    },
+    {
+      "path": "artifacts/release/native/ipad-restart-ocr.json",
+      "bytes": 816,
+      "sha256": "723ee5ce4e84e4a955f27765a5b693159b58128f5870ca653e321f676bf97271"
+    },
+    {
+      "path": "artifacts/release/native/ipad-restart.png",
+      "bytes": 279992,
+      "sha256": "aed191dc01d9b9e62d63de5207edf69c81d70d519fe41d2c45b96a6d35668845"
+    },
+    {
+      "path": "artifacts/release/native/iphone-ready-ocr.json",
+      "bytes": 699,
+      "sha256": "517ef22860a8d8929f8a6fb8c8fe52cc345c8d1393bb934f11082a346acf5df3"
+    },
+    {
+      "path": "artifacts/release/native/iphone-ready.png",
+      "bytes": 272172,
+      "sha256": "163db44859f2e157a1cdddd9f0692ea5d3014156949fe3c0d07c8777ba059204"
+    },
+    {
+      "path": "artifacts/release/native/iphone-restart-ocr.json",
+      "bytes": 701,
+      "sha256": "dc5e30288dc3ffafbd5d862715c3c97de6f2a8730af986e770eaf5941e02edd0"
+    },
+    {
+      "path": "artifacts/release/native/iphone-restart.png",
+      "bytes": 272172,
+      "sha256": "163db44859f2e157a1cdddd9f0692ea5d3014156949fe3c0d07c8777ba059204"
+    },
+    {
+      "path": "artifacts/release/native/run.json",
+      "bytes": 2040,
+      "sha256": "89fb2df5a20fb2b36273c5b3637aaab9386047396ba1c1adfe50dbde6f6972cf"
+    },
+    {
+      "path": "artifacts/release/native/sdks.txt",
+      "bytes": 745,
+      "sha256": "90c53bf1997296ee7c233549e23771fa6b3e39be51b05dc807b52791ef24e24d"
+    },
+    {
+      "path": "artifacts/release/native/simulator-build.txt",
+      "bytes": 481760,
+      "sha256": "a8e716e686426894b6fe8255077581ad3b7c17e85b28d348e500838f17edfae5"
+    },
+    {
+      "path": "artifacts/release/native/tests.txt",
+      "bytes": 1644,
+      "sha256": "74865338e2f89548d4d1cc15b8c84833172161c94631fc74f7ecefdaafb8e124"
+    },
+    {
+      "path": "artifacts/release/native/xcode.txt",
+      "bytes": 32,
+      "sha256": "bb7fc9a8f5e063e81975b33054b3a526c91bcccff263ad11d5bd8bcdbe8f0973"
+    },
+    {
+      "path": "artifacts/release/native-build.txt",
+      "bytes": 6598,
+      "sha256": "e632d3834c75389beb7a53f054e71a68048cd0ffb865a596c90c8dd0197ae5c5"
+    },
+    {
+      "path": "artifacts/release/pdf-inspection.json",
+      "bytes": 193,
+      "sha256": "c9bc6ec49fbdfdbd1e466892012155eaa4d4e86f0865c3c144df04a136da5913"
+    },
+    {
+      "path": "artifacts/release/production-boundary.json",
+      "bytes": 980,
+      "sha256": "ea0a393c9e6d3018dadfc00f41b320cfc6361615e669cb1e28ea03c42f297f0f"
+    },
+    {
+      "path": "artifacts/release/public-links.json",
+      "bytes": 43,
+      "sha256": "7d7dde20710be43ab5a59cbdefca28e1a295f8c044fcee9c7f8f4f04abad9e5d"
+    },
+    {
+      "path": "artifacts/release/quote-text.txt",
+      "bytes": 608,
+      "sha256": "6038e152416f6c7f1fab9d3ddea35a96db6584a3fbd55e0b72a6de9759db382e"
+    },
+    {
+      "path": "artifacts/release/README.md",
+      "bytes": 2130,
+      "sha256": "3147d33c9711f70dc5a1e23d996989ebde3c087c919e5860c0fcd7f58a6c4109"
+    },
+    {
+      "path": "artifacts/release/screenshots/chromium-phone-a-job.png",
+      "bytes": 53635,
+      "sha256": "9f92ab578262e01156062708e6975edfa73bc5e7c74f6bed7ea44059118f2cc8"
+    },
+    {
+      "path": "artifacts/release/screenshots/chromium-phone-b-estimate.png",
+      "bytes": 72980,
+      "sha256": "813e303be152748ee26e06297f391520cd25ab3a91b2117d05c4f8a6e9a1f0d9"
+    },
+    {
+      "path": "artifacts/release/screenshots/chromium-phone-c-next.png",
+      "bytes": 41002,
+      "sha256": "bf8c8b66e0b9a7b10867c268df60a7e35ba6307d599ad97b072ca2a792a78c8c"
+    },
+    {
+      "path": "artifacts/release/screenshots/chromium-phone-complete.png",
+      "bytes": 44347,
+      "sha256": "ff611edfd418e632610aa7b9c83b44a98d0eb972c765ec5a8823a76bbd6da473"
+    },
+    {
+      "path": "artifacts/release/screenshots/chromium-phone-dst-plan.png",
+      "bytes": 73252,
+      "sha256": "f034b437153a2e4b3c38d32d4f17f40a46b5b04cccc573215c1e040daa19f12e"
+    },
+    {
+      "path": "artifacts/release/screenshots/chromium-phone-large-text.png",
+      "bytes": 190579,
+      "sha256": "f440be9e70bea4aab4631b5ac516655a3ebe842bf9d55c216b74c9dee84c400a"
+    },
+    {
+      "path": "artifacts/release/screenshots/chromium-phone-recovery.png",
+      "bytes": 21829,
+      "sha256": "441521753e193d7da85998a5391d893934cbae71ec6858464032545428d6bfa9"
+    },
+    {
+      "path": "artifacts/release/screenshots/chromium-phone-save-failed.png",
+      "bytes": 49411,
+      "sha256": "9cb3fecd74bef424648bde1c171ae50cdaa15ea192b9946e268c05275a4dd09b"
+    },
+    {
+      "path": "artifacts/release/screenshots/chromium-phone-shop.png",
+      "bytes": 72144,
+      "sha256": "c72c7be9a31aa8cf23c40de79882de1cd42352af029cb583e62480cd90d9276c"
+    },
+    {
+      "path": "artifacts/release/screenshots/chromium-phone-size-320.png",
+      "bytes": 71544,
+      "sha256": "2eb52b54a1f2b4786d5d1c46d99f0689bd0bdedf08d2066910df227c43e8fdda"
+    },
+    {
+      "path": "artifacts/release/screenshots/chromium-phone-size-844.png",
+      "bytes": 76405,
+      "sha256": "7d6c97ebdd63ec68d4dd5ca192bc5524969a47358b6c1df68882888ffc11d99f"
+    },
+    {
+      "path": "artifacts/release/screenshots/chromium-phone-tools-empty.png",
+      "bytes": 87640,
+      "sha256": "bb2b37a3c648a752b668297b9591ab5210912eb1a2da41232eb5cbb55c7e716f"
+    },
+    {
+      "path": "artifacts/release/screenshots/chromium-phone-tools-image.png",
+      "bytes": 184868,
+      "sha256": "661fda19d2074ea6ff3c154af190d58e8e04057003ea4690d80787b2aade83f8"
+    },
+    {
+      "path": "artifacts/release/screenshots/chromium-phone-validation.png",
+      "bytes": 63690,
+      "sha256": "d5dd880c2885f95acc72c13d4a38542b92bc3891fdfc6177d8305dc8877eec1b"
+    },
+    {
+      "path": "artifacts/release/screenshots/chromium-tablet-a-job.png",
+      "bytes": 60473,
+      "sha256": "6b646512aff3a6de67c8c65551217589f50a1d5297962627ee150f6239febd7b"
+    },
+    {
+      "path": "artifacts/release/screenshots/chromium-tablet-b-estimate.png",
+      "bytes": 78751,
+      "sha256": "fa30b653587c644fe109cbfdf5084879945e9927b6471c21804f726d82b47eaf"
+    },
+    {
+      "path": "artifacts/release/screenshots/chromium-tablet-c-next.png",
+      "bytes": 50324,
+      "sha256": "b4cc12eba16a43e955c3d61845f17de778f20d42773451dbe6d769493fb42109"
+    },
+    {
+      "path": "artifacts/release/screenshots/chromium-tablet-complete.png",
+      "bytes": 51109,
+      "sha256": "a073dd02d6cddb58b19dd588136ef4e9f3e734a20255b5a66fc31ec485b8c328"
+    },
+    {
+      "path": "artifacts/release/screenshots/chromium-tablet-dst-plan.png",
+      "bytes": 80265,
+      "sha256": "bba9dd62ed6c2332bd22f61d294965778a815ebe25a830d6b046f8e5dc52d527"
+    },
+    {
+      "path": "artifacts/release/screenshots/chromium-tablet-large-text.png",
+      "bytes": 190579,
+      "sha256": "f440be9e70bea4aab4631b5ac516655a3ebe842bf9d55c216b74c9dee84c400a"
+    },
+    {
+      "path": "artifacts/release/screenshots/chromium-tablet-recovery.png",
+      "bytes": 27501,
+      "sha256": "b101049bc0dbfb272243aa6730d00656c68baa8a14669cc2d567c1d1aace0e41"
+    },
+    {
+      "path": "artifacts/release/screenshots/chromium-tablet-save-failed.png",
+      "bytes": 56005,
+      "sha256": "e37dbd95f1bdfe0ef32ec07e83a8fc6baa32e7fc9187edfa5cd19d8841b3ba60"
+    },
+    {
+      "path": "artifacts/release/screenshots/chromium-tablet-shop.png",
+      "bytes": 78159,
+      "sha256": "093db08cb6eb68f4b487c70dfde250498a676b1dac75ba00eedfabf9f45b0691"
+    },
+    {
+      "path": "artifacts/release/screenshots/chromium-tablet-size-320.png",
+      "bytes": 71544,
+      "sha256": "2eb52b54a1f2b4786d5d1c46d99f0689bd0bdedf08d2066910df227c43e8fdda"
+    },
+    {
+      "path": "artifacts/release/screenshots/chromium-tablet-size-844.png",
+      "bytes": 76405,
+      "sha256": "7d6c97ebdd63ec68d4dd5ca192bc5524969a47358b6c1df68882888ffc11d99f"
+    },
+    {
+      "path": "artifacts/release/screenshots/chromium-tablet-tools-empty.png",
+      "bytes": 99064,
+      "sha256": "940bd6748500b3bbed0666a1d6cfc439f2369ba13551f7223a0090a822247c29"
+    },
+    {
+      "path": "artifacts/release/screenshots/chromium-tablet-tools-image.png",
+      "bytes": 196404,
+      "sha256": "3bd62903a56343fb0694fc7dc1b40790114c6479b98b9c3a6dbc508bd361b14d"
+    },
+    {
+      "path": "artifacts/release/screenshots/chromium-tablet-validation.png",
+      "bytes": 67723,
+      "sha256": "92c0d3b65e4943de76af132b3bf485a152bbcf35a4dc89c061ade074eac811d8"
+    },
+    {
+      "path": "artifacts/release/screenshots/webkit-phone-a-job.png",
+      "bytes": 49604,
+      "sha256": "8f4056a43292c0a9d43a2befd887b8a2457791387f4a97239c97d6fd2721be13"
+    },
+    {
+      "path": "artifacts/release/screenshots/webkit-phone-b-estimate.png",
+      "bytes": 63649,
+      "sha256": "9cbf198504966f6dab825ff9a941e954b38044fded6b74f2971c606753b81cac"
+    },
+    {
+      "path": "artifacts/release/screenshots/webkit-phone-c-next.png",
+      "bytes": 36724,
+      "sha256": "8f38a8ebdf19fac93ed82d4604a3a5a92feffc2cccb2957ff2350cd3134fb80e"
+    },
+    {
+      "path": "artifacts/release/screenshots/webkit-phone-complete.png",
+      "bytes": 38912,
+      "sha256": "3ba4865e87956d256eea4d3184938157095db735a6730acf7e7a8287ec6b1dc2"
+    },
+    {
+      "path": "artifacts/release/screenshots/webkit-phone-dst-plan.png",
+      "bytes": 64196,
+      "sha256": "7ed029d207df71f8bcc03f2572d8ce658e44741520cd11586ee4f383614c567a"
+    },
+    {
+      "path": "artifacts/release/screenshots/webkit-phone-large-text.png",
+      "bytes": 143562,
+      "sha256": "16f1942bc62b58f43a9c867adef9df6a8cbc9917c46de8975f0407b539e17ced"
+    },
+    {
+      "path": "artifacts/release/screenshots/webkit-phone-recovery.png",
+      "bytes": 20515,
+      "sha256": "6d4e1aaf9c4d57b18f63ea373762acf92c9ad156e0f764881cef65a879f4c636"
+    },
+    {
+      "path": "artifacts/release/screenshots/webkit-phone-save-failed.png",
+      "bytes": 43677,
+      "sha256": "9982269a899a24ae99cfa08c427e6dfe1b718f1c39f5c1b539d16bd797fadce8"
+    },
+    {
+      "path": "artifacts/release/screenshots/webkit-phone-shop.png",
+      "bytes": 65781,
+      "sha256": "586b9b84b47f549f8557168d81cd25530329c4e1856ee22f77cfc0a69f98953d"
+    },
+    {
+      "path": "artifacts/release/screenshots/webkit-phone-size-320.png",
+      "bytes": 62918,
+      "sha256": "ee015f4471d7355e66da6d750d4dba2262f50fadc1e9336a21b2e35459e16f27"
+    },
+    {
+      "path": "artifacts/release/screenshots/webkit-phone-size-844.png",
+      "bytes": 70006,
+      "sha256": "abcf107e353574ec4c0c4841f6ee1f7fa3af78c9520347991909f755f4bb5f3a"
+    },
+    {
+      "path": "artifacts/release/screenshots/webkit-phone-tools-empty.png",
+      "bytes": 57397,
+      "sha256": "09a5f2db271058ad94a0d0372bd910e08dcb10366f71d2dd9056685a2e8fbbaf"
+    },
+    {
+      "path": "artifacts/release/screenshots/webkit-phone-tools-image.png",
+      "bytes": 138933,
+      "sha256": "7c13aed7770e4edfeb0a21f24b6a2b78a5802bbdb34f65f1c5413fd2298cb06e"
+    },
+    {
+      "path": "artifacts/release/screenshots/webkit-phone-validation.png",
+      "bytes": 56959,
+      "sha256": "a35e6f3d18a4533b3c66bb1a615963c14156a9b7970cfee027e2873e1b56f7ef"
+    },
+    {
+      "path": "artifacts/release/tools-final-run.txt",
+      "bytes": 1065,
+      "sha256": "678d9e5bb8e61a42d9edd5033ce0e965a598301d8216ac00a90ae52a72b8a619"
+    },
+    {
+      "path": "artifacts/release/unit-run.txt",
+      "bytes": 1307,
+      "sha256": "436eb7a0d263972be6d707266cff2cc4bbd2e03187ca4c704a25d571d614d7c5"
+    },
+    {
+      "path": "artifacts/release/unit-tests.xml",
+      "bytes": 17116,
+      "sha256": "8b2923c54d51f70dc48e5ee82904d7ad5ec40195c68c9beb51e3442751581be0"
+    },
+    {
+      "path": "artifacts/release/unit-timeout-attempt.txt",
+      "bytes": 2692,
+      "sha256": "2ccf97cc4a93dce0ca3db71577690922b8513aaba4bca2488caf378a2edb0bf1"
+    },
+    {
+      "path": "artifacts/release/unit-timeout-attempt.xml",
+      "bytes": 17545,
+      "sha256": "9f8860768b48218e96d8b283edb2099e5ad83dcaa63fa91841fb2623d773ba2f"
+    },
+    {
+      "path": "artifacts/release/webkit-phone-a-job-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/webkit-phone-b-estimate-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/webkit-phone-c-next-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/webkit-phone-complete-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/webkit-phone-dst-plan-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/webkit-phone-quote.pdf",
+      "bytes": 5246,
+      "sha256": "96af8233740a7caa6be89377f7c24da7c388c9380bfec50e5096c337475f311a"
+    },
+    {
+      "path": "artifacts/release/webkit-phone-recovery-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/webkit-phone-save-failed-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/webkit-phone-shop-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/webkit-phone-size-320-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/webkit-phone-size-844-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/webkit-phone-tools-empty-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/webkit-phone-tools-image-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/release/webkit-phone-validation-axe.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "artifacts/submission/app-store/ipad-13-inch.png",
+      "bytes": 280003,
+      "sha256": "15816c248e31e82d7368dc11e8425d0ed2b7a88d72448359ccdeb12a94fb5246"
+    },
+    {
+      "path": "artifacts/submission/app-store/iphone-6-9-inch.png",
+      "bytes": 272172,
+      "sha256": "163db44859f2e157a1cdddd9f0692ea5d3014156949fe3c0d07c8777ba059204"
+    },
+    {
+      "path": "artifacts/submission/demo-ready.json",
+      "bytes": 5095,
+      "sha256": "0a124b45d1094fdb8f90bd8d0739b57bf145fca7e5e98c47fbf807868a8e9a5e"
+    }
+  ],
+  "localUnsignedBuildProducts": [
+    {
+      "path": "artifacts/ios-final/ios-evidence-69d1f9afa37dfa1f996e2e800dc3fe1129aa5d17/simulator-app.zip",
+      "bytes": 2057033,
+      "sha256": "185af5619b403fba9f4d3c2d9c43f979929484fd7633799a0119a994811f172d"
+    },
+    {
+      "path": "artifacts/ios-final/ios-evidence-69d1f9afa37dfa1f996e2e800dc3fe1129aa5d17/unsigned-device-app.zip",
+      "bytes": 845589,
+      "sha256": "7305248f28d04829d50fc6a7f52894b9050aa2de04da4764fd3ee1c5206308eb"
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+
+> embroiderycalc-pro@1.0.0 build:native
+> npm run build && node scripts/prepare-native.mjs && cap sync ios
+
+
+> embroiderycalc-pro@1.0.0 build
+> astro build
+
+16:31:05 [WARN] [vite] warning: `esbuild` option was specified by "vite:react-babel" plugin. This option is deprecated, please use `oxc` instead.
+16:31:05 [WARN] [vite] warning: `optimizeDeps.esbuildOptions` option was specified by "vite:react-babel" plugin. This option is deprecated, please use `optimizeDeps.rolldownOptions` instead.
+16:31:05 [WARN] [vite] You or a plugin you are using have set `optimizeDeps.esbuildOptions` but this option is now deprecated. Vite now uses Rolldown to optimize the dependencies. Please use `optimizeDeps.rolldownOptions` instead.
+16:31:16 [content] Syncing content
+16:31:16 [content] Synced content
+16:31:16 [types] Generated 11.15s
+16:31:16 [build] output: "static"
+16:31:16 [build] mode: "static"
+16:31:16 [build] directory: C:\Users\bmpar\embroiderycalc-rc\dist\
+16:31:16 [build] Collecting build info...
+16:31:16 [build] ✓ Completed in 13.09s.
+16:31:16 [build] Building static entrypoints...
+16:31:16 [WARN] [vite] warning: `esbuild` option was specified by "vite:react-babel" plugin. This option is deprecated, please use `oxc` instead.
+16:31:16 [WARN] [vite] warning: `optimizeDeps.esbuildOptions` option was specified by "vite:react-babel" plugin. This option is deprecated, please use `optimizeDeps.rolldownOptions` instead.
+16:31:16 [WARN] [vite] You or a plugin you are using have set `optimizeDeps.esbuildOptions` but this option is now deprecated. Vite now uses Rolldown to optimize the dependencies. Please use `optimizeDeps.rolldownOptions` instead.
+16:31:16 [WARN] [vite] warning: `esbuild` option was specified by "vite:react-babel" plugin. This option is deprecated, please use `oxc` instead.
+16:31:16 [WARN] [vite] warning: `optimizeDeps.esbuildOptions` option was specified by "vite:react-babel" plugin. This option is deprecated, please use `optimizeDeps.rolldownOptions` instead.
+16:31:16 [WARN] [vite] You or a plugin you are using have set `optimizeDeps.esbuildOptions` but this option is now deprecated. Vite now uses Rolldown to optimize the dependencies. Please use `optimizeDeps.rolldownOptions` instead.
+16:31:16 [WARN] [vite] warning: `esbuild` option was specified by "vite:react-babel" plugin. This option is deprecated, please use `oxc` instead.
+16:31:16 [WARN] [vite] warning: `optimizeDeps.esbuildOptions` option was specified by "vite:react-babel" plugin. This option is deprecated, please use `optimizeDeps.rolldownOptions` instead.
+16:31:16 [WARN] [vite] You or a plugin you are using have set `optimizeDeps.esbuildOptions` but this option is now deprecated. Vite now uses Rolldown to optimize the dependencies. Please use `optimizeDeps.rolldownOptions` instead.
+16:31:16 [WARN] [vite] warning: `esbuild` option was specified by "vite:react-babel" plugin. This option is deprecated, please use `oxc` instead.
+16:31:16 [WARN] [vite] warning: `optimizeDeps.esbuildOptions` option was specified by "vite:react-babel" plugin. This option is deprecated, please use `optimizeDeps.rolldownOptions` instead.
+16:31:16 [WARN] [vite] You or a plugin you are using have set `optimizeDeps.esbuildOptions` but this option is now deprecated. Vite now uses Rolldown to optimize the dependencies. Please use `optimizeDeps.rolldownOptions` instead.
+16:31:16 [WARN] [vite] warning: `esbuild` option was specified by "vite:react-babel" plugin. This option is deprecated, please use `oxc` instead.
+16:31:16 [WARN] [vite] warning: `optimizeDeps.esbuildOptions` option was specified by "vite:react-babel" plugin. This option is deprecated, please use `optimizeDeps.rolldownOptions` instead.
+16:31:16 [WARN] [vite] You or a plugin you are using have set `optimizeDeps.esbuildOptions` but this option is now deprecated. Vite now uses Rolldown to optimize the dependencies. Please use `optimizeDeps.rolldownOptions` instead.
+16:31:28 [vite] ✓ built in 11.85s
+16:31:42 [vite] ✓ built in 13.43s
+16:31:42 [build] Rearranging server assets...
+
+ generating static routes 
+16:31:44   ├─ /404.html (+451ms) 
+16:31:45   ├─ /about/index.html (+246ms) 
+16:31:45   ├─ /affiliate-disclosure/index.html (+193ms) 
+16:31:45   ├─ /articles/index.html (+144ms) 
+16:31:45   ├─ /articles/embroidery-is-in-everyday-life/index.html (+89ms) 
+16:31:45   ├─ /articles/matching-photo-colors-to-embroidery-thread/index.html (+114ms) 
+16:31:46   ├─ /articles/why-color-changes-cost-more-than-you-think/index.html (+140ms) 
+16:31:46   ├─ /calculator/index.html (+117ms) 
+16:31:46   ├─ /embroidery-news/index.html (+233ms) 
+16:31:46   ├─ /embroidery-news/how-embroiderycalc-covers-embroidery-news/index.html (+101ms) 
+16:31:46   ├─ /embroidery-news/mission-patches-embroidery-and-operational-identity/index.html (+93ms) 
+16:31:46   ├─ /guides/index.html (+42ms) 
+16:31:46   ├─ /guides/cutaway-vs-tearaway-embroidery-backing/index.html (+79ms) 
+16:31:46   ├─ /guides/how-long-does-10000-embroidery-stitches-take/index.html (+104ms) 
+16:31:46   ├─ /guides/how-to-read-a-dst-stitch-count/index.html (+29ms) 
+16:31:46   ├─ /guides/machine-rpm-vs-real-embroidery-speed/index.html (+14ms) 
+16:31:46   ├─ /llms.txt (+18ms) 
+16:31:47   ├─ /methodology/index.html (+65ms) 
+16:31:47   ├─ /privacy/index.html (+26ms) 
+16:31:47   ├─ /robots.txt (+51ms) 
+16:31:47   ├─ /rss.xml (+631ms) 
+16:31:47   ├─ /support/index.html (+45ms) 
+16:31:47   ├─ /terms/index.html (+110ms) 
+16:31:47   ├─ /tools/dst-stitch-count/index.html (+105ms) 
+16:31:48   ├─ /tools/thread-color-match/index.html (+158ms) 
+16:31:48   ├─ /index.html (+149ms) 
+16:31:48 ✓ Completed in 5.35s.
+
+16:31:48 [build] ✓ Completed in 32.12s.
+16:31:49 [@astrojs/sitemap] `sitemap-index.xml` created at `dist`
+16:31:49 [build] 23 page(s) built in 45.84s
+16:31:49 [build] Complete!
+Native bundle: calculator, local assets and offline privacy/support/methodology only.
+√ Copying web assets from dist-native to ios\App\App\public in 3.81s
+√ Creating capacitor.config.json in ios\App\App in 304.72ms
+√ copy ios in 9.51s
+√ Updating iOS plugins in 1.08s
+[info] All Capacitor plugins have a Package.swift file and will be included in Package.swift
+[info] Writing Package.swift
+[info] Found 3 Capacitor plugins for ios:
+       @capacitor/filesystem@8.1.3
+       @capacitor/preferences@8.0.1
+       @capacitor/share@8.0.1
+√ update ios in 6.89s
+[info] Sync finished in 20.794s

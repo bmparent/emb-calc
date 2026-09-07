@@ -1,0 +1,38 @@
+{
+  "bundleId": "com.embroiderycalc.companion",
+  "version": "1.0.0",
+  "build": "1",
+  "minimumOS": "17.0",
+  "privacyManifests": {
+    "PrivacyInfo.xcprivacy": {
+      "NSPrivacyAccessedAPITypes": [
+        {
+          "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+          "NSPrivacyAccessedAPITypeReasons": [
+            "CA92.1"
+          ]
+        },
+        {
+          "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+          "NSPrivacyAccessedAPITypeReasons": [
+            "C617.1"
+          ]
+        }
+      ],
+      "NSPrivacyCollectedDataTypes": [],
+      "NSPrivacyTracking": false
+    },
+    "Frameworks/Capacitor.framework/PrivacyInfo.xcprivacy": {
+      "NSPrivacyAccessedAPITypes": [],
+      "NSPrivacyCollectedDataTypes": [],
+      "NSPrivacyTrackingDomains": [],
+      "NSPrivacyTracking": false
+    },
+    "Frameworks/Cordova.framework/PrivacyInfo.xcprivacy": {
+      "NSPrivacyCollectedDataTypes": [],
+      "NSPrivacyAccessedAPITypes": [],
+      "NSPrivacyTrackingDomains": [],
+      "NSPrivacyTracking": false
+    }
+  }
+}
