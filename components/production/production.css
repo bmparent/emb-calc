@@ -172,6 +172,8 @@ html {
 .p-number > span {
   color: var(--muted);
   font-size: 0.875rem;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 .p-field small,
 .p-hint {

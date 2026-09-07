@@ -8,7 +8,7 @@ export default defineConfig({
   workers: 1,
   reporter: [
     ["list"],
-    ["json", { outputFile: "artifacts/release/browser-results.json" }],
+    ["json", { outputFile: (process.env.QA_ARTIFACT_DIR || "artifacts/release") + "/browser-results.json" }],
   ],
   use: { baseURL: "http://127.0.0.1:4322", trace: "retain-on-failure" },
   projects: [

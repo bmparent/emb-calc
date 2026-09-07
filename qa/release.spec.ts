@@ -2,6 +2,7 @@ import { test, expect, Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { mkdir, writeFile } from "node:fs/promises";
 const key = "embroidery.production.v3";
+const artifacts = process.env.QA_ARTIFACT_DIR || "artifacts/release";
 async function opened(page: Page) {
   await page.goto("/");
   await expect(
@@ -44,9 +45,9 @@ async function check(page: Page, name: string, project: string) {
   const result = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
     .analyze();
-  await mkdir("artifacts/release/screenshots", { recursive: true });
+  await mkdir(artifacts + "/screenshots", { recursive: true });
   await writeFile(
-    "artifacts/release/" + project + "-" + name + "-axe.json",
+    artifacts + "/" + project + "-" + name + "-axe.json",
     JSON.stringify(result.violations, null, 2),
   );
   expect(result.violations).toEqual([]);
@@ -56,7 +57,7 @@ async function check(page: Page, name: string, project: string) {
     ),
   ).toBe(true);
   await page.screenshot({
-    path: "artifacts/release/screenshots/" + project + "-" + name + ".png",
+    path: artifacts + "/screenshots/" + project + "-" + name + ".png",
     fullPage: true,
   });
 }
@@ -100,7 +101,7 @@ test("A to B to C, accessible plan, PDF, run, pause, restart and duplication", a
   await page.getByRole("button", { name: "Share quote", exact: true }).click();
   const pdf = await download;
   expect(pdf.suggestedFilename()).toMatch(/\.pdf$/);
-  await pdf.saveAs("artifacts/release/" + info.project.name + "-quote.pdf");
+  await pdf.saveAs(artifacts + "/" + info.project.name + "-quote.pdf");
   await page
     .getByRole("button", { name: "Start production", exact: true })
     .click();
@@ -309,6 +310,18 @@ test("DST multi-location and local color tools", async ({ page }, info) => {
 test("narrow landscape, keyboard and enlarged text layout", async ({
   page,
 }, info) => {
+  await opened(page);
+  for (const width of [320, 440]) {
+    await page.setViewportSize({ width, height: 956 });
+    const unit = page.getByText("pieces", { exact: true }).first();
+    await expect(unit).toBeVisible();
+    expect(await unit.evaluate((el) => {
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      return range.getClientRects().length;
+    })).toBe(1);
+    await check(page, "quantity-" + width, info.project.name);
+  }
   await example(page);
   for (const viewport of [
     { width: 320, height: 740 },
@@ -337,7 +350,7 @@ test("narrow landscape, keyboard and enlarged text layout", async ({
   ).toBe(true);
   await page.screenshot({
     path:
-      "artifacts/release/screenshots/" + info.project.name + "-large-text.png",
+      artifacts + "/screenshots/" + info.project.name + "-large-text.png",
     fullPage: true,
   });
 });
