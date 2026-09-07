@@ -2,10 +2,20 @@
 set -euo pipefail
 mkdir -p artifacts/ios
 CREATED_DEVICES=''
+bounded() {
+  python3 - "$@" <<'PY'
+import subprocess,sys
+try:
+    sys.exit(subprocess.run(sys.argv[2:],timeout=int(sys.argv[1])).returncode)
+except subprocess.TimeoutExpired:
+    print('Command exceeded '+sys.argv[1]+' seconds: '+' '.join(sys.argv[2:]),file=sys.stderr)
+    sys.exit(124)
+PY
+}
 cleanup() {
   for device in $CREATED_DEVICES; do
-    xcrun simctl shutdown "$device" >/dev/null 2>&1 || true
-    xcrun simctl delete "$device" >/dev/null 2>&1 || true
+    bounded 20 xcrun simctl shutdown "$device" >/dev/null 2>&1 || true
+    bounded 20 xcrun simctl delete "$device" >/dev/null 2>&1 || true
   done
   rm -rf artifacts/ios/device artifacts/ios/simulator artifacts/ios/ui-build
 }
@@ -33,6 +43,7 @@ if [ -n "$XCODE" ]; then export DEVELOPER_DIR="$XCODE/Contents/Developer"; fi
 xcodebuild -version | tee artifacts/ios/xcode.txt
 xcodebuild -showsdks > artifacts/ios/sdks.txt
 grep -q 'iphoneos26' artifacts/ios/sdks.txt
+SIMULATOR_SDK_VERSION=$(xcrun --sdk iphonesimulator --show-sdk-version)
 xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath artifacts/ios/device CODE_SIGNING_ALLOWED=NO build > artifacts/ios/device-build.log 2>&1
 xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Debug -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath artifacts/ios/simulator CODE_SIGNING_ALLOWED=NO build > artifacts/ios/simulator-build.log 2>&1
 # Preserve completed build evidence even if a later interaction test fails.
@@ -55,11 +66,13 @@ npm test > artifacts/ios/tests.txt 2>&1
 node scripts/prepare-ios-uitests.mjs
 python3 -m unittest discover -s qa/signing -v > artifacts/ios/signing-tests.txt 2>&1
 xcrun altool --help > artifacts/ios/altool-help.txt 2>&1
-for KIND in iphone ipad; do
-  CHOICE=$(python3 - "$KIND" <<'PY'
+[[ "${IOS_TEST_DEVICE:-all}" == all || "${IOS_TEST_DEVICE:-}" == iphone || "${IOS_TEST_DEVICE:-}" == ipad ]] || { echo 'Invalid IOS_TEST_DEVICE' >&2; exit 1; }
+for KIND in ${IOS_TEST_DEVICE:-iphone ipad}; do
+  CHOICE=$(python3 - "$KIND" "$SIMULATOR_SDK_VERSION" <<'PY'
 import json,sys
 d=json.load(open("artifacts/ios/devices.json"))
-items=[{**x,"runtime":k} for k,v in d["devices"].items() if "iOS-26" in k for x in v]
+runtime="com.apple.CoreSimulator.SimRuntime.iOS-"+sys.argv[2].replace(".","-")
+items=[{**x,"runtime":k} for k,v in d["devices"].items() if k==runtime for x in v]
 if sys.argv[1]=="iphone":
     matches=[x for x in items if "Pro Max" in x["name"]]
 else:
@@ -69,11 +82,12 @@ print(matches[0]["deviceTypeIdentifier"], matches[0]["runtime"])
 PY
 )
   read -r DEVICE_TYPE RUNTIME <<< "$CHOICE"
-  DEVICE=$(xcrun simctl create "EmbroideryCalc-QA-$KIND-$$" "$DEVICE_TYPE" "$RUNTIME")
+  DEVICE=$(bounded 60 xcrun simctl create "EmbroideryCalc-QA-$KIND-$$" "$DEVICE_TYPE" "$RUNTIME")
   CREATED_DEVICES="$CREATED_DEVICES $DEVICE"
   echo "$KIND $DEVICE $DEVICE_TYPE $RUNTIME" >> artifacts/ios/test-devices.txt
-  xcrun simctl boot "$DEVICE" || true
-  xcrun simctl bootstatus "$DEVICE" -b
+  echo "Booting $KIND on SDK-matched runtime $RUNTIME"
+  bounded 180 xcrun simctl boot "$DEVICE" > "artifacts/ios/$KIND-boot.log" 2>&1
+  bounded 180 xcrun simctl bootstatus "$DEVICE" -b >> "artifacts/ios/$KIND-boot.log" 2>&1
   xcrun simctl status_bar "$DEVICE" override --time "9:41" --dataNetwork wifi --wifiMode active --wifiBars 3 --batteryState charged --batteryLevel 100
   xcrun simctl install "$DEVICE" artifacts/ios/simulator/Build/Products/Debug-iphonesimulator/App.app
   # Seed the fresh simulator app's private data before its first launch.
@@ -100,8 +114,9 @@ PY
   # Reinstall into fresh, disposable data so the UI test creates every save.
   xcrun simctl uninstall "$DEVICE" com.embroiderycalc.companion
   for CASE in ProductionFlow RecoveryFromCorruptSnapshot Accessibility; do
+    echo "Testing $KIND $CASE"
     TEST_STATUS=0
-    xcodebuild -project ios/App/AppUITests.xcodeproj -scheme AppUITests -configuration Debug -destination "platform=iOS Simulator,id=$DEVICE" -derivedDataPath artifacts/ios/ui-build -parallel-testing-enabled NO -maximum-concurrent-test-simulator-destinations 1 -test-timeouts-enabled YES -default-test-execution-time-allowance 300 -maximum-test-execution-time-allowance 420 -resultBundlePath "artifacts/ios/$KIND-$CASE.xcresult" "-only-testing:AppUITests/NativeFlowTests/test$CASE" CODE_SIGNING_ALLOWED=NO test > "artifacts/ios/$KIND-$CASE.log" 2>&1 || TEST_STATUS=$?
+    bounded 600 xcodebuild -project ios/App/AppUITests.xcodeproj -scheme AppUITests -configuration Debug -destination "platform=iOS Simulator,id=$DEVICE" -derivedDataPath artifacts/ios/ui-build -parallel-testing-enabled NO -maximum-concurrent-test-simulator-destinations 1 -test-timeouts-enabled YES -default-test-execution-time-allowance 300 -maximum-test-execution-time-allowance 420 -resultBundlePath "artifacts/ios/$KIND-$CASE.xcresult" "-only-testing:AppUITests/NativeFlowTests/test$CASE" CODE_SIGNING_ALLOWED=NO test > "artifacts/ios/$KIND-$CASE.log" 2>&1 || TEST_STATUS=$?
     if [ -d "artifacts/ios/$KIND-$CASE.xcresult" ]; then
       xcrun xcresulttool get test-results summary --path "artifacts/ios/$KIND-$CASE.xcresult" > "artifacts/ios/$KIND-$CASE-summary.json"
       xcrun xcresulttool export attachments --path "artifacts/ios/$KIND-$CASE.xcresult" --output-path "artifacts/ios/$KIND-$CASE-attachments"
@@ -117,5 +132,5 @@ PY
       python3 scripts/check-native-store.py "$CONTAINER" verify-recovery "artifacts/ios/$KIND-verify-recovery.json"
     fi
   done
-  xcrun simctl shutdown "$DEVICE"
+  bounded 30 xcrun simctl shutdown "$DEVICE"
 done
