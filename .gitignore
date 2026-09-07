@@ -23,3 +23,16 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+dist-native/
+artifacts/ios/
+artifacts/ios-*/
+scripts/ui-debug.mjs
+test-results/
+playwright-report/
+ios/App/AppUITests.xcodeproj/
+__pycache__/
+*.p12
+*.p8
+*.mobileprovision
+*.key

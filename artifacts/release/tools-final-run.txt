@@ -1,0 +1,16 @@
+[WebServer] (node:20652) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 1 worker
+
+(node:20416) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 [chromium-phone] › qa\release.spec.ts:249:1 › DST multi-location and local color tools (11.3s)
+(node:23140) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 2 [webkit-phone] › qa\release.spec.ts:249:1 › DST multi-location and local color tools (11.2s)
+(node:14360) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 3 [chromium-tablet] › qa\release.spec.ts:249:1 › DST multi-location and local color tools (9.1s)
+
+  3 passed (41.0s)

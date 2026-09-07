@@ -8,5 +8,6 @@ const site = process.env.SITE_URL ?? 'https://embroiderycalc-public.pages.dev';
 export default defineConfig({
   site,
   output: 'static',
+  vite: { build: { target: 'safari17' } },
   integrations: [react(), mdx(), sitemap()],
 });

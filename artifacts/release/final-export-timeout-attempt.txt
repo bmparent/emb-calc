@@ -1,0 +1,58 @@
+
+> embroiderycalc-pro@1.0.0 test:ui
+> playwright test --grep A to B to C
+
+[WebServer] (node:21136) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 1 worker
+
+(node:25776) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 [chromium-phone] › qa\release.spec.ts:63:1 › A to B to C, accessible plan, PDF, run, pause, restart and duplication (46.2s)
+(node:26872) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  x  2 [webkit-phone] › qa\release.spec.ts:63:1 › A to B to C, accessible plan, PDF, run, pause, restart and duplication (2.3m)
+(node:24184) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 3 [chromium-tablet] › qa\release.spec.ts:63:1 › A to B to C, accessible plan, PDF, run, pause, restart and duplication (1.1m)
+
+
+  1) [webkit-phone] › qa\release.spec.ts:63:1 › A to B to C, accessible plan, PDF, run, pause, restart and duplication 
+
+    Test timeout of 120000ms exceeded.
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator:  getByRole('heading', { name: 'Production paused' })
+    Expected: visible
+    Received: undefined
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: 'Production paused' }) with timeout 15000ms
+      - waiting for getByRole('heading', { name: 'Production paused' })
+      - 
+
+
+      119 |   await expect(
+      120 |     page.getByRole("heading", { name: "Production paused" }),
+    > 121 |   ).toBeVisible();
+          |     ^
+      122 |   await page
+      123 |     .getByRole("button", { name: "Resume production", exact: true })
+      124 |     .click();
+        at C:\Users\bmpar\embroiderycalc-rc\qa\release.spec.ts:121:5
+
+    Error Context: test-results\release-A-to-B-to-C-access-d935a-use-restart-and-duplication-webkit-phone\error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\release-A-to-B-to-C-access-d935a-use-restart-and-duplication-webkit-phone\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\release-A-to-B-to-C-access-d935a-use-restart-and-duplication-webkit-phone\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [webkit-phone] › qa\release.spec.ts:63:1 › A to B to C, accessible plan, PDF, run, pause, restart and duplication 
+  2 passed (6.5m)

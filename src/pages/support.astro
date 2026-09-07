@@ -1,0 +1,14 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { SITE } from '../site';
+---
+<SiteLayout title="EmbroideryCalc Support" description="Help with saved jobs, production estimates, backups and thread color tools." canonicalPath="/support/">
+  <section class="mx-auto max-w-3xl px-6 py-16 article-body">
+    <h1>EmbroideryCalc support</h1>
+    <p>Start with A: enter quantity, usable heads, RPM and stitches. In B, review production time and your own costs. C saves the estimate and provides quote sharing and explicit production controls.</p>
+    <h2>Keep your jobs recoverable</h2><p>Use Shop → Export backup before removing the app, clearing data or changing devices. Import backup merges jobs and keeps conflicting versions as separate copies. If saved data cannot open, export the recovery file first, then restore a backup or the previous native save.</p>
+    <h2>Production estimates</h2><p>These are planning estimates. Time a representative sew-out and enter measured handling in Shop. Routine machine stops stay in production time; explicit pauses exclude off-shift time.</p>
+    <h2>Contact and report a problem</h2><p><a href={SITE.supportUrl}>Open the support issue tracker</a>. Include the app version, device model, steps to reproduce and exact error. A GitHub account is required to post. Never attach confidential artwork, customer details or a job backup to a public issue.</p>
+    <p><a href="/calculator/">Return to the calculator</a> · <a href="/privacy/">Privacy policy</a></p>
+  </section>
+</SiteLayout>

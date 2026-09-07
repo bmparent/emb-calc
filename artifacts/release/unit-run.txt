@@ -1,0 +1,27 @@
+
+> embroiderycalc-pro@1.0.0 test
+> vitest run services src --maxWorkers=1 --reporter=default --reporter=junit --outputFile=artifacts/release/unit-tests.xml
+
+
+ RUN  v3.2.7 C:/Users/bmpar/embroiderycalc-rc
+
+ ✓ services/production/export.test.ts (1 test) 2272ms
+   ✓ exports an imported job ID as a cache filename, never a relative path  2251ms
+ ✓ services/production/model.test.ts (10 tests) 272ms
+ ✓ services/production/release.test.ts (11 tests) 709ms
+   ✓ release data regression cases > preserves incomplete numeric drafts but invalidates stale results  384ms
+ ✓ services/dstParser.test.ts (5 tests) 180ms
+ ✓ services/production/submission.test.ts (1 test) 162ms
+ ✓ services/production/repository.test.ts (6 tests) 281ms
+ ✓ services/embroideryService.test.ts (22 tests) 199ms
+ ✓ services/colorAnalysis.test.ts (8 tests) 38ms
+ ✓ services/calculatorState.test.ts (6 tests) 33ms
+ ✓ src/lib/analytics.test.ts (8 tests) 26ms
+ ✓ src/data/affiliateOffers.test.ts (2 tests) 19ms
+
+ Test Files  11 passed (11)
+      Tests  80 passed (80)
+   Start at  16:28:16
+   Duration  38.86s (transform 3.85s, setup 0ms, collect 5.97s, tests 4.19s, environment 14ms, prepare 10.23s)
+
+JUNIT report written to C:/Users/bmpar/embroiderycalc-rc/artifacts/release/unit-tests.xml

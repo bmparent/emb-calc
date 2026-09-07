@@ -1,0 +1,50 @@
+
+> embroiderycalc-pro@1.0.0 test
+> vitest run services src --reporter=default --reporter=junit --outputFile=artifacts/release/unit-tests.xml
+
+
+ RUN  v3.2.7 C:/Users/bmpar/embroiderycalc-rc
+
+ ✓ services/dstParser.test.ts (5 tests) 781ms
+   ✓ parseDstBuffer > uses decoded stitch and color counts when a DST header materially disagrees  683ms
+ ✓ services/embroideryService.test.ts (22 tests) 478ms
+   ✓ batch-aware runtime model > does not borrow overlap from another placement  337ms
+ ✓ services/production/repository.test.ts (6 tests) 562ms
+   ✓ native save transaction > recovers the retained snapshot and keeps corrupt bytes accessible  405ms
+ ✓ services/colorAnalysis.test.ts (8 tests) 56ms
+ ✓ services/production/submission.test.ts (1 test) 585ms
+   ✓ creates a reproducible synthetic submission job from actual formulas  579ms
+ ✓ services/production/release.test.ts (11 tests) 955ms
+   ✓ release data regression cases > preserves incomplete numeric drafts but invalidates stale results  379ms
+ ✓ services/production/model.test.ts (10 tests) 1296ms
+   ✓ durable stores and backups > merges conflicting jobs without overwriting  385ms
+ ✓ services/calculatorState.test.ts (6 tests) 41ms
+ ✓ src/lib/analytics.test.ts (8 tests) 31ms
+ ✓ src/data/affiliateOffers.test.ts (2 tests) 25ms
+ ❯ services/production/export.test.ts (1 test | 1 failed) 19075ms
+   × exports an imported job ID as a cache filename, never a relative path 19066ms
+     → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  services/production/export.test.ts > exports an imported job ID as a cache filename, never a relative path
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+
+ Test Files  1 failed | 10 passed (11)
+      Tests  1 failed | 79 passed (80)
+   Start at  16:25:27
+   Duration  76.51s (transform 79.52s, setup 0ms, collect 190.33s, tests 23.88s, environment 27ms, prepare 53.24s)
+
+ ❯ services/production/export.test.ts:18:1
+     16| afterEach(() => vi.unstubAllGlobals());
+     17| 
+     18| it("exports an imported job ID as a cache filename, never a relative p…
+       | ^
+     19|   vi.stubGlobal("FileReader", class {
+     20|     result = "data:application/pdf;base64,cGRm";
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+JUNIT report written to C:/Users/bmpar/embroiderycalc-rc/artifacts/release/unit-tests.xml

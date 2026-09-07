@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="80" failures="0" errors="0" time="4.1908567">
+    <testsuite name="services/calculatorState.test.ts" timestamp="2026-09-07T20:28:55.828Z" hostname="BMP" tests="6" failures="0" errors="0" skipped="0" time="0.0330436">
+        <testcase classname="services/calculatorState.test.ts" name="createCalculationInputKey &gt; changes whenever production inputs change so old results can be invalidated" time="0.0152703">
+        </testcase>
+        <testcase classname="services/calculatorState.test.ts" name="createCalculationInputKey &gt; is stable for equivalent production inputs" time="0.0009039">
+        </testcase>
+        <testcase classname="services/calculatorState.test.ts" name="mergeImportedLocations &gt; replaces only the untouched initial placeholder" time="0.0021623">
+        </testcase>
+        <testcase classname="services/calculatorState.test.ts" name="mergeImportedLocations &gt; appends imports without overwriting existing locations" time="0.0018272">
+        </testcase>
+        <testcase classname="services/calculatorState.test.ts" name="mergeImportedLocations &gt; keeps a customized blank row and appends the import" time="0.0011732">
+        </testcase>
+        <testcase classname="services/calculatorState.test.ts" name="formatLocalDate &gt; formats the browser-local calendar date without converting through UTC" time="0.0049726">
+        </testcase>
+    </testsuite>
+    <testsuite name="services/colorAnalysis.test.ts" timestamp="2026-09-07T20:28:55.919Z" hostname="BMP" tests="8" failures="0" errors="0" skipped="0" time="0.0379974">
+        <testcase classname="services/colorAnalysis.test.ts" name="color analysis &gt; parses a user-provided PMS and Madeira catalog" time="0.0099652">
+        </testcase>
+        <testcase classname="services/colorAnalysis.test.ts" name="color analysis &gt; finds the nearest imported catalog color" time="0.0051789">
+        </testcase>
+        <testcase classname="services/colorAnalysis.test.ts" name="color analysis &gt; returns zero distance for identical colors" time="0.0014506">
+        </testcase>
+        <testcase classname="services/colorAnalysis.test.ts" name="color analysis &gt; matches the published CIEDE2000 reference pair" time="0.0010847">
+        </testcase>
+        <testcase classname="services/colorAnalysis.test.ts" name="color analysis &gt; ranks several direct thread alternatives" time="0.0022907">
+        </testcase>
+        <testcase classname="services/colorAnalysis.test.ts" name="color analysis &gt; imports legacy PMS and Madeira columns into separate libraries" time="0.0056016">
+        </testcase>
+        <testcase classname="services/colorAnalysis.test.ts" name="color analysis &gt; uses the dominant color in a selected area" time="0.0046698">
+        </testcase>
+        <testcase classname="services/colorAnalysis.test.ts" name="color analysis &gt; maps colors to inventory families" time="0.0013392">
+        </testcase>
+    </testsuite>
+    <testsuite name="services/dstParser.test.ts" timestamp="2026-09-07T20:28:56.043Z" hostname="BMP" tests="5" failures="0" errors="0" skipped="0" time="0.1795447">
+        <testcase classname="services/dstParser.test.ts" name="parseDstBuffer &gt; decodes stitches, colors, bounds, and the end command" time="0.0164862">
+        </testcase>
+        <testcase classname="services/dstParser.test.ts" name="parseDstBuffer &gt; infers a trim from three consecutive jump records" time="0.0031883">
+        </testcase>
+        <testcase classname="services/dstParser.test.ts" name="parseDstBuffer &gt; warns when the file has no end command" time="0.0020572">
+        </testcase>
+        <testcase classname="services/dstParser.test.ts" name="parseDstBuffer &gt; uses decoded stitch and color counts when a DST header materially disagrees" time="0.1407773">
+        </testcase>
+        <testcase classname="services/dstParser.test.ts" name="parseDstBuffer &gt; rejects non-DST headers" time="0.0088262">
+        </testcase>
+    </testsuite>
+    <testsuite name="services/embroideryService.test.ts" timestamp="2026-09-07T20:28:56.260Z" hostname="BMP" tests="22" failures="0" errors="0" skipped="0" time="0.1992098">
+        <testcase classname="services/embroideryService.test.ts" name="batch-aware runtime model &gt; does not borrow overlap from another placement" time="0.0979829">
+        </testcase>
+        <testcase classname="services/embroideryService.test.ts" name="batch-aware runtime model &gt; does not divide one garment operation among ten operators" time="0.0029196">
+        </testcase>
+        <testcase classname="services/embroideryService.test.ts" name="batch-aware runtime model &gt; respects whole cycles for 1 items on six heads at 800 RPM" time="0.0017108">
+        </testcase>
+        <testcase classname="services/embroideryService.test.ts" name="batch-aware runtime model &gt; respects whole cycles for 6 items on six heads at 800 RPM" time="0.0010969">
+        </testcase>
+        <testcase classname="services/embroideryService.test.ts" name="batch-aware runtime model &gt; respects whole cycles for 7 items on six heads at 800 RPM" time="0.0009529">
+        </testcase>
+        <testcase classname="services/embroideryService.test.ts" name="batch-aware runtime model &gt; rounds a partial multi-head quantity up to a whole machine run" time="0.0037694">
+        </testcase>
+        <testcase classname="services/embroideryService.test.ts" name="batch-aware runtime model &gt; counts finishing once per physical garment across multiple locations" time="0.0032599">
+        </testcase>
+        <testcase classname="services/embroideryService.test.ts" name="batch-aware runtime model &gt; applies color changes, trims, and manual stops once per machine run" time="0.0015812">
+        </testcase>
+        <testcase classname="services/embroideryService.test.ts" name="batch-aware runtime model &gt; uses a per-design slowdown without changing the entered machine RPM" time="0.0011811">
+        </testcase>
+        <testcase classname="services/embroideryService.test.ts" name="batch-aware runtime model &gt; counts bobbin replacements by workload on each active head" time="0.0014395">
+        </testcase>
+        <testcase classname="services/embroideryService.test.ts" name="DG verified baseline &gt; preserves the original aggregate formula and shop-tested defaults" time="0.0018406">
+        </testcase>
+        <testcase classname="services/embroideryService.test.ts" name="runtime validation &gt; reports invalid production and calibration inputs together" time="0.0089223">
+        </testcase>
+        <testcase classname="services/embroideryService.test.ts" name="actual production comparison &gt; supports an overnight finish and removes recorded pauses" time="0.0524219">
+        </testcase>
+        <testcase classname="services/embroideryService.test.ts" name="actual production comparison &gt; rejects a finish that is not longer than the recorded pauses" time="0.0007648">
+        </testcase>
+        <testcase classname="services/embroideryService.test.ts" name="physical timing floors &gt; never divides a single design among multiple heads" time="0.0015086">
+        </testcase>
+        <testcase classname="services/embroideryService.test.ts" name="physical timing floors &gt; cannot hide more labor than the available machine time" time="0.0015552">
+        </testcase>
+        <testcase classname="services/embroideryService.test.ts" name="physical timing floors &gt; rounds 1 pieces into whole runs" time="0.0015837">
+        </testcase>
+        <testcase classname="services/embroideryService.test.ts" name="physical timing floors &gt; rounds 5 pieces into whole runs" time="0.0015502">
+        </testcase>
+        <testcase classname="services/embroideryService.test.ts" name="physical timing floors &gt; rounds 6 pieces into whole runs" time="0.0015297">
+        </testcase>
+        <testcase classname="services/embroideryService.test.ts" name="physical timing floors &gt; rounds 7 pieces into whole runs" time="0.0017956">
+        </testcase>
+        <testcase classname="services/embroideryService.test.ts" name="physical timing floors &gt; rounds 24 pieces into whole runs" time="0.0020956">
+        </testcase>
+        <testcase classname="services/embroideryService.test.ts" name="physical timing floors &gt; rounds 25 pieces into whole runs" time="0.0012372">
+        </testcase>
+    </testsuite>
+    <testsuite name="services/production/export.test.ts" timestamp="2026-09-07T20:28:57.005Z" hostname="BMP" tests="1" failures="0" errors="0" skipped="0" time="2.2715128">
+        <testcase classname="services/production/export.test.ts" name="exports an imported job ID as a cache filename, never a relative path" time="2.2507727">
+        </testcase>
+    </testsuite>
+    <testsuite name="services/production/model.test.ts" timestamp="2026-09-07T20:28:57.069Z" hostname="BMP" tests="10" failures="0" errors="0" skipped="0" time="0.2720824">
+        <testcase classname="services/production/model.test.ts" name="production workflow &gt; does not start a draft or change a running job" time="0.202498">
+        </testcase>
+        <testcase classname="services/production/model.test.ts" name="production workflow &gt; retains full dates across overnight pauses and restart" time="0.0062028">
+        </testcase>
+        <testcase classname="services/production/model.test.ts" name="production workflow &gt; rejects backwards events and zero production" time="0.0044468">
+        </testcase>
+        <testcase classname="services/production/model.test.ts" name="production workflow &gt; duplicates without production state and invalidates edited estimates" time="0.0077895">
+        </testcase>
+        <testcase classname="services/production/model.test.ts" name="production workflow &gt; uses gross margin rather than markup and separates tax" time="0.00594">
+        </testcase>
+        <testcase classname="services/production/model.test.ts" name="production workflow &gt; rounds minutes without a 60-minute remainder" time="0.0012876">
+        </testcase>
+        <testcase classname="services/production/model.test.ts" name="durable stores and backups &gt; restores exact jobs and rejects stale writes" time="0.0129045">
+        </testcase>
+        <testcase classname="services/production/model.test.ts" name="durable stores and backups &gt; surfaces quota failure without claiming a save" time="0.0036952">
+        </testcase>
+        <testcase classname="services/production/model.test.ts" name="durable stores and backups &gt; merges conflicting jobs without overwriting" time="0.0107465">
+        </testcase>
+        <testcase classname="services/production/model.test.ts" name="durable stores and backups &gt; rejects invalid formats and corrupt nested data" time="0.0057257">
+        </testcase>
+    </testsuite>
+    <testsuite name="services/production/release.test.ts" timestamp="2026-09-07T20:28:57.086Z" hostname="BMP" tests="11" failures="0" errors="0" skipped="0" time="0.708876">
+        <testcase classname="services/production/release.test.ts" name="release data regression cases &gt; preserves incomplete numeric drafts but invalidates stale results" time="0.3838372">
+        </testcase>
+        <testcase classname="services/production/release.test.ts" name="release data regression cases &gt; rejects nonfinite draft inputs NaN" time="0.0157117">
+        </testcase>
+        <testcase classname="services/production/release.test.ts" name="release data regression cases &gt; rejects nonfinite draft inputs Infinity" time="0.0044314">
+        </testcase>
+        <testcase classname="services/production/release.test.ts" name="release data regression cases &gt; rejects invalid profiles even when no job uses them" time="0.0039322">
+        </testcase>
+        <testcase classname="services/production/release.test.ts" name="release data regression cases &gt; rejects duplicate profile and design IDs" time="0.1173686">
+        </testcase>
+        <testcase classname="services/production/release.test.ts" name="release data regression cases &gt; preserves conflicting imported profiles" time="0.0285081">
+        </testcase>
+        <testcase classname="services/production/release.test.ts" name="release data regression cases &gt; does not import forged quote totals" time="0.0336839">
+        </testcase>
+        <testcase classname="services/production/release.test.ts" name="release data regression cases &gt; rejects status inconsistent with an open pause" time="0.0077985">
+        </testcase>
+        <testcase classname="services/production/release.test.ts" name="release data regression cases &gt; rejects a completed duration that disagrees with timestamps" time="0.0580269">
+        </testcase>
+        <testcase classname="services/production/release.test.ts" name="release data regression cases &gt; rejects malformed completion and unfinished completion metadata" time="0.0274282">
+        </testcase>
+        <testcase classname="services/production/release.test.ts" name="release data regression cases &gt; keeps frozen 3.0.0 production while old ready jobs need recalculation" time="0.0151193">
+        </testcase>
+    </testsuite>
+    <testsuite name="services/production/repository.test.ts" timestamp="2026-09-07T20:28:57.192Z" hostname="BMP" tests="6" failures="0" errors="0" skipped="0" time="0.2805776">
+        <testcase classname="services/production/repository.test.ts" name="native save transaction &gt; recovers the retained snapshot and keeps corrupt bytes accessible" time="0.1718254">
+        </testcase>
+        <testcase classname="services/production/repository.test.ts" name="native save transaction &gt; does not replace a corrupt pointer when recovery archive cannot be written" time="0.0299262">
+        </testcase>
+        <testcase classname="services/production/repository.test.ts" name="native save transaction &gt; restores snapshots and retains the preceding save" time="0.0292616">
+        </testcase>
+        <testcase classname="services/production/repository.test.ts" name="native save transaction &gt; keeps the committed pointer when a write fails" time="0.0208602">
+        </testcase>
+        <testcase classname="services/production/repository.test.ts" name="native save transaction &gt; rejects a stale revision" time="0.0106381">
+        </testcase>
+        <testcase classname="services/production/repository.test.ts" name="native save transaction &gt; fails visibly without overwriting corrupt data" time="0.0100621">
+        </testcase>
+    </testsuite>
+    <testsuite name="services/production/submission.test.ts" timestamp="2026-09-07T20:28:57.304Z" hostname="BMP" tests="1" failures="0" errors="0" skipped="0" time="0.1624195">
+        <testcase classname="services/production/submission.test.ts" name="creates a reproducible synthetic submission job from actual formulas" time="0.154212">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/data/affiliateOffers.test.ts" timestamp="2026-09-07T20:28:57.404Z" hostname="BMP" tests="2" failures="0" errors="0" skipped="0" time="0.0191731">
+        <testcase classname="src/data/affiliateOffers.test.ts" name="getRelevantAffiliateOffers &gt; ranks relevant cap and color offers without changing calculator output" time="0.0102089">
+        </testcase>
+        <testcase classname="src/data/affiliateOffers.test.ts" name="getRelevantAffiliateOffers &gt; does not show cap-specific offers for shirts" time="0.0013038">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/lib/analytics.test.ts" timestamp="2026-09-07T20:28:57.592Z" hostname="BMP" tests="8" failures="0" errors="0" skipped="0" time="0.0264198">
+        <testcase classname="src/lib/analytics.test.ts" name="bucketQuantity &gt; buckets 1 without exposing exact order sizes" time="0.0071932">
+        </testcase>
+        <testcase classname="src/lib/analytics.test.ts" name="bucketQuantity &gt; buckets 12 without exposing exact order sizes" time="0.0009414">
+        </testcase>
+        <testcase classname="src/lib/analytics.test.ts" name="bucketQuantity &gt; buckets 13 without exposing exact order sizes" time="0.0006463">
+        </testcase>
+        <testcase classname="src/lib/analytics.test.ts" name="bucketQuantity &gt; buckets 48 without exposing exact order sizes" time="0.0005767">
+        </testcase>
+        <testcase classname="src/lib/analytics.test.ts" name="bucketQuantity &gt; buckets 49 without exposing exact order sizes" time="0.0006222">
+        </testcase>
+        <testcase classname="src/lib/analytics.test.ts" name="bucketQuantity &gt; buckets 144 without exposing exact order sizes" time="0.0005621">
+        </testcase>
+        <testcase classname="src/lib/analytics.test.ts" name="bucketQuantity &gt; buckets 145 without exposing exact order sizes" time="0.0005614">
+        </testcase>
+        <testcase classname="src/lib/analytics.test.ts" name="coarse production buckets &gt; groups location and machine sizes before analytics" time="0.0062902">
+        </testcase>
+    </testsuite>
+</testsuites>

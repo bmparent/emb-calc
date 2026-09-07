@@ -30,6 +30,14 @@
     "allowImportingTsExtensions": true,
     "noEmit": true
   },
-  "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "node_modules"]
+  "include": [
+    ".astro/types.d.ts",
+    "**/*"
+  ],
+  "exclude": [
+    "dist",
+    "dist-native",
+    "ios/App/App/public",
+    "node_modules"
+  ]
 }

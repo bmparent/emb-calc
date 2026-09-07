@@ -1,0 +1,188 @@
+{
+  "schemaVersion": 3,
+  "revision": 0,
+  "jobs": [
+    {
+      "id": "demo-24-polos",
+      "name": "24 embroidered polos",
+      "createdAt": "2026-09-07T08:00:00Z",
+      "updatedAt": "2026-09-07T08:00:00Z",
+      "revision": 1,
+      "status": "ready",
+      "quantity": 24,
+      "machine": {
+        "heads": 6,
+        "rpm": 800,
+        "apparelType": "Polo",
+        "backingInfo": "None / Direct"
+      },
+      "calibration": {
+        "id": "data-graphics-verified",
+        "name": "DG shop defaults",
+        "mode": "batch-aware",
+        "loadDstSeconds": 120,
+        "inputSettingsSeconds": 110,
+        "markSecondsPerPlacement": 15,
+        "hoopShirtSecondsPerPlacement": 25,
+        "hoopHatSecondsPerPlacement": 40,
+        "removeHoopSecondsPerPlacement": 15,
+        "foldSteamSecondsPerGarment": 22,
+        "packSecondsPerGarment": 10,
+        "colorChangeSeconds": 5,
+        "trimSeconds": 4,
+        "manualStopSeconds": 0,
+        "machineEfficiency": 0.85,
+        "downtimeSecondsPer1000Stitches": 15,
+        "bobbinChangeSeconds": 0,
+        "bobbinCapacityStitches": 0,
+        "contingencyPercent": 0.33,
+        "operatorCount": 1,
+        "operatorOverlapPercent": 0
+      },
+      "rates": {
+        "blank": 0,
+        "consumables": 0.35,
+        "laborHourly": 25,
+        "machineHourly": 0,
+        "overheadHourly": 5,
+        "setupCost": 0,
+        "margin": 30,
+        "taxPercent": 0
+      },
+      "designs": [
+        {
+          "id": "left-chest",
+          "designNumber": "",
+          "stitches": 10000,
+          "quantity": 24,
+          "colors": 3,
+          "position": "Left Chest",
+          "trims": 0,
+          "manualStops": 0,
+          "speedFactor": 1,
+          "handlingFactor": 1,
+          "downtimeFactor": 1
+        }
+      ],
+      "formulaVersion": "3.1.0",
+      "plannedStart": "2026-09-07T08:00:00Z",
+      "estimate": {
+        "mode": "batch-aware",
+        "formulaVersion": "3.1.0",
+        "projectedEndAt": "2026-09-07T11:30:18.257Z",
+        "netMinutes": 210.30429411764706,
+        "projectedEndTime": "07:30",
+        "machineMinutes": 119.49019607843137,
+        "operatorMinutes": 98.63333333333333,
+        "verifiedBaselineMinutes": 100.15443300653595,
+        "batchAwareMinutes": 210.30429411764706,
+        "locations": [
+          {
+            "id": "left-chest",
+            "designNumber": "",
+            "quantity": 24,
+            "batches": 4,
+            "effectiveRpm": 680,
+            "machineMinutes": 119.49019607843137,
+            "operatorMinutes": 82
+          }
+        ],
+        "warnings": [
+          "A location has no trim count, so trim time is excluded."
+        ],
+        "breakdown": {
+          "preparation": 3.8333333333333335,
+          "handling": 34.8,
+          "stitching": 58.8235294117647,
+          "colors": 0.6666666666666666,
+          "trims": 0,
+          "reliability": 60,
+          "buffer": 52.18076470588235
+        }
+      },
+      "quote": {
+        "cost": 67.02,
+        "subtotal": 95.74,
+        "tax": 0,
+        "total": 95.74,
+        "perItem": 3.99,
+        "profit": 28.72,
+        "margin": 29.997911008982665,
+        "lines": [
+          {
+            "label": "Garments",
+            "amount": 0
+          },
+          {
+            "label": "Thread & consumables",
+            "amount": 8.4
+          },
+          {
+            "label": "Hands-on labor",
+            "amount": 41.1
+          },
+          {
+            "label": "Machine use",
+            "amount": 0
+          },
+          {
+            "label": "Shop overhead",
+            "amount": 17.53
+          },
+          {
+            "label": "Additional job cost",
+            "amount": 0
+          }
+        ]
+      }
+    }
+  ],
+  "profiles": [
+    {
+      "id": "default",
+      "name": "My machine",
+      "machine": {
+        "heads": 1,
+        "rpm": 800,
+        "apparelType": "Tshirt",
+        "backingInfo": "None / Direct"
+      },
+      "calibration": {
+        "id": "data-graphics-verified",
+        "name": "DG shop defaults",
+        "mode": "batch-aware",
+        "loadDstSeconds": 120,
+        "inputSettingsSeconds": 110,
+        "markSecondsPerPlacement": 15,
+        "hoopShirtSecondsPerPlacement": 25,
+        "hoopHatSecondsPerPlacement": 40,
+        "removeHoopSecondsPerPlacement": 15,
+        "foldSteamSecondsPerGarment": 22,
+        "packSecondsPerGarment": 10,
+        "colorChangeSeconds": 5,
+        "trimSeconds": 4,
+        "manualStopSeconds": 0,
+        "machineEfficiency": 0.85,
+        "downtimeSecondsPer1000Stitches": 15,
+        "bobbinChangeSeconds": 0,
+        "bobbinCapacityStitches": 0,
+        "contingencyPercent": 0.33,
+        "operatorCount": 1,
+        "operatorOverlapPercent": 0
+      },
+      "rates": {
+        "blank": 0,
+        "consumables": 0.35,
+        "laborHourly": 25,
+        "machineHourly": 0,
+        "overheadHourly": 5,
+        "setupCost": 0,
+        "margin": 30,
+        "taxPercent": 0
+      }
+    }
+  ],
+  "activeId": "demo-24-polos",
+  "defaultProfileId": "default",
+  "shopName": ""
+}
