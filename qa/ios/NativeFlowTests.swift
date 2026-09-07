@@ -35,8 +35,16 @@ final class NativeFlowTests: XCTestCase {
         XCTAssertTrue(button.waitForExistence(timeout: 25), label)
         // Scroll the real web view when the control is below the viewport.
         for _ in 0..<8 {
-            if button.isHittable { break }
-            app.webViews.firstMatch.swipeUp()
+            let navigation = app.buttons["Shop"].firstMatch
+            let bottom = navigation.exists ? navigation.frame.minY : app.frame.maxY
+            // WKWebView may report a DOM button hittable beneath its fixed
+            // navigation. Require its full frame above the real navigation.
+            if button.isHittable && button.frame.maxY < bottom { break }
+            if button.frame.minY < app.frame.minY {
+                app.webViews.firstMatch.swipeDown()
+            } else {
+                app.webViews.firstMatch.swipeUp()
+            }
         }
         XCTAssertTrue(button.isHittable, "Visible action: \(label)")
         button.tap()
@@ -58,10 +66,16 @@ final class NativeFlowTests: XCTestCase {
         capture("C - Next")
 
         tap("Share quote")
-        let close = app.buttons["Close"].firstMatch
-        XCTAssertTrue(close.waitForExistence(timeout: 30), "Native share sheet opened")
+        let sheet = app.otherElements["ActivityListView"].firstMatch
+        XCTAssertTrue(sheet.waitForExistence(timeout: 30), "Native share sheet opened")
+        let caption = app.otherElements["LP.CaptionBar.BottomCaption"].firstMatch
+        XCTAssertTrue(caption.waitForExistence(timeout: 20))
+        XCTAssertTrue(caption.label.contains("PDF"), "The native sheet received a PDF")
         capture("Native PDF share sheet")
-        close.tap()
+        let dismiss = app.otherElements["PopoverDismissRegion"].firstMatch
+        XCTAssertTrue(dismiss.exists)
+        // This system region surrounds the centered popover on both devices.
+        dismiss.coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.1)).tap()
         text("Ready when you are")
 
         tap("Start production")
